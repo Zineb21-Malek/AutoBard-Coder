@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>
+    {% if results %}{{ results.name }} — APEX{% else %}Race unavailable — APEX{% endif %}
+  </title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700;800&family=Barlow:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}" />
+</head>
+<body>
+  <header class="site-header">
+    <a class="logo" href="/">APEX</a>
+    <nav>
+      <a href="/#results">Results</a>
+      <a href="/#standings">Standings</a>
+      <a href="/#calendar">Calendar</a>
+    </nav>
+  </header>
+
+  <main>
+    <section class="page-hero">
+      <a class="back" href="/#calendar">← Calendar</a>
+      {% if results %}
+        <p class="eyebrow">Round {{ results.round }} · {{ results.season }}</p>
+        <h1>{{ results.name }}</h1>
+        <p class="lede">{{ results.location }}, {{ results.country }}</p>
+      {% else %}
+        <h1>Results unavailable</h1>
+        <p class="lede">{{ error or "This session has not been published yet." }}</p>
+      {% endif %}
+    </section>
+
+    {% if results %}
+    <section class="section">
+      <div class="results-wrap">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Pos</th>
+              <th>No</th>
+              <th>Driver</th>
+              <th>Team</th>
+              <th>Grid</th>
+              <th>Laps</th>
+              <th>Time / Status</th>
+              <th>Pts</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for row in results.results %}
+            <tr>
+              <td class="pos">{{ row.position }}</td>
+              <td>{{ row.driver_number }}</td>
+              <td>
+                <span class="code">{{ row.abbreviation }}</span>
+                <span class="name">{{ row.full_name }}</span>
+              </td>
+              <td>
+                <span class="team-dot" style="--team: {{ row.team_color or '#888' }}"></span>
+                {{ row.team }}
+              </td>
+              <td>{{ row.grid if row.grid is not none else "—" }}</td>
+              <td>{{ row.laps if row.laps is not none else "—" }}</td>
+              <td>{{ row.time or row.status }}</td>
+              <td class="pts">{{ row.points|int }}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </section>
+    {% endif %}
+  </main>
+
+  <footer class="site-footer">
+    <p>Race classification from FastF1 timing data.</p>
+  </footer>
+</body>
+</html>
