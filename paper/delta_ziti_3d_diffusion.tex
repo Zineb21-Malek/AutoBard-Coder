@@ -50,8 +50,9 @@ space, and through an interpolatory reconstruction at the roots of the basis
 functions, which yields an explicit fully discrete scheme without numerical
 quadrature or inversion of a mass matrix. We prove that $f_h$ is the best least-squares approximation in the
 \dziti{} space and that its error is controlled by comparison with the
-interpolant $I_h f=\sum_i f(x_i)\varphi_i(x)$, yielding a second-order
-$L^2$ estimate. The semi-discrete Galerkin scheme is unconditionally
+interpolant $I_h f=\sum_i f(x_i)\varphi_i(x)$. A second-order $L^2$ bound
+on that interpolant holds if the generators reproduce constants and
+linears; those identities are not implied by the mollifier family used here. The semi-discrete Galerkin scheme is unconditionally
 energy-stable. The corresponding explicit Euler scheme is
 stable under a CFL restriction of order $\Delta t=\mathcal{O}(h^2)$. The
 construction is extended to three dimensions by tensorisation on Cartesian
@@ -138,9 +139,9 @@ justification of the two-term Gram--Schmidt recurrence from the compact
 overlap of the generating functions.
 \item We prove that the reconstruction $f_h$ is the best least-squares
 approximation in $V_h$ and that it improves upon the interpolant
-$I_h f=\sum_{i}f(x_i)\varphi_i(x)$. A Taylor argument on $I_h f$ then gives
-the second-order estimate
-$\lVert f-f_h\rVert_{L^2(I)}\le C\lvert I\rvert^{1/2}h^2\lVert f''\rVert_{L^\infty(I)}$.
+$I_h f=\sum_{i}f(x_i)\varphi_i(x)$. The Taylor expansion of $I_h f$ yields
+an $O(h^2)$ bound if the generators satisfy the first-order Strang--Fix
+identities; these identities fail for the family~\eqref{eq:phi}.
 We also establish energy stability of the semi-discrete Galerkin scheme and a
 CFL condition for the explicit Euler method.
 \item We extend the scheme to the unit cube by tensorisation and to the unit
@@ -608,72 +609,114 @@ norm $\lVert\cdot\rVert_h$ induced by~\eqref{eq:discrete-ip}.
 \subsection{Error estimate}
 
 Lemma~\ref{lem:orthonormal} reduces the error of $f_h$ to that of the
-interpolant~\eqref{interp}. The next result makes this comparison
-quantitative.
+interpolant~\eqref{interp}. The next result records the exact Taylor
+remainder of $I_h f$ and isolates the identities that would turn the
+comparison into an $O(h^2)$ bound.
 
-\begin{theorem}[Error estimate for the \dziti{} approximation]
+\begin{theorem}[Comparison and conditional error estimate]
 \label{thm:error}
 Let $I=[a,b]\subset\mathbb{R}$ and $f\in W^{2,\infty}(I)$.
 Let $f_h$ be the \dziti{} reconstruction~\eqref{eq:fh}, and let $I_h f$ be
 the interpolant constructed from $\{\varphi_i\}_{i=1}^{m+1}$ as in
 \eqref{interp}, namely
 \begin{equation}
+\label{eq:Ih}
 I_h f=\sum_{i=1}^{m+1}f(x_i)\,\varphi_i(x).
 \end{equation}
-Then there exists a constant $C>0$, independent of $h$, such that
+Then $I_h f\in V_h$ and
+\begin{equation}
+\label{eq:err-comp}
+\lVert f-f_h\rVert_{L^2(I)}
+\le
+\lVert f-I_h f\rVert_{L^2(I)}.
+\end{equation}
+Moreover, for every $x\in I$ there exist intermediate points $\xi_i(x)$ such
+that
+\begin{equation}
+\label{eq:taylor}
+\begin{aligned}
+f(x)-I_h f(x)
+&=
+f(x)\Biggl(1-\sum_{i=1}^{m+1}\varphi_i(x)\Biggr)
+-f'(x)\sum_{i=1}^{m+1}(x_i-x)\varphi_i(x)\\
+&\qquad
+-\frac12\sum_{i=1}^{m+1}f''\bigl(\xi_i(x)\bigr)(x_i-x)^2\varphi_i(x).
+\end{aligned}
+\end{equation}
+If, in addition, the generators satisfy the first-order Strang--Fix
+identities
+\begin{equation}
+\label{eq:SF}
+\sum_{i=1}^{m+1}\varphi_i(x)=1,
+\qquad
+\sum_{i=1}^{m+1}(x_i-x)\varphi_i(x)=0
+\qquad\text{for a.e.\ }x\in I,
+\end{equation}
+then there exists a constant $C>0$, independent of $h$, such that
 \begin{equation}
 \label{eq:err}
 \lVert f-f_h\rVert_{L^2(I)}
+\le
+\lVert f-I_h f\rVert_{L^2(I)}
 \le C\,\lvert I\rvert^{1/2}\,h^2\,\lVert f''\rVert_{L^\infty(I)}.
 \end{equation}
 \end{theorem}
 
 \begin{proof}
-We compare $f_h$ with the interpolant $I_h f$ from~\eqref{interp}. A
-second-order Taylor expansion gives, for $x$ in the support of $\varphi_i$,
-\begin{equation}
-f(x_i)=f(x)+f'(x)(x_i-x)+\tfrac12 f''(\xi_i)(x_i-x)^2,
-\end{equation}
-hence
-\begin{equation}
-f(x)-I_h f(x)
-=\tfrac12\sum_i f''(\xi_i)(x_i-x)^2\varphi_i(x).
-\end{equation}
-Using that $\sum_i\varphi_i(x)=1$, and that the functions $\varphi_i$ vanish
-outside a neighbourhood of size $h$, we obtain
-\begin{equation}
-\lvert f(x)-I_h f(x)\rvert^2
-\le C h^4\sup_{\lvert t-x\rvert\le h}\lvert f''(t)\rvert^2
-\le C h^4 M^2,
-\end{equation}
-where $M:=\lVert f''\rVert_{L^\infty(I)}$.
+The comparison~\eqref{eq:err-comp} is Lemma~\ref{lem:orthonormal}(ii), since
+$I_h f\in V_h$ by~\eqref{eq:spans}.
 
-Integrating over a cell $[x_i,x_{i+1}]$ of length $h$ yields
+For~\eqref{eq:taylor}, Taylor expansion with remainder at each node gives
 \begin{equation}
-\int_{x_i}^{x_{i+1}}\lvert f(x)-I_h f(x)\rvert^2\,\dd x
-\le C h^5 M^2.
+f(x_i)=f(x)+f'(x)(x_i-x)+\tfrac12 f''\bigl(\xi_i(x)\bigr)(x_i-x)^2,
 \end{equation}
-Summing over all mesh cells ($mh=\lvert I\rvert$), we get
+with $\xi_i(x)$ between $x$ and $x_i$. Multiply by $\varphi_i(x)$ and sum
+over $i$:
 \begin{equation}
-\lVert f-I_h f\rVert_{L^2(I)}^2
-=\sum_{i=1}^{m}
-\int_{x_i}^{x_{i+1}}\lvert f(x)-I_h f(x)\rvert^2\,\dd x
-\le C\lvert I\rvert h^4 M^2.
+\begin{aligned}
+I_h f(x)
+&=
+f(x)\sum_i\varphi_i(x)
++f'(x)\sum_i(x_i-x)\varphi_i(x)\\
+&\qquad
++\frac12\sum_i f''\bigl(\xi_i(x)\bigr)(x_i-x)^2\varphi_i(x).
+\end{aligned}
 \end{equation}
-Taking the square root,
+Rearrangement is~\eqref{eq:taylor}.
+
+Now assume~\eqref{eq:SF}. The first two sums on the right-hand side of
+\eqref{eq:taylor} vanish, and $\lvert x_i-x\rvert\le h$ on
+$\supp(\varphi_i)$. The generators~\eqref{eq:phi} are nonnegative, so
+\eqref{eq:SF}$_1$ implies $\sum_i\lvert\varphi_i(x)\rvert=1$. Hence
 \begin{equation}
-\lVert f-I_h f\rVert_{L^2(I)}
-\le C\lvert I\rvert^{1/2}h^2\lVert f''\rVert_{L^\infty(I)}.
-\end{equation}
-Finally, by Lemma~\ref{lem:orthonormal}, $f_h$ is the best least-squares
-approximation of $f$ in $V_h$, and $I_h f\in V_h$, therefore
-\begin{equation}
-\lVert f-f_h\rVert_{L^2(I)}
+\lvert f(x)-I_h f(x)\rvert
 \le
-\lVert f-I_h f\rVert_{L^2(I)}
-\le C\lvert I\rvert^{1/2}h^2\lVert f''\rVert_{L^\infty(I)}.
+\tfrac12 h^2\lVert f''\rVert_{L^\infty(I)}.
 \end{equation}
+Squaring, integrating over $I$, and taking the square root yields
+\begin{equation}
+\lVert f-I_h f\rVert_{L^2(I)}
+\le
+\tfrac12\lvert I\rvert^{1/2}h^2\lVert f''\rVert_{L^\infty(I)}.
+\end{equation}
+Combined with~\eqref{eq:err-comp} this is~\eqref{eq:err}.
 \end{proof}
+
+\begin{remark}
+\label{rem:SF-false}
+The identities~\eqref{eq:SF} are hypotheses, not properties of the family
+\eqref{eq:phi}. At a mesh node $x_j$ one has $\varphi_i(x_j)=0$ for
+$i\neq j$, hence
+\begin{equation}
+\sum_{i=1}^{m+1}\varphi_i(x_j)
+=\varphi_j(x_j)
+=\frac{C}{he}\neq 1.
+\end{equation}
+(The value $\varphi_j(x_j)=C/(he)$ is the nodal Kronecker identity for these
+generators.) Thus~\eqref{eq:SF}$_1$ fails, and the $O(h^2)$ conclusion
+\eqref{eq:err} is not available for this interpolant. The comparison
+\eqref{eq:err-comp} remains valid independently of~\eqref{eq:SF}.
+\end{remark}
 
 \subsection{Weak form and semi-discrete stability}
 
@@ -1180,9 +1223,10 @@ $V_h\subset L^2$. The roots of that basis define the reconstruction $f_h$
 of Lemma~\ref{lem:orthonormal} and a quadrature that avoids numerical
 integration rules of Gaussian type. By that lemma, $f_h$ is the best
 least-squares approximation in $V_h$, and it is compared with the interpolant
-$I_h f=\sum_{i=1}^{m+1}f(x_i)\,\varphi_i(x)$. Theorem~\ref{thm:error} then
-yields the second-order bound
-$\lVert f-f_h\rVert_{L^2}\le C\lvert I\rvert^{1/2}h^2\lVert f''\rVert_{L^\infty}$.
+$I_h f=\sum_{i=1}^{m+1}f(x_i)\,\varphi_i(x)$. Theorem~\ref{thm:error} records
+the comparison $\lVert f-f_h\rVert_{L^2}\le\lVert f-I_h f\rVert_{L^2}$ and
+shows that an $O(h^2)$ bound on the right-hand side requires the first-order
+Strang--Fix identities, which fail for the generators~\eqref{eq:phi}.
 
 The semi-discrete Galerkin scheme is unconditionally energy-stable. The fully
 discrete explicit Euler scheme on a uniform Cartesian mesh is stable in
