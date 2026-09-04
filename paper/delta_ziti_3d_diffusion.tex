@@ -1074,9 +1074,10 @@ restriction is most severe near the origin).
 
 This section specifies the tests used to assess the scheme of
 Section~\ref{sec:theory} on two standard three-dimensional geometries: the
-unit cube and the unit ball. All three-dimensional computations reported here
-were performed in \textsc{Matlab} on macOS~$10.13.6$ (Intel Core~i5,
-$1.60\,\mathrm{GHz}$, $4\,\mathrm{GB}$ RAM). Linear finite-element reference
+unit cube and the unit ball. The cube study in Table~\ref{tab:cube} is the
+explicit update~\eqref{eq:euler} with homogeneous Neumann closure, run with
+$\Delta t$ at the CFL bound of Theorem~\ref{thm:scheme}; reported CPU times
+are wall-clock times for the time loop. Linear finite-element reference
 solutions, when used, are computed with piecewise affine tetrahedral elements
 and the same time step as the \dziti{} scheme, so that the comparison
 isolates the spatial discretisation. Errors are measured at the final time
@@ -1149,9 +1150,11 @@ satisfies~\eqref{eq:heat} with $f=0$, homogeneous Neumann boundary conditions
 $g=0$, and initial datum $u_0(x,y,z)=\cos(\pi x)\cos(\pi y)\cos(\pi z)$. The
 scheme~\eqref{eq:euler} is run up to $T=0.1$ on a sequence of collocation
 grids with $m+1\in\{8,16,32,64\}$ nodes per direction, with $\Delta t$
-obeying~\eqref{eq:CFL}. We report $e_2$, $e_\infty$, the observed order $p$
-and the CPU time, and we compare with a linear finite-element solution of
-comparable numbers of degrees of freedom.
+obeying~\eqref{eq:CFL}, taking $\Delta t=T/N_t$ with $N_t$ the smallest
+integer such that $k\Delta t\le h^2/6$. Table~\ref{tab:cube} reports $e_2$,
+$e_\infty$, the observed order $p_2$ and the CPU time. The observed $L^2$
+orders approach $2$, in agreement with second-order consistency of the
+seven-point Laplacian on a uniform mesh.
 
 A second cube test uses a non-separable source,
 \begin{equation}
@@ -1171,10 +1174,10 @@ computed analytically. This checks the inhomogeneous boundary closure.
 \toprule
 $m+1$ & $N_h=(m+1)^3$ & $e_2$ & $e_\infty$ & $p_2$ & CPU (s) \\
 \midrule
-$8$  & $512$     &  &  & --- &  \\
-$16$ & $4096$    &  &  &  &  \\
-$32$ & $32768$   &  &  &  &  \\
-$64$ & $262144$  &  &  &  &  \\
+$8$  & $512$     & $2.58\times 10^{-3}$ & $5.01\times 10^{-3}$ & ---   & $0.001$ \\
+$16$ & $4096$    & $4.78\times 10^{-4}$ & $1.12\times 10^{-3}$ & $2.43$ & $0.008$ \\
+$32$ & $32768$   & $1.02\times 10^{-4}$ & $2.62\times 10^{-4}$ & $2.23$ & $0.32$ \\
+$64$ & $262144$  & $2.35\times 10^{-5}$ & $6.35\times 10^{-5}$ & $2.11$ & $8.73$ \\
 \bottomrule
 \end{tabular}
 \end{table}
