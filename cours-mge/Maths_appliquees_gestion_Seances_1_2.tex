@@ -1,0 +1,927 @@
+\documentclass[12pt,a4paper]{article}
+
+% ---------- Mise en page ----------
+\usepackage[a4paper,top=2.7cm,bottom=2.5cm,left=2.3cm,right=2.3cm,headheight=32pt]{geometry}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage[french]{babel}
+\usepackage{amsmath,amssymb,mathtools}
+\usepackage{graphicx}
+\usepackage[dvipsnames]{xcolor}
+\usepackage{titlesec}
+\usepackage{enumitem}
+\usepackage{fancyhdr}
+\usepackage{tcolorbox}
+\tcbuselibrary{skins,breakable}
+\usepackage{array}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,calc}
+\usepackage[hidelinks]{hyperref}
+
+% ---------- Couleurs Mundiapolis ----------
+\definecolor{mundiblue}{HTML}{0070C0}
+\definecolor{mundidark}{HTML}{123B5E}
+\definecolor{mundigray}{HTML}{5A5A5A}
+\definecolor{munditeal}{HTML}{1B6B6B}
+\definecolor{mundired}{HTML}{B03A2E}
+
+% ---------- Titres de sections ----------
+\titleformat{\section}
+  {\normalfont\Large\bfseries\color{mundidark}}
+  {\thesection}{0.6em}{}
+\titleformat{\subsection}
+  {\normalfont\large\bfseries\color{mundiblue}}
+  {\thesubsection}{0.6em}{}
+\titleformat{\subsubsection}
+  {\normalfont\normalsize\bfseries\color{mundigray}}
+  {\thesubsubsection}{0.6em}{}
+
+% ---------- En-tête / pied de page des pages de contenu ----------
+\pagestyle{fancy}
+\fancyhf{}
+\renewcommand{\headrulewidth}{0.6pt}
+\renewcommand{\footrulewidth}{0.4pt}
+\fancyhead[L]{\small\color{mundigray} Mathématiques appliquées à la gestion -- S1 MGE}
+\fancyhead[R]{\small\color{mundigray} Pr Rajae Malek}
+\fancyfoot[L]{\small\color{mundigray} Année universitaire 2026--2027}
+\fancyfoot[R]{\small\color{mundigray} \thepage}
+
+% ---------- Boîtes pédagogiques ----------
+\newtcolorbox{definitionbox}[1][]{
+  breakable, enhanced, colback=blue!4, colframe=mundiblue,
+  boxrule=0.6pt, arc=1mm, left=6pt, right=6pt, top=4pt, bottom=4pt,
+  fonttitle=\bfseries, coltitle=white, colbacktitle=mundiblue,
+  title={Définition #1}
+}
+\newtcolorbox{propbox}[1][]{
+  breakable, enhanced, colback=green!5, colframe=OliveGreen!70!black,
+  boxrule=0.6pt, arc=1mm, left=6pt, right=6pt, top=4pt, bottom=4pt,
+  fonttitle=\bfseries, coltitle=white, colbacktitle=OliveGreen!70!black,
+  title={Propriété #1}
+}
+\newtcolorbox{exemplebox}[1][]{
+  breakable, enhanced, colback=yellow!8, colframe=orange!80!black,
+  boxrule=0.6pt, arc=1mm, left=6pt, right=6pt, top=4pt, bottom=4pt,
+  fonttitle=\bfseries, coltitle=black, colbacktitle=orange!25,
+  title={Exemple appliqué à la gestion -- #1}
+}
+\newtcolorbox{gestionbox}[1][Application en gestion]{
+  breakable, enhanced, colback=orange!6, colframe=orange!80!black,
+  boxrule=0.6pt, arc=1mm, left=6pt, right=6pt, top=4pt, bottom=4pt,
+  fonttitle=\bfseries, coltitle=black, colbacktitle=orange!30,
+  title=#1
+}
+\newtcolorbox{exobox}[1][]{
+  breakable, enhanced, colback=gray!5, colframe=mundidark,
+  boxrule=0.6pt, arc=1mm, left=6pt, right=6pt, top=4pt, bottom=4pt,
+  fonttitle=\bfseries, coltitle=white, colbacktitle=mundidark,
+  title={Exercice d'application #1}
+}
+\newtcolorbox{corrigebox}[1][]{
+  breakable, enhanced, colback=gray!3, colframe=gray!60!black,
+  boxrule=0.6pt, arc=1mm, left=6pt, right=6pt, top=4pt, bottom=4pt,
+  fonttitle=\bfseries, coltitle=white, colbacktitle=gray!60!black,
+  title={Corrigé -- #1}
+}
+\newtcolorbox{methodebox}[1][]{
+  breakable, enhanced, colback=teal!4, colframe=munditeal,
+  boxrule=0.6pt, arc=1mm, left=6pt, right=6pt, top=4pt, bottom=4pt,
+  fonttitle=\bfseries, coltitle=white, colbacktitle=munditeal,
+  title={Méthode #1}
+}
+\newtcolorbox{attentionbox}[1][Piège classique]{
+  breakable, enhanced, colback=red!4, colframe=mundired,
+  boxrule=0.6pt, arc=1mm, left=6pt, right=6pt, top=4pt, bottom=4pt,
+  fonttitle=\bfseries, coltitle=white, colbacktitle=mundired,
+  title=#1
+}
+\newtcolorbox{planbox}[1][Plan de la séance (3 heures)]{
+  breakable, enhanced, colback=mundidark!4, colframe=mundidark,
+  boxrule=0.6pt, arc=1mm, left=6pt, right=6pt, top=4pt, bottom=4pt,
+  fonttitle=\bfseries, coltitle=white, colbacktitle=mundidark,
+  title=#1
+}
+
+% ---------- Commande "Séance" ----------
+\newcommand{\seance}[3]{%
+  \clearpage
+  \stepcounter{section}
+  \setcounter{subsection}{0}
+  \section*{Séance #1 -- #2}
+  \addcontentsline{toc}{section}{\protect\numberline{}Séance #1 -- #2}
+  \begin{center}
+  \colorbox{mundidark!8}{\parbox{0.95\textwidth}{\centering
+  \textbf{Durée :} 3h \quad\vrule\quad \textbf{Chapitre :} #2 \quad\vrule\quad \textbf{Objectif(s) :} #3
+  }}
+  \end{center}
+  \vspace{0.4cm}
+}
+
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{4pt}
+\renewcommand{\arraystretch}{1.25}
+
+\begin{document}
+
+% =======================================================
+% PAGE DE GARDE
+% =======================================================
+\begin{titlepage}
+\hypersetup{pageanchor=false}
+\centering
+\vspace*{0.3cm}
+\IfFileExists{logo.png}{%
+  \includegraphics[width=5.2cm]{logo.png}\\[1.2cm]
+}{%
+  {\Huge\bfseries\color{mundiblue} UNIVERSITÉ MUNDIAPOLIS}\\[0.6cm]
+}
+
+{\color{mundigray}\large Business School}\\[0.3cm]
+{\color{mundigray}\rule{0.5\textwidth}{0.4pt}}\\[1.2cm]
+
+{\Large\color{mundidark} Support de cours détaillé}\\[0.4cm]
+
+{\Huge\bfseries\color{mundiblue} Mathématiques appliquées\\[0.2cm] à la gestion}\\[1cm]
+
+{\large\itshape Séances 1 et 2 -- Rappels d'algèbre et Fonctions numériques}\\[2cm]
+
+\begin{tabular}{@{}r l@{}}
+\textbf{Filière :} & \begin{tabular}[t]{@{}l@{}}Licence en Management\\ et Gestion des Entreprises (MGE)\end{tabular} \\[8pt]
+\textbf{Niveau -- Semestre :} & S1 -- 1\up{ère} année \\[4pt]
+\textbf{Volume horaire du module :} & 36h (12 séances de 3h) \\[4pt]
+\textbf{Enseignant(e) :} & Pr Rajae Malek \\[4pt]
+\textbf{Année universitaire :} & 2026 -- 2027 \\
+\end{tabular}
+
+\vfill
+
+{\color{mundigray}\rule{0.7\textwidth}{0.4pt}}\\[0.3cm]
+{\small\color{mundigray} Université Mundiapolis -- Tous droits réservés}
+
+\end{titlepage}
+\hypersetup{pageanchor=true}
+
+% =======================================================
+% TABLE DES MATIERES
+% =======================================================
+\tableofcontents
+\thispagestyle{fancy}
+\clearpage
+
+% =======================================================
+% SEANCE 1
+% =======================================================
+\seance{1}{Chapitre 1 -- Rappels d'algèbre et outils de base}{consolider les prérequis algébriques indispensables au module et maîtriser la résolution d'équations et d'inéquations utiles à la gestion (seuils, contraintes, mix de production).}
+
+\subsection{Compétences visées et déroulement}
+
+À l'issue de cette séance de 3 heures, l'étudiant doit être capable de :
+
+\begin{itemize}[leftmargin=1.2cm]
+  \item développer, réduire et factoriser une expression algébrique (y compris via les identités remarquables) ;
+  \item résoudre une équation ou une inéquation du premier degré, y compris avec des fractions ;
+  \item résoudre un système de deux équations à deux inconnues (substitution ou addition) ;
+  \item résoudre une équation du second degré, factoriser le trinôme, dresser un tableau de signes ;
+  \item déterminer le sommet d'une parabole et l'interpréter comme un optimum de profit / de coût ;
+  \item traduire une contrainte de tolérance par une valeur absolue et un intervalle.
+\end{itemize}
+
+\begin{planbox}
+\renewcommand{\arraystretch}{1.15}
+\begin{tabularx}{\textwidth}{@{}c c X@{}}
+\toprule
+\textbf{Durée} & \textbf{Modalité} & \textbf{Contenu} \\
+\midrule
+10 min & Cours & Objectifs, vocabulaire (variable, expression, contrainte). \\
+35 min & Cours + exo guidé & Calcul littéral, identités remarquables, factorisation. \\
+35 min & Cours + exo guidé & 1\up{er} degré, inéquations, seuil de rentabilité linéaire, système $2\times 2$. \\
+10 min & Pause & --- \\
+45 min & Cours + exo guidé & 2\up{nd} degré : $\Delta$, factorisation, tableau de signes, sommet / profit max. \\
+20 min & Cours + exo guidé & Intervalles, valeur absolue, tolérances en production / budget. \\
+25 min & Travail dirigé & Série d'exercices (le reste est à terminer en travail personnel). \\
+\bottomrule
+\end{tabularx}
+
+\vspace{0.25cm}
+\small Les corrigés complets figurent en fin de séance : ils servent à l'auto-évaluation, pas à court-circuiter le raisonnement en classe.
+\end{planbox}
+
+\begin{attentionbox}[Fil conducteur de la séance]
+Toute décision de gestion (produire ou non, respecter un budget, choisir un mix) se traduit par une \textbf{égalité} (seuil, équilibre) ou une \textbf{inégalité} (contrainte, zone de profit). L'algèbre n'est pas un préalable « scolaire » : c'est le langage qui permet d'écrire ces décisions, puis de les résoudre.
+\end{attentionbox}
+
+% -------------------------------------------------------
+\subsection{Calcul littéral et identités remarquables}
+
+\subsubsection{Expressions, réduction et distributivité}
+
+Le \textbf{calcul littéral} consiste à manipuler des expressions contenant des lettres (variables) qui représentent des quantités économiques : un prix $p$, une quantité produite $x$, un taux $t$, un coût fixe $CF$, etc.
+
+\begin{definitionbox}[Terme, facteur, réduction]
+Un \textbf{terme} est un morceau d'une somme ($3x^2$, $-5x$, $12$). Un \textbf{facteur} est un morceau d'un produit. \textbf{Réduire} une expression, c'est regrouper les termes semblables (même puissance de $x$).
+\end{definitionbox}
+
+\begin{propbox}[Distributivité]
+Pour tous réels $a$, $b$, $c$, $d$ :
+\begin{align}
+a(b+c) &= ab + ac \\
+(a+b)(c+d) &= ac + ad + bc + bd \quad \text{(double distributivité)}
+\end{align}
+On factorise par un \textbf{facteur commun} en lisant ces identités de droite à gauche :
+$ab + ac = a(b+c)$.
+\end{propbox}
+
+\begin{exemplebox}[Coût total linéaire]
+Coût fixe $CF = 4000$ dh, coût variable unitaire $cv = 12$ dh, quantité $x$ :
+$$C(x) = 4000 + 12x.$$
+Si l'on produit $x$ unités d'un premier bien et $y$ d'un second, avec des coûts variables $12$ et $18$ dh :
+$$C(x,y) = 4000 + 12x + 18y = 4000 + 6(2x+3y).$$
+La factorisation fait apparaître un facteur commun $6$, utile pour comparer des scénarios de production.
+\end{exemplebox}
+
+\begin{methodebox}[-- Développer puis réduire]
+\begin{enumerate}[leftmargin=1.3cm]
+  \item Appliquer la distributivité (simple ou double) pour supprimer les parenthèses.
+  \item Attention aux signes : $-(A-B) = -A+B$.
+  \item Regrouper les termes de même degré ($x^2$ avec $x^2$, $x$ avec $x$, constantes avec constantes).
+\end{enumerate}
+\end{methodebox}
+
+\subsubsection{Développement et factorisation}
+
+\textbf{Développer}, c'est transformer un produit en somme. \textbf{Factoriser}, c'est transformer une somme en produit. La factorisation est l'outil central de résolution : \emph{un produit de facteurs est nul si et seulement si l'un des facteurs est nul}.
+
+\begin{propbox}[Identités remarquables]
+Pour tous réels $a$ et $b$ :
+\begin{align}
+(a+b)^2 &= a^2 + 2ab + b^2 \\
+(a-b)^2 &= a^2 - 2ab + b^2 \\
+(a+b)(a-b) &= a^2 - b^2
+\end{align}
+Identités cubiques (à connaître, moins fréquentes en gestion de S1) :
+\begin{align}
+(a+b)^3 &= a^3 + 3a^2b + 3ab^2 + b^3 \\
+(a-b)^3 &= a^3 - 3a^2b + 3ab^2 - b^3 \\
+a^3-b^3 &= (a-b)(a^2+ab+b^2) \\
+a^3+b^3 &= (a+b)(a^2-ab+b^2)
+\end{align}
+\end{propbox}
+
+\begin{methodebox}[-- Factoriser une expression]
+\begin{enumerate}[leftmargin=1.3cm]
+  \item Chercher d'abord un \textbf{facteur commun} à tous les termes.
+  \item Reconnaître une identité remarquable : carré, différence de carrés, ou cubes.
+  \item Si l'expression est un trinôme $ax^2+bx+c$, calculer $\Delta$ puis factoriser (voir \S1.4).
+  \item Vérifier en développant le résultat : on doit retrouver l'expression de départ.
+\end{enumerate}
+\end{methodebox}
+
+\begin{exemplebox}[Coût total et profit factorisable]
+Une entreprise produit $x$ unités. Son coût total est
+$$C(x) = x^2 + 20x + 300.$$
+Le prix de vente unitaire est $p = 60$ dh. Le profit s'écrit
+$$\Pi(x) = 60x - C(x) = 60x - x^2 - 20x - 300 = -x^2 + 40x - 300.$$
+On factorise par $-1$ puis on cherche deux nombres dont le produit est $300$ et la somme $40$ :
+$$\Pi(x) = -\bigl(x^2 - 40x + 300\bigr) = -(x-10)(x-30).$$
+\textbf{Lecture immédiate :} $\Pi(x)=0$ pour $x=10$ et $x=30$. Le profit est positif \emph{entre} ces deux seuils (le coefficient $-1$ est négatif : la parabole est tournée vers le bas). On justifiera ce signe de façon systématique au \S1.3.
+\end{exemplebox}
+
+\begin{exobox}[ -- En classe, 8 min]
+Développer puis réduire $A = (2x-3)^2 - (x+1)(x-1)$.\\
+Factoriser $B = 9x^2-25$ et $C = 4x^2-12x+9$.\\
+Factoriser $D = 2x^2-8x$ (facteur commun d'abord).
+\end{exobox}
+
+\subsubsection{Usage en gestion : coûts et marges}
+
+Les identités remarquables permettent parfois de simplifier une expression de marge :
+$$\text{si une structure s'y prête,}\quad (px-c)(px+c) = p^2x^2 - c^2.$$
+En pratique, on retiendra surtout la factorisation comme \emph{outil de résolution} : elle transforme une équation de profit nul, de seuil de rentabilité ou de point mort en un produit de facteurs faciles à annuler.
+
+\begin{gestionbox}[Pourquoi factoriser en gestion ?]
+\begin{itemize}[leftmargin=1.2cm]
+  \item \textbf{Seuil de rentabilité :} $\Pi(x)=0$ devient un produit $(x-x_1)(x-x_2)=0$.
+  \item \textbf{Zone de profit :} le signe du produit donne l'intervalle où $\Pi(x)>0$.
+  \item \textbf{Comparaison de scénarios :} $C_1(x)-C_2(x)$ factorisé montre \emph{à partir de quelle quantité} un procédé devient moins cher qu'un autre.
+\end{itemize}
+\end{gestionbox}
+
+\begin{attentionbox}
+$(a+b)^2$ n'est \textbf{pas} égal à $a^2+b^2$. Il manque le double produit $2ab$. Erreur très fréquente, qui fausse un coût ou un profit dès la première ligne.
+\end{attentionbox}
+
+% -------------------------------------------------------
+\subsection{Équations et inéquations du premier degré}
+
+\subsubsection{Équations du premier degré}
+
+\begin{definitionbox}[Équation du premier degré]
+Une équation du premier degré à une inconnue $x$ s'écrit sous la forme $ax + b = 0$ avec $a \neq 0$. Sa solution unique est $x = -\dfrac{b}{a}$.
+\end{definitionbox}
+
+\begin{methodebox}[-- Résoudre $ax+b=0$ (et les formes équivalentes)]
+\begin{enumerate}[leftmargin=1.3cm]
+  \item Développer, réduire, et regrouper les termes en $x$ d'un côté, les constantes de l'autre.
+  \item Si l'équation contient des \textbf{dénominateurs}, tout multiplier par le PPCM des dénominateurs (après avoir exclu les valeurs qui les annulent).
+  \item Isoler $x$ en divisant par le coefficient de $x$ (qui doit être non nul).
+  \item Vérifier la solution dans l'équation de départ, surtout en présence de fractions.
+\end{enumerate}
+\end{methodebox}
+
+\begin{exemplebox}[Équation avec fractions -- TVA et prix]
+Le prix TTC $P$ et le prix HT $x$ sont liés par $P = x + 0{,}20x = 1{,}2x$ (TVA à $20\%$). Si $P = 240$ dh :
+$$1{,}2x = 240 \;\Longrightarrow\; x = \frac{240}{1{,}2} = 200 \text{ dh.}$$
+Plus généralement, si un rabais de $t\%$ s'applique au prix catalogue $p$ et que le prix payé est $q$ :
+$$p\Bigl(1-\frac{t}{100}\Bigr) = q \;\Longrightarrow\; p = \frac{q}{1-t/100}.$$
+\end{exemplebox}
+
+\begin{exemplebox}[Équation fractionnaire -- répartition d'un budget]
+On cherche $x$ tel que
+$$\frac{x+2000}{4} + \frac{x-500}{2} = 5500.$$
+On multiplie par $4$ : $(x+2000) + 2(x-500) = 22000$, soit $x+2000+2x-1000=22000$, donc $3x+1000=22000$, $3x=21000$, $x=7000$.\\
+\textbf{Lecture :} $x$ peut représenter un budget de campagne ; les deux postes (un quart et une moitié d'expressions liées à $x$) doivent coller à une enveloppe de $5500$ dh « déjà retraitée ».
+\end{exemplebox}
+
+\subsubsection{Inéquations du premier degré}
+
+Une inéquation du type $ax+b \leqslant 0$ (ou $\geqslant$, $<$, $>$) se résout comme une équation, \textbf{en changeant le sens de l'inégalité lorsqu'on multiplie ou divise par un nombre négatif}.
+
+\begin{propbox}[Règle du sens]
+Si $a>0$, $ax+b \geqslant 0 \Leftrightarrow x \geqslant -b/a$.\\
+Si $a<0$, $ax+b \geqslant 0 \Leftrightarrow x \leqslant -b/a$ (le sens s'inverse).
+\end{propbox}
+
+\begin{methodebox}[-- Résoudre une inéquation du 1\up{er} degré]
+\begin{enumerate}[leftmargin=1.3cm]
+  \item Se ramener à $ax+b \leqslant 0$ (ou $\geqslant$, $<$, $>$).
+  \item Isoler $x$ comme pour une équation.
+  \item Si l'on divise par un nombre \textbf{négatif}, inverser le symbole.
+  \item Écrire l'ensemble des solutions sous forme d'\textbf{intervalle}.
+\end{enumerate}
+\end{methodebox}
+
+\begin{exemplebox}[Contrainte de capacité]
+Une chaîne peut produire au plus $x$ unités avec $3x + 50 \leqslant 350$ (50 min de réglage, 3 min par unité, 350 min disponibles) :
+$$3x \leqslant 300 \;\Longrightarrow\; x \leqslant 100.$$
+L'ensemble des productions réalisables est $x \in [0,100]$ (on ajoute $x\geqslant 0$ pour le sens économique).
+\end{exemplebox}
+
+\begin{attentionbox}
+Oublier d'inverser le sens est l'erreur la plus coûteuse : elle inverse la zone de profit et la zone de perte. Toujours se relire sur un \textbf{test} : choisir une valeur dans l'intervalle trouvé et vérifier l'inéquation de départ.
+\end{attentionbox}
+
+\subsubsection{Seuil de rentabilité -- cas linéaire}
+
+\begin{gestionbox}[Vocabulaire de gestion (à relier au module de comptabilité)]
+\begin{itemize}[leftmargin=1.2cm]
+  \item $CF$ : coûts fixes (loyer, assurances, amortissements\ldots).
+  \item $cv$ : coût variable unitaire ; $CV(x)=cv\cdot x$.
+  \item $C(x)=CF+cv\cdot x$ : coût total linéaire.
+  \item $p$ : prix de vente unitaire ; $CA(x)=p\,x$ : chiffre d'affaires.
+  \item $m = p-cv$ : \textbf{marge sur coût variable} unitaire (MCVU).
+  \item $t = m/p$ : taux de MCV.
+\end{itemize}
+\end{gestionbox}
+
+\begin{propbox}[Formules du seuil de rentabilité linéaire]
+Le profit est $\Pi(x)=(p-cv)x-CF = m\,x - CF$.
+$$\Pi(x^\star)=0 \;\Longleftrightarrow\; x^\star = \frac{CF}{p-cv} = \frac{CF}{m}.$$
+Le seuil en chiffre d'affaires est
+$$CA^\star = p\,x^\star = \frac{CF}{t} \quad \text{où } t=\frac{p-cv}{p}.$$
+L'entreprise est bénéficiaire pour $x > x^\star$ (et $x\geqslant 0$).
+\end{propbox}
+
+\begin{exemplebox}[Seuil de rentabilité -- cas linéaire]
+Une entreprise a un coût fixe $CF = 5000$ dh et un coût variable unitaire $cv = 15$ dh. Le prix de vente unitaire est $p = 25$ dh.
+$$\Pi(x) = 25x - (5000 + 15x) = 10x - 5000.$$
+Le \textbf{seuil de rentabilité} (point mort) est
+$$10x^\star - 5000 = 0 \;\Longrightarrow\; x^\star = 500 \text{ unités.}$$
+Équivalent : $x^\star = CF/m = 5000/10 = 500$, et $CA^\star = 25\times 500 = 12\,500$ dh (ou $CA^\star = 5000 / (10/25) = 12\,500$).
+
+Pour $x>500$, l'entreprise est bénéficiaire ($\Pi(x)>0$) ; pour $x<500$, elle est déficitaire. La \textbf{marge de sécurité} pour une vente prévue de $x_0=650$ unités est $x_0-x^\star=150$ unités (soit $3750$ dh de CA).
+\end{exemplebox}
+
+\begin{center}
+\begin{tikzpicture}[x=0.008cm, y=0.00035cm]
+  \draw[-{Stealth}] (0,0) -- (900,0) node[right] {\small $x$ (unités)};
+  \draw[-{Stealth}] (0,-1500) -- (0,14000) node[above] {\small dh};
+  % CA = 25x
+  \draw[mundiblue, very thick] (0,0) -- (800,20000) node[pos=0.78, above, sloped] {\small $CA=25x$};
+  % C = 5000 + 15x
+  \draw[mundired, very thick] (0,5000) -- (800,17000) node[pos=0.85, below, sloped] {\small $C=5000+15x$};
+  % intersection x=500, y=12500
+  \draw[dashed, mundigray] (500,0) -- (500,12500) -- (0,12500);
+  \fill[mundidark] (500,12500) circle (3pt);
+  \node[below] at (500,0) {\small $500$};
+  \node[left] at (0,12500) {\small $12\,500$};
+  \node[right] at (520,9000) {\small point mort};
+\end{tikzpicture}
+\end{center}
+
+\begin{center}
+{\small\color{mundigray} Figure : le point mort est l'intersection de la droite de chiffre d'affaires et de la droite de coût total.}
+\end{center}
+
+\subsubsection{Systèmes de deux équations à deux inconnues}
+
+Beaucoup de décisions de gestion portent sur \textbf{deux produits}, \textbf{deux ressources}, \textbf{deux postes budgétaires}. On obtient un système $2\times 2$.
+
+\begin{definitionbox}[Système linéaire $2\times 2$]
+Un système de deux équations à deux inconnues s'écrit
+$$\begin{cases} ax+by = c \\ a'x+b'y = c' \end{cases}$$
+Géométriquement, ce sont deux droites du plan : elles se coupent en un unique point (cas général), sont parallèles (aucune solution) ou confondues (infinité de solutions).
+\end{definitionbox}
+
+\begin{methodebox}[-- Résoudre un système $2\times 2$]
+Deux techniques à maîtriser (même résultat) :
+\begin{enumerate}[leftmargin=1.3cm]
+  \item \textbf{Substitution :} isoler une inconnue dans une équation, la remplacer dans l'autre.
+  \item \textbf{Addition (combinaison) :} multiplier les lignes pour que l'un des coefficients soit opposé, puis additionner pour éliminer une inconnue.
+\end{enumerate}
+On vérifie toujours le couple $(x,y)$ dans \emph{les deux} équations de départ. En gestion, on écarte les solutions avec $x<0$ ou $y<0$ (quantités impossibles).
+\end{methodebox}
+
+\begin{exemplebox}[Mix de production sous deux contraintes]
+Une PME fabrique des tables ($x$) et des chaises ($y$).
+\begin{itemize}[leftmargin=1.2cm]
+  \item Menuiserie : $3$ h par table, $1$ h par chaise, $90$ h disponibles $\Rightarrow 3x+y=90$.
+  \item Finition : $2$ h par table, $2$ h par chaise, $80$ h disponibles $\Rightarrow 2x+2y=80$, soit $x+y=40$.
+\end{itemize}
+$$\begin{cases} 3x+y = 90 \\ x+y = 40 \end{cases}$$
+Substitution : $y=40-x$, puis $3x+(40-x)=90$, $2x+40=90$, $2x=50$, $x=25$, $y=15$.\\
+\textbf{Décision :} pour saturer les deux ateliers, produire $25$ tables et $15$ chaises. Toute autre combinaison laisse de la capacité inutilisée ou viole une contrainte.
+\end{exemplebox}
+
+\begin{exobox}[ -- En classe, 8 min]
+Un magasin commande des lots A ($x$) et B ($y$). Le budget d'achat est $40x+25y=4300$ dh et le volume de stockage $2x+y=160$. Déterminer $x$ et $y$.
+\end{exobox}
+
+% -------------------------------------------------------
+\subsection{Équations et inéquations du second degré}
+
+\subsubsection{Équation du second degré et discriminant}
+
+\begin{definitionbox}[Équation du second degré]
+Une équation du second degré s'écrit $ax^2+bx+c=0$ avec $a\neq 0$. On calcule le discriminant
+$$\Delta = b^2 - 4ac.$$
+\end{definitionbox}
+
+\begin{propbox}[Résolution selon le signe de $\Delta$]
+\begin{itemize}[leftmargin=1.2cm]
+  \item Si $\Delta > 0$ : deux solutions distinctes $\quad x_1=\dfrac{-b-\sqrt{\Delta}}{2a}, \quad x_2=\dfrac{-b+\sqrt{\Delta}}{2a}$.
+  \item Si $\Delta = 0$ : une solution double $\quad x_0 = \dfrac{-b}{2a}$.
+  \item Si $\Delta < 0$ : aucune solution réelle.
+\end{itemize}
+\end{propbox}
+
+\begin{methodebox}[-- Résoudre $ax^2+bx+c=0$]
+\begin{enumerate}[leftmargin=1.3cm]
+  \item Identifier $a$, $b$, $c$ (attention au signe de $a$).
+  \item Calculer $\Delta=b^2-4ac$.
+  \item Appliquer les formules selon le signe de $\Delta$.
+  \item Si on le souhaite, vérifier $x_1+x_2=-b/a$ et $x_1x_2=c/a$ (contrôle rapide).
+\end{enumerate}
+\end{methodebox}
+
+\begin{propbox}[Somme et produit des racines]
+Si $\Delta\geqslant 0$ et $x_1$, $x_2$ sont les racines (éventuellement confondues) :
+$$x_1+x_2 = -\frac{b}{a}, \qquad x_1x_2 = \frac{c}{a}.$$
+Ces relations permettent de \textbf{deviner} une factorisation à coefficients entiers lorsque $a$, $b$, $c$ sont entiers.
+\end{propbox}
+
+\subsubsection{Factorisation du trinôme}
+
+\begin{propbox}[Factorisation]
+Si $\Delta>0$, $\quad ax^2+bx+c = a(x-x_1)(x-x_2)$.\\
+Si $\Delta=0$, $\quad ax^2+bx+c = a(x-x_0)^2$.\\
+Si $\Delta<0$, le trinôme ne se factorise pas dans $\mathbb{R}$.
+\end{propbox}
+
+\subsubsection{Signe du trinôme et inéquations}
+
+\begin{propbox}[Signe du trinôme]
+Le trinôme $ax^2+bx+c$ est du \textbf{signe de $a$ à l'extérieur des racines} et du \textbf{signe opposé à $a$ entre les racines} (lorsque $\Delta>0$).\\
+Si $\Delta=0$, il est du signe de $a$, sauf en $x_0$ où il s'annule.\\
+Si $\Delta<0$, il est partout du signe de $a$, et ne s'annule jamais.
+\end{propbox}
+
+\begin{methodebox}[-- Tableau de signes (inéquation du 2\up{nd} degré)]
+\begin{enumerate}[leftmargin=1.3cm]
+  \item Se ramener à $ax^2+bx+c \geqslant 0$ (ou $\leqslant$, $>$, $<$).
+  \item Calculer $\Delta$, les racines, et factoriser $a(x-x_1)(x-x_2)$.
+  \item Dresser le tableau : une ligne par facteur, une ligne pour le produit.
+  \item Lire l'intervalle où le signe demandé est vérifié.
+  \item Traduire en langage de gestion (zone de profit, quantités admissibles).
+\end{enumerate}
+\end{methodebox}
+
+\begin{exemplebox}[Tableau de signes -- zone de profit]
+Reprenons $\Pi(x)= -x^2+40x-300 = -(x-10)(x-30)$, défini pour $x\geqslant 0$.
+$$\renewcommand{\arraystretch}{1.35}
+\begin{array}{c|ccccccc}
+x & 0 & & 10 & & 30 & & +\infty \\
+\hline
+x-10 &  & - & 0 & + & | & + &  \\
+x-30 &  & - & | & - & 0 & + &  \\
+\hline
+(x-10)(x-30) &  & + & 0 & - & 0 & + &  \\
+\hline
+\Pi(x)=-(x-10)(x-30) &  & - & 0 & + & 0 & - &  \\
+\end{array}$$
+Donc $\Pi(x)>0$ pour $x\in\,]10,30[$. Il faut produire et vendre \textbf{strictement entre 10 et 30 unités} pour dégager un profit. Aux bornes, l'entreprise est à l'équilibre ; au-delà de 30, les coûts quadratiques (heures supp., saturation) l'emportent.
+\end{exemplebox}
+
+\begin{exemplebox}[Seuil de rentabilité -- cas où l'équilibre n'existe pas]
+Avec $C(x)=x^2+20x+100$ et $p=30$ dh,
+$$\Pi(x)=30x-C(x)=-x^2+10x-100.$$
+$$-x^2+10x-100=0 \;\Longleftrightarrow\; x^2-10x+100=0, \qquad \Delta=100-400=-300<0.$$
+Aucune racine réelle : le profit ne s'annule jamais. Comme $a=-1<0$ et $\Delta<0$, on a $\Pi(x)<0$ pour tout $x$ : \textbf{le projet n'est jamais rentable} avec ces paramètres (prix trop bas par rapport à la structure de coût). Le discriminant est ici un outil de \emph{décision} : il faut augmenter $p$, baisser les coûts, ou abandonner.
+\end{exemplebox}
+
+\subsubsection{Sommet de la parabole : profit maximal sans dérivée}
+
+La courbe de $\Pi(x)=ax^2+bx+c$ (avec $a\neq 0$) est une \textbf{parabole}. Son sommet a pour abscisse
+$$x_S = -\frac{b}{2a}.$$
+Si $a<0$ (cas typique du profit : rendements décroissants / saturation), le sommet est un \textbf{maximum}. Si $a>0$ (cas typique d'un coût quadratique), le sommet est un \textbf{minimum}.
+
+\begin{propbox}[Optimum d'une fonction du second degré]
+Pour $f(x)=ax^2+bx+c$ :
+$$x_S = -\frac{b}{2a}, \qquad f(x_S) = -\frac{\Delta}{4a} = c-\frac{b^2}{4a}.$$
+En gestion : $x_S$ est la quantité qui \textbf{maximise le profit} (si $a<0$) ou \textbf{minimise le coût} (si $a>0$). Ce résultat sera retrouvé au chapitre 5 avec la dérivée $f'(x)=2ax+b=0$.
+\end{propbox}
+
+\begin{exemplebox}[Quantité qui maximise le profit]
+Soit $p=40$ dh et $C(x)=0{,}5x^2+10x+375$. Alors
+$$\Pi(x)=40x-C(x)=-0{,}5x^2+30x-375.$$
+Ici $a=-0{,}5<0$, $b=30$, donc
+$$x_S = -\frac{30}{2\times(-0{,}5)} = 30 \text{ unités}, \qquad \Pi(30)=-0{,}5\times 900+900-375=75 \text{ dh.}$$
+Les seuils de rentabilité (calculés plus bas dans les exercices) encadrent ce sommet : on produit avec profit entre environ $18$ et $42$ unités, et le profit est \textbf{maximal en $x=30$}.
+\end{exemplebox}
+
+\begin{center}
+\begin{tikzpicture}[x=0.22cm, y=0.055cm, font=\small]
+  \draw[-{Stealth}] (8,0) -- (52,0) node[right] {$x$};
+  \draw[-{Stealth}] (12,-50) -- (12,95) node[above] {$\Pi$};
+  \draw[mundiblue, very thick, domain=14:46, samples=80] plot (\x, {-0.5*\x*\x + 30*\x - 375});
+  \draw[dashed, mundigray] (30,0) -- (30,75);
+  \fill[mundidark] (30,75) circle (2.2pt);
+  \fill[mundidark] (17.75,0) circle (2pt);
+  \fill[mundidark] (42.25,0) circle (2pt);
+  \node[below] at (17.75,0) {$x_1$};
+  \node[below] at (42.25,0) {$x_2$};
+  \node[below] at (30,-1) {$30$};
+  \node[above right] at (30,75) {$\Pi_{\max}=75$};
+  \node[right] at (46,-20) {\color{mundiblue}$\Pi(x)$};
+\end{tikzpicture}
+\end{center}
+\begin{center}
+{\small\color{mundigray} Figure : parabole tournée vers le bas ; racines $=$ seuils de rentabilité ; sommet $=$ profit maximal.}
+\end{center}
+
+\begin{exobox}[ -- En classe, 10 min]
+Une entreprise vend un produit à $p=40$ dh. Ses coûts sont $C(x) = 0{,}5x^2 + 10x + 375$.
+\begin{enumerate}[label=\alph*)]
+  \item Exprimer le profit $\Pi(x)$ en fonction de $x$.
+  \item Déterminer, si elles existent, les quantités correspondant au seuil de rentabilité.
+  \item En déduire l'intervalle des quantités pour lesquelles l'entreprise est bénéficiaire.
+  \item Quelle quantité maximise le profit ? Quel est ce profit maximal ?
+\end{enumerate}
+\end{exobox}
+
+% -------------------------------------------------------
+\subsection{Valeur absolue, intervalles et contraintes}
+
+\subsubsection{Intervalles}
+
+\begin{definitionbox}[Intervalles de $\mathbb{R}$]
+Pour $a<b$ :
+$$\begin{array}{ll}
+[a,b] = \{x\in\mathbb{R}: a\leqslant x\leqslant b\} & \text{fermé} \\
+]a,b[ = \{x\in\mathbb{R}: a< x< b\} & \text{ouvert} \\
+{[}a,+\infty{[} = \{x\in\mathbb{R}: x\geqslant a\}, \quad
+]-\infty,b] = \{x\in\mathbb{R}: x\leqslant b\}.
+\end{array}$$
+L'\textbf{union} $A\cup B$ rassemble les éléments qui sont dans $A$ \emph{ou} dans $B$ ; l'\textbf{intersection} $A\cap B$ ceux qui sont dans $A$ \emph{et} dans $B$.
+\end{definitionbox}
+
+En gestion, $x$ est souvent une quantité ou un montant : on intersecte toujours la solution mathématique avec $[0,+\infty[$ (ou un intervalle de capacité $[0,x_{\max}]$).
+
+\begin{center}
+\begin{tikzpicture}[x=0.85cm, font=\small]
+  \draw[-{Stealth}] (-0.5,0) -- (11,0);
+  \foreach \x in {0,2,4,6,8,10} \draw (\x,0.12) -- (\x,-0.12) node[below] {\x};
+  \draw[mundiblue, very thick] (2,0) -- (8,0);
+  \fill[mundiblue] (2,0) circle (2.5pt);
+  \fill[white] (8,0) circle (2.5pt);
+  \draw[mundiblue, thick] (8,0) circle (2.5pt);
+  \node[above] at (5,0.15) {$[2,8[$};
+\end{tikzpicture}
+\end{center}
+
+\subsubsection{Valeur absolue}
+
+\begin{definitionbox}[Valeur absolue]
+Pour $x \in \mathbb{R}$ :
+$$|x| = \begin{cases} x & \text{si } x \geqslant 0 \\ -x & \text{si } x < 0 \end{cases}$$
+$|x|$ représente la distance de $x$ à l'origine sur la droite réelle ; plus généralement, $|x-a|$ est la distance entre $x$ et $a$.
+\end{definitionbox}
+
+\begin{propbox}[Inéquations avec valeur absolue]
+Pour $r>0$ :
+$$|x-a| \leqslant r \;\Longleftrightarrow\; a-r \leqslant x \leqslant a+r \;\Longleftrightarrow\; x \in [a-r,\, a+r]$$
+$$|x-a| \geqslant r \;\Longleftrightarrow\; x \leqslant a-r \ \text{ou}\ x \geqslant a+r \;\Longleftrightarrow\; x\in\,]-\infty,a-r]\cup[a+r,+\infty[$$
+$$|x-a| = r \;\Longleftrightarrow\; x=a-r \ \text{ou}\ x=a+r.$$
+\end{propbox}
+
+\begin{methodebox}[-- Traduire une tolérance]
+« L'écart entre la grandeur réelle $x$ et la cible $a$ ne doit pas dépasser $r$ » s'écrit
+$$|x-a|\leqslant r, \quad \text{soit}\quad x\in[a-r,a+r].$$
+Si la contrainte est un écart \emph{minimal} (zone interdite autour d'une valeur), on utilise $|x-a|\geqslant r$.
+\end{methodebox}
+
+\begin{gestionbox}[Tolérance sur un objectif de production]
+Une chaîne de production doit livrer un lot dont la masse cible est $a = 500$ kg, avec une tolérance de $r = 8$ kg. La contrainte de conformité s'écrit :
+$$|m - 500| \leqslant 8 \;\Longleftrightarrow\; m \in [492,\,508] \text{ kg.}$$
+Toute masse hors de cet intervalle entraîne un rejet du lot -- un exemple d'\emph{intervalle de tolérance}, notion utilisée en contrôle qualité et en gestion de production.
+\end{gestionbox}
+
+\begin{center}
+\begin{tikzpicture}[x=0.09cm, font=\small]
+  \draw[-{Stealth}] (470,0) -- (530,0) node[right] {kg};
+  \foreach \x in {480,490,500,510,520} \draw (\x,0.12) -- (\x,-0.12) node[below] {\x};
+  \draw[mundiblue, line width=3pt] (492,0) -- (508,0);
+  \fill[mundiblue] (492,0) circle (2.2pt);
+  \fill[mundiblue] (508,0) circle (2.2pt);
+  \fill[mundidark] (500,0) circle (2.2pt);
+  \node[above] at (500,0.12) {cible $500$};
+  \node[above] at (500,0.85) {$|m-500|\leqslant 8$};
+\end{tikzpicture}
+\end{center}
+
+\begin{exobox}[ -- En classe, 6 min]
+Le budget marketing mensuel prévu est de $20\,000$ dh, avec un écart toléré de $1\,500$ dh par rapport au budget réel $B$.
+\begin{enumerate}[label=\alph*)]
+  \item Écrire cette contrainte sous la forme d'une inéquation avec valeur absolue.
+  \item En déduire l'intervalle des valeurs acceptables pour $B$.
+\end{enumerate}
+\end{exobox}
+
+% -------------------------------------------------------
+\subsection{Série d'exercices -- Séance 1}
+
+Ces exercices recouvrent l'ensemble de la séance. En classe, traiter en priorité les exercices 1, 3, 5 et 6 ; les autres sont du travail personnel.
+
+\begin{exobox}[1 -- Calcul littéral]
+Développer puis réduire $A = (2x-3)^2 - (x+1)(x-1)$. Factoriser $B = 9x^2-25$, $C = 4x^2-12x+9$ et $D=2x^2-8x$.
+\end{exobox}
+
+\begin{exobox}[2 -- Identité cubique]
+Développer $E=(x+2)^3$. Factoriser $F=x^3-8$.
+\end{exobox}
+
+\begin{exobox}[3 -- Inéquation du premier degré]
+Résoudre dans $\mathbb{R}$ : $-3x+12 > 0$, puis $ \dfrac{2x-1}{5} \leqslant \dfrac{x+4}{2}$. Exprimer les solutions sous forme d'intervalles, puis intersecter avec $[0,+\infty[$ (interprétation « quantité »).
+\end{exobox}
+
+\begin{exobox}[4 -- Inéquation du second degré]
+Résoudre dans $\mathbb{R}$ l'inéquation $-2x^2+8x+10 \geqslant 0$ et exprimer l'ensemble des solutions sous forme d'intervalle. Dresser le tableau de signes.
+\end{exobox}
+
+\begin{exobox}[5 -- Système $2\times 2$]
+Un atelier fabrique des lots A ($x$) et B ($y$). On dispose de $120$ heures-machine et de $90$ kg de matière :
+$$\begin{cases} 2x + 4y = 120 \\ 3x + y = 90. \end{cases}$$
+Déterminer le mix $(x,y)$ qui sature les deux ressources. Ce mix est-il réalisable (quantités positives) ?
+\end{exobox}
+
+\begin{exobox}[6 -- Synthèse gestion : seuils, zone de profit, optimum]
+Une entreprise a un coût total $C(x) = x^2+20x+300$ (en dh) pour produire $x$ unités, vendues au prix unitaire $p=60$ dh.
+\begin{enumerate}[label=\alph*)]
+  \item Exprimer le profit $\Pi(x)$.
+  \item Déterminer le(s) seuil(s) de rentabilité.
+  \item En déduire l'intervalle des quantités pour lesquelles l'entreprise est bénéficiaire.
+  \item Quelle quantité maximise le profit ? Calculer $\Pi_{\max}$.
+\end{enumerate}
+\end{exobox}
+
+\begin{exobox}[7 -- Seuil linéaire, marge de sécurité]
+$CF=12\,000$ dh, $cv=40$ dh, $p=70$ dh.
+\begin{enumerate}[label=\alph*)]
+  \item Calculer le seuil de rentabilité en quantité et en CA.
+  \item Pour une prévision de ventes de $500$ unités, calculer la marge de sécurité (en unités et en dh de CA).
+\end{enumerate}
+\end{exobox}
+
+\begin{exobox}[8 -- Tolérance qualité]
+Une pièce usinée doit mesurer $a=80$ mm, à $0{,}4$ mm près.
+\begin{enumerate}[label=\alph*)]
+  \item Écrire l'inéquation de conformité.
+  \item Donner l'intervalle des longueurs acceptées.
+\end{enumerate}
+\end{exobox}
+
+% -------------------------------------------------------
+\subsection{Corrigés des exercices -- Séance 1}
+
+\begin{corrigebox}[En classe -- Calcul littéral]
+$A = (2x-3)^2-(x+1)(x-1) = (4x^2-12x+9)-(x^2-1) = 3x^2-12x+10.$\\
+$B = 9x^2-25 = (3x-5)(3x+5).$ \qquad $C = 4x^2-12x+9 = (2x-3)^2.$\\
+$D=2x^2-8x=2x(x-4).$
+\end{corrigebox}
+
+\begin{corrigebox}[En classe -- Mix A et B]
+Budget $40x+25y=4300$, volume $2x+y=160$ donc $y=160-2x$.\\
+$40x+25(160-2x)=4300$, $40x+4000-50x=4300$, $-10x=-700$, $x=70$, $y=20$.\\
+Le magasin commande $70$ lots A et $20$ lots B.
+\end{corrigebox}
+
+\begin{corrigebox}[En classe -- Profit, seuils et maximum ($p=40$)]
+Avec $p=40$ et $C(x)=0{,}5x^2+10x+375$ :
+$$\Pi(x) = 40x - (0{,}5x^2+10x+375) = -0{,}5x^2+30x-375.$$
+\textbf{a)} $\Pi(x) = -0{,}5x^2+30x-375$.\\
+\textbf{b)} $\Pi(x)=0 \Leftrightarrow x^2-60x+750=0$ (en multipliant par $-2$). $\Delta = 3600-3000=600>0$, $\sqrt{\Delta}=10\sqrt{6}\approx 24{,}49$.
+$$x_1 = 30-5\sqrt{6}\approx 17{,}75, \qquad x_2 = 30+5\sqrt{6}\approx 42{,}25.$$
+\textbf{c)} Le coefficient dominant de $\Pi$ est négatif : l'entreprise est bénéficiaire pour $x \in \,]17{,}75\,;\,42{,}25[$ (en unités entières, de $18$ à $42$).\\
+\textbf{d)} $x_S=-b/(2a)=30$, $\Pi(30)=75$ dh.
+\end{corrigebox}
+
+\begin{corrigebox}[En classe -- Tolérance budgétaire]
+\textbf{a)} $|B - 20\,000| \leqslant 1\,500$. \quad
+\textbf{b)} $B \in [18\,500\,;\,21\,500]$ dh.
+\end{corrigebox}
+
+\begin{corrigebox}[Exercice 2 -- Identité cubique]
+$E=(x+2)^3=x^3+6x^2+12x+8$.\\
+$F=x^3-8=x^3-2^3=(x-2)(x^2+2x+4)$.
+\end{corrigebox}
+
+\begin{corrigebox}[Exercice 3 -- Inéquations du 1\up{er} degré]
+$-3x+12>0 \Leftrightarrow -3x>-12$. On divise par $-3$ (sens inversé) : $x<4$, soit $x\in\,]-\infty,4[$. Intersection avec $[0,+\infty[$ : $[0,4[$.
+
+Seconde inéquation : on multiplie par $10$ (positif) :
+$2(2x-1) \leqslant 5(x+4) \Leftrightarrow 4x-2 \leqslant 5x+20 \Leftrightarrow -2-20\leqslant 5x-4x \Leftrightarrow -22\leqslant x$,
+soit $x\in[-22,+\infty[$. Intersection avec $[0,+\infty[$ : $[0,+\infty[$ (toute quantité positive convient).
+\end{corrigebox}
+
+\begin{corrigebox}[Exercice 4 -- Inéquation du second degré]
+$-2x^2+8x+10\geqslant 0$. On divise par $-2$ (le sens de l'inégalité change) : $x^2-4x-5\leqslant 0$.
+On factorise : $x^2-4x-5=(x-5)(x+1)$.
+$$\renewcommand{\arraystretch}{1.35}
+\begin{array}{c|ccccccc}
+x & -\infty & & -1 & & 5 & & +\infty \\
+\hline
+x+1 &  & - & 0 & + & | & + &  \\
+x-5 &  & - & | & - & 0 & + &  \\
+\hline
+(x+1)(x-5) &  & + & 0 & - & 0 & + &  \\
+\end{array}$$
+$(x-5)(x+1)\leqslant 0 \Leftrightarrow x\in[-1,5]$.
+\end{corrigebox}
+
+\begin{corrigebox}[Exercice 5 -- Système]
+De $3x+y=90$, $y=90-3x$. Dans $2x+4y=120$ : $2x+4(90-3x)=120$, $2x+360-12x=120$, $-10x=-240$, $x=24$, $y=18$.\\
+Mix réalisable : $24$ lots A et $18$ lots B.
+\end{corrigebox}
+
+\begin{corrigebox}[Exercice 6 -- Synthèse gestion]
+\textbf{a)} $\Pi(x) = 60x-(x^2+20x+300) = -x^2+40x-300.$\\
+\textbf{b)} $\Pi(x)=0 \Leftrightarrow x^2-40x+300=0$. $\Delta = 1600-1200=400$, $\sqrt{\Delta}=20$.
+$$x_1 = \frac{40-20}{2}=10, \qquad x_2=\frac{40+20}{2}=30.$$
+Factorisation : $\Pi(x)=-(x-10)(x-30)$.\\
+\textbf{c)} L'entreprise est bénéficiaire pour $x \in \,]10,30[$ : produire et vendre entre $11$ et $29$ unités pour un profit strictement positif.\\
+\textbf{d)} $x_S=-40/(2\times(-1))=20$, $\Pi(20)=-400+800-300=100$ dh. Le profit maximal est $100$ dh, atteint pour $20$ unités (milieu des deux seuils, ce qui est général lorsque $a=-1$ et que les racines existent).
+\end{corrigebox}
+
+\begin{corrigebox}[Exercice 7 -- Seuil linéaire]
+$m=70-40=30$ dh. \textbf{a)} $x^\star=12000/30=400$ unités, $CA^\star=70\times 400=28\,000$ dh.\\
+\textbf{b)} Marge de sécurité : $500-400=100$ unités, soit $70\times 100=7000$ dh de CA.
+\end{corrigebox}
+
+\begin{corrigebox}[Exercice 8 -- Tolérance]
+\textbf{a)} $|\ell-80|\leqslant 0{,}4$. \quad \textbf{b)} $\ell\in[79{,}6\,;\,80{,}4]$ mm.
+\end{corrigebox}
+
+\subsubsection*{Fiche de synthèse -- Séance 1}
+
+\begin{center}
+\renewcommand{\arraystretch}{1.2}
+\begin{tabular}{p{0.28\textwidth}p{0.66\textwidth}}
+\toprule
+\textbf{Outil} & \textbf{Ce qu'il permet en gestion} \\
+\midrule
+Distributivité / factorisation & Simplifier un coût, un profit ; préparer une équation de seuil. \\
+Identités remarquables & Développer/factoriser rapidement $(a\pm b)^2$, $a^2-b^2$. \\
+Équation du 1\up{er} degré & Seuil de rentabilité linéaire $x^\star=CF/(p-cv)$. \\
+Inéquation du 1\up{er} degré & Contrainte de capacité, budget, zone $x\geqslant x^\star$. \\
+Système $2\times 2$ & Mix de deux produits sous deux ressources. \\
+$\Delta$ et racines & Seuils de rentabilité quadratiques (0, 1 ou 2). \\
+Tableau de signes & Intervalle des quantités bénéficiaires. \\
+Sommet $x_S=-b/(2a)$ & Quantité de profit max (si $a<0$) ou de coût min (si $a>0$). \\
+$|x-a|\leqslant r$ & Intervalle de tolérance (qualité, budget). \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\vspace{0.3cm}
+\textbf{Quatre réflexes d'examen}
+\begin{itemize}[leftmargin=1.2cm]
+  \item Inverser le sens d'une inégalité si l'on multiplie/divise par un nombre négatif.
+  \item Toujours croiser la solution mathématique avec le domaine économique ($x\geqslant 0$, capacité).
+  \item Vérifier une solution d'équation / de système dans l'énoncé de départ.
+  \item Relier le signe de $a$ à la forme de la parabole (profit max vs coût min).
+\end{itemize}
+
+\vspace{0.2cm}
+{\small\color{mundigray}\textit{Compétence réutilisée dès la séance 2 : lire un domaine, un signe, un intervalle, et un tableau -- cette fois pour une fonction $f$, pas seulement pour un polynôme. }}
+
+% =======================================================
+% SEANCE 2
+% =======================================================
+\seance{2}{Chapitre 2 (partie 1) -- Fonctions numériques : généralités}{étudier les propriétés générales d'une fonction (domaine, parité, sens de variation) comme préalable à l'étude des fonctions usuelles de gestion.}
+
+\subsection{Généralités sur les fonctions}
+
+\subsubsection{Domaine de définition}
+
+\begin{definitionbox}[Fonction et domaine de définition]
+Une fonction $f$ associe à tout réel $x$ d'un ensemble $D_f \subset \mathbb{R}$ (le \textbf{domaine de définition}) un unique réel $f(x)$. En gestion, $x$ représente souvent une quantité produite/vendue, un temps, ou un montant -- des grandeurs qui imposent naturellement des restrictions sur $D_f$ (par exemple $x \geqslant 0$).
+\end{definitionbox}
+
+\begin{propbox}[Domaines usuels à retenir]
+\begin{itemize}[leftmargin=1.2cm]
+  \item Fonction polynomiale : $D_f = \mathbb{R}$
+  \item Fonction $\dfrac{1}{u(x)}$ (fonction homographique, coût moyen, etc.) : $D_f = \{x \in \mathbb{R} : u(x) \neq 0\}$
+  \item Fonction $\sqrt{u(x)}$ : $D_f = \{x \in \mathbb{R} : u(x) \geqslant 0\}$
+\end{itemize}
+\end{propbox}
+
+\begin{exemplebox}[Coût moyen unitaire]
+Le coût moyen (coût par unité produite) associé à $C(x) = x^2+20x+100$ est :
+$$CM(x) = \frac{C(x)}{x} = \frac{x^2+20x+100}{x}.$$
+Cette fonction n'est pas définie en $x=0$ (division par zéro), et n'a de sens économique que pour $x>0$ : le domaine \emph{pertinent en gestion} est donc $D_f = \,]0,+\infty[$, plus restrictif que le domaine mathématique $\mathbb{R}^\star$.
+\end{exemplebox}
+
+\subsubsection{Parité et périodicité}
+
+\begin{definitionbox}[Parité]
+Soit $f$ définie sur un domaine $D_f$ symétrique par rapport à $0$.
+\begin{itemize}[leftmargin=1.2cm]
+  \item $f$ est \textbf{paire} si $f(-x) = f(x)$ pour tout $x \in D_f$ (courbe symétrique par rapport à l'axe des ordonnées).
+  \item $f$ est \textbf{impaire} si $f(-x) = -f(x)$ pour tout $x \in D_f$ (courbe symétrique par rapport à l'origine).
+\end{itemize}
+\end{definitionbox}
+
+\begin{definitionbox}[Périodicité]
+$f$ est \textbf{périodique de période $T>0$} si $f(x+T)=f(x)$ pour tout $x \in D_f$. La périodicité intervient peu en gestion « classique », mais apparaît dans l'étude de phénomènes saisonniers (ventes cycliques, saisonnalité de la demande).
+\end{definitionbox}
+
+\begin{gestionbox}[Portée pratique]
+En économie de gestion, la parité sert surtout à \textbf{simplifier une étude} (il suffit d'étudier $f$ sur $\mathbb{R}^+$ si elle est paire ou impaire) ; en revanche, la grande majorité des fonctions économiques (coût, recette, profit) ne sont \emph{ni paires ni impaires}, car leur domaine pertinent est restreint à $[0,+\infty[$.
+\end{gestionbox}
+
+\subsubsection{Sens de variation et tableau de variation}
+
+\begin{definitionbox}[Fonction croissante / décroissante]
+Soit $f$ définie sur un intervalle $I$.
+\begin{itemize}[leftmargin=1.2cm]
+  \item $f$ est \textbf{croissante} sur $I$ si pour tous $x_1, x_2 \in I$, $\;x_1 \leqslant x_2 \Rightarrow f(x_1)\leqslant f(x_2)$.
+  \item $f$ est \textbf{décroissante} sur $I$ si pour tous $x_1, x_2 \in I$, $\;x_1 \leqslant x_2 \Rightarrow f(x_1)\geqslant f(x_2)$.
+\end{itemize}
+\end{definitionbox}
+
+Le \textbf{tableau de variation} résume, sur une ligne, le domaine découpé en intervalles, et sur une autre, le sens de variation de $f$ (flèches montantes/descendantes) ainsi que les valeurs remarquables (extrema).
+
+\begin{exemplebox}[Lecture économique d'un tableau de variation]
+Considérons le coût moyen $CM(x) = \dfrac{100}{x} + x + 20$ pour $x>0$. Une étude (qui sera formalisée avec la dérivée au chapitre 5) montre que $CM$ décroît puis croît, avec un minimum en $x=10$ :
+$$
+\begin{array}{c|ccccc}
+x & 0 & & 10 & & +\infty \\
+\hline
+CM(x) & & \searrow & 40 & \nearrow & \\
+\end{array}
+$$
+\textbf{Lecture de gestion :} le coût moyen unitaire est minimal (40 dh/unité) pour une production de 10 unités ; produire moins \emph{ou} plus que 10 unités augmente le coût moyen. C'est un résultat clé pour le choix d'une taille de production optimale.
+\end{exemplebox}
+
+\begin{exobox}
+Soit la fonction recette $R(x) = -2x^2+80x$ définie sur $[0,40]$ (recette en dh, $x$ en unités vendues).
+\begin{enumerate}[label=\alph*)]
+  \item Calculer $R(0)$, $R(20)$ et $R(40)$.
+  \item À l'aide de ces valeurs, conjecturer le sens de variation de $R$ sur $[0,20]$ puis sur $[20,40]$.
+  \item Proposer, sans calcul de dérivée, une interprétation économique de la quantité $x=20$.
+\end{enumerate}
+\end{exobox}
+
+\subsubsection*{Synthèse de la séance 2}
+\begin{itemize}
+  \item Le domaine de définition d'une fonction économique doit tenir compte du \emph{sens économique} des variables (souvent $x\geqslant 0$), en plus des contraintes mathématiques.
+  \item La parité/périodicité sont des outils de simplification, peu présents dans les fonctions de gestion « standards ».
+  \item Le sens de variation et le tableau de variation permettent une première lecture des optima (coût minimal, recette maximale) -- lecture qui sera formalisée avec la dérivée (chapitre 5).
+\end{itemize}
+
+\vspace{0.5cm}
+{\small\color{mundigray}\textit{Prochaine séance (Séance 3) : étude des fonctions de référence en gestion -- fonction affine, fonction polynomiale, fonction homographique -- et lecture graphique du point mort.}}
+
+\end{document}
