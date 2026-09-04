@@ -716,6 +716,35 @@ $i\neq j$, hence
 generators.) Thus~\eqref{eq:SF}$_1$ fails, and the $O(h^2)$ conclusion
 \eqref{eq:err} is not available for this interpolant. The comparison
 \eqref{eq:err-comp} remains valid independently of~\eqref{eq:SF}.
+
+The continuous identities for the kernel do not repair this. From
+\eqref{eq:mollifier} one has $\int_{\mathbb{R}}\eta_h=1$ and, by evenness,
+$\int_{\mathbb{R}}s\,\eta_h(s)\,\dd s=0$, or equivalently
+\begin{equation}
+\label{eq:cont-SF}
+\int_{\mathbb{R}}\eta_h(x-y)\,\dd y=1,
+\qquad
+\int_{\mathbb{R}}(y-x)\eta_h(x-y)\,\dd y=0.
+\end{equation}
+These are integral identities for the mollifier, not summation identities for
+the nodal translates. A Riemann-sum analogue would replace $\mathrm{d}y$ by
+the mesh weight $h$, and would read
+$\sum_i\varphi_i(x)\,h\approx 1$, that is
+$\sum_i\varphi_i(x)\approx 1/h$, which is not~\eqref{eq:SF}$_1$. Moreover the
+support of $\eta_h(x-\,\cdot\,)$ has width $2h$, so only two nodes
+$x_k,x_{k+1}$ contribute. For $x=x_k+\theta h$ with $\theta\in(0,1)$,
+\begin{equation}
+\label{eq:discrete-mass}
+\sum_{i}\varphi_i(x)
+=\frac{C}{h}\bigl(\Phi(\theta)+\Phi(1-\theta)\bigr),
+\qquad
+\sum_{i}(x_i-x)\varphi_i(x)
+=C\bigl(-\theta\Phi(\theta)+(1-\theta)\Phi(1-\theta)\bigr).
+\end{equation}
+Neither right-hand side is independent of $\theta$: the first is of order
+$h^{-1}$, and the second vanishes at midpoints $\theta=1/2$ but not in
+general. Thus~\eqref{eq:cont-SF} cannot be converted into~\eqref{eq:SF} by
+replacing integrals with sums.
 \end{remark}
 
 \subsection{Weak form and semi-discrete stability}
