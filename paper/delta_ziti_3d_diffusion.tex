@@ -478,78 +478,130 @@ formulae of Section~\ref{sec:roots}.
 \subsection{Algebraic properties of the basis}
 
 \begin{lemma}[Equality of spans and best approximation]
-\label{lem:span}
-Let $(\varphi_i)$ and $(\psi_i)$ be the families constructed in
-Section~\ref{sec:1d}, and set $V_h:=\spanop\{\psi_i\}_{i=1}^{m+1}$. Then:
+\label{lem:orthonormal}
+Let $I=[a,b]\subset\mathbb{R}$, and let the two families
+$\{\varphi_i\}_{i=1}^{m+1}$ and $\{\psi_i\}_{i=1}^{m+1}$ be those constructed
+by the \dziti{} method in Section~\ref{sec:1d}. Set
+$V_h:=\spanop\{\psi_i\}_{i=1}^{m+1}$. Then:
 \begin{enumerate}
-\item $\spanop\{\psi_i\}_{i=1}^{m+1}=\spanop\{\varphi_i\}_{i=1}^{m+1}$.
-\item The two-term recurrence~\eqref{eq:GS} coincides with the full
-Gram--Schmidt process. Consequently $(\psi_i)$ is orthonormal in $L^2(I)$.
-\item For every $f\in L^2(I)$, the orthogonal projection
+\item The two families generate the same vector space:
 \begin{equation}
-\label{eq:proj}
-\Pi_h f:=\sum_{i=1}^{m+1}\langle f,\psi_i\rangle\,\psi_i
+\label{eq:spans}
+\spanop\{\psi_i\}_{i=1}^{m+1}
+=
+\spanop\{\varphi_i\}_{i=1}^{m+1}.
 \end{equation}
-is the unique best approximation of $f$ in $V_h$:
+\item In the continuous case, and likewise in the discrete case, the
+\dziti{} reconstruction
+\begin{equation}
+\label{eq:fh}
+f_h(x)
+=\sum_{i=1}^{m+1}\frac{f(r_i)}{\psi_i(r_i)}\,\psi_i(x)
+\end{equation}
+is the best approximation of $f$ in $V_h$ in the least-squares sense. Consequently
 \begin{equation}
 \label{eq:best}
-\lVert f-\Pi_h f\rVert_{L^2(I)}
-=\inf_{v\in V_h}\lVert f-v\rVert_{L^2(I)}.
+\lVert f-f_h\rVert
+=\inf_{v\in V_h}\lVert f-v\rVert
+\le
+\lVert f-I_h f\rVert,
 \end{equation}
-In particular, $\lVert f-\Pi_h f\rVert_{L^2(I)}\le\lVert f-I^\delta f\rVert_{L^2(I)}$
-whenever $f\in C^0(I)$.
+where $I_h f$ is the combination of the generators associated with the mesh
+nodes,
+\begin{equation}
+\label{interp}
+I_h f=\sum_{i=1}^{m+1}f(x_i)\,\varphi_i.
+\end{equation}
 \end{enumerate}
+In~\eqref{eq:best} the norm is that of $L^2(I)$ in the continuous case, and
+the discrete least-squares norm associated with the roots $(r_i)$ in the
+discrete case.
 \end{lemma}
 
 \begin{proof}
-(i) By~\eqref{eq:unfold}, each $\widetilde\psi_i$ (hence each $\psi_i$) lies
-in $\spanop\{\varphi_1,\dots,\varphi_i\}$. Conversely, the inverse recurrence
+(i) The inclusion
+$\spanop\{\psi_i\}\subset\spanop\{\varphi_i\}$ follows from the definition of
+the Gram--Schmidt family: each $\widetilde\psi_i$ (and hence each $\psi_i$)
+is a linear combination of $\varphi_1,\dots,\varphi_i$. The reverse inclusion
+is obtained by a simple recurrence from~\eqref{eq:GS},
 \begin{equation}
 \label{eq:inverse}
 \varphi_1=\widetilde\psi_1,
 \qquad
 \varphi_i=\widetilde\psi_i-\lambda_{i-1}\widetilde\psi_{i-1},
-\quad i\ge 2,
+\quad i=2,\dots,m+1.
 \end{equation}
-shows that each $\varphi_i$ lies in $\spanop\{\widetilde\psi_1,\dots,\widetilde\psi_i\}$.
-The normalised family $(\psi_i)$ spans the same space because each $\psi_i$ is
-a nonzero multiple of $\widetilde\psi_i$.
+Thus each $\varphi_i$ is a linear combination of $\widetilde\psi_i$ and
+$\widetilde\psi_{i-1}$. Since $\psi_i$ is a nonzero multiple of
+$\widetilde\psi_i$, one has~\eqref{eq:spans}.
 
-(ii) It is enough to show that $\widetilde\psi_i\perp\widetilde\psi_\ell$ for
-all $\ell<i-1$; orthogonality to $\widetilde\psi_{i-1}$ is built into
-$\lambda_{i-1}$. Proceed by induction. The claim is vacuous for $i=2$. Assume
-it holds up to index $i-1$, so that
-$(\widetilde\psi_\ell)_{\ell<i}$ is orthogonal and
-$\widetilde\psi_\ell\in\spanop\{\varphi_1,\dots,\varphi_\ell\}$. For
-$\ell\le i-2$ one has $\varphi_i\perp\varphi_j$ whenever $j\le\ell$, hence
-$\varphi_i\perp\widetilde\psi_\ell$. Therefore
+(ii) \textbf{Continuous case.}
+We equip $L^2(I)$ with the inner product
 \begin{equation}
-\langle\widetilde\psi_i,\widetilde\psi_\ell\rangle
-=\langle\varphi_i,\widetilde\psi_\ell\rangle
-+\lambda_{i-1}\langle\widetilde\psi_{i-1},\widetilde\psi_\ell\rangle=0.
+\label{eq:ip}
+(f,g)=\int_I f(x)g(x)\,\dd x.
 \end{equation}
-Normalisation gives orthonormality of $(\psi_i)$.
+The family $\{\psi_i\}_{i=1}^{m+1}$ is an orthonormal basis of $V_h$, so every
+$v\in V_h$ may be written
+\begin{equation}
+v(x)=\sum_{i=1}^{m+1}a_i\psi_i(x).
+\end{equation}
+Consider the quadratic functional
+\begin{align*}
+E(a_1,\dots,a_{m+1})
+&=\lVert f-v\rVert_{L^2(I)}^2 \\
+&=(f,f)-2\sum_{i=1}^{m+1}a_i(\psi_i,f)+\sum_{i=1}^{m+1}a_i^2 \\
+&=(f,f)-2\sum_{i=1}^{m+1}a_i c_i+\sum_{i=1}^{m+1}a_i^2,
+\end{align*}
+where $c_i$ is the \dziti{} coefficient of $f$. By the interpolatory formulae
+of Proposition~\ref{prop:interp},
+\begin{equation}
+\label{eq:ci-id}
+c_i
+=(\psi_i,f)
+=\int_a^b f(x)\psi_i(x)\,\dd x
+=\frac{f(r_i)}{\psi_i(r_i)}.
+\end{equation}
+A critical point of $E$ is characterised by the vanishing of all partial
+derivatives:
+\begin{equation}
+\frac{\partial E}{\partial a_i}=-2c_i+2a_i.
+\end{equation}
+The condition $\partial E/\partial a_i=0$ therefore yields $a_i=c_i$. The
+Hessian of $E$ is twice the identity, so this critical point is the unique
+global minimiser. Hence
+\begin{equation}
+f_h(x)=\sum_{i=1}^{m+1}\frac{f(r_i)}{\psi_i(r_i)}\,\psi_i(x)
+\end{equation}
+is the best approximation of $f$ in $V_h$ in the $L^2(I)$ least-squares sense,
+and
+\begin{equation}
+\lVert f-f_h\rVert_{L^2(I)}
+=\inf_{v\in V_h}\lVert f-v\rVert_{L^2(I)}.
+\end{equation}
+From (i), the combination $I_h f$ defined by~\eqref{interp} belongs to $V_h$.
+Taking $v=I_h f$ in the infimum gives the comparison
+$\lVert f-f_h\rVert_{L^2(I)}\le\lVert f-I_h f\rVert_{L^2(I)}$.
 
-(iii) Let $v=\sum_i a_i\psi_i\in V_h$. Orthonormality yields
+\textbf{Discrete case.}
+Let the inner product be the discrete sum associated with the \dziti{} roots,
 \begin{equation}
-\lVert f-v\rVert_{L^2(I)}^2
-=\lVert f\rVert_{L^2(I)}^2
--2\sum_{i=1}^{m+1}a_i\langle f,\psi_i\rangle
-+\sum_{i=1}^{m+1}a_i^2.
+\label{eq:discrete-ip}
+(f,g)_h
+:=\sum_{k=1}^{m+1}\frac{f(r_k)\,g(r_k)}{\psi_k(r_k)^2}.
 \end{equation}
-The quadratic is minimised if and only if $a_i=\langle f,\psi_i\rangle$, which
-is~\eqref{eq:proj}. The comparison with $I^\delta f$ is the definition of the
-orthogonal projection, since $I^\delta f\in V_h$.
+The biorthogonality $\psi_i(r_k)=\delta_{ik}\psi_i(r_i)$ of
+Proposition~\ref{prop:roots} implies
+$(\psi_i,\psi_j)_h=\delta_{ij}$ and
+\begin{equation}
+(f,\psi_i)_h=\frac{f(r_i)}{\psi_i(r_i)}.
+\end{equation}
+Repeating the argument above with $(\cdot,\cdot)_h$ in place of~\eqref{eq:ip},
+the same functional $E$ is minimised if and only if
+$a_i=(f,\psi_i)_h=f(r_i)/\psi_i(r_i)$. Thus $f_h$ is exactly the discrete
+least-squares projection of $f$ onto $V_h$, and~\eqref{eq:best} holds for the
+norm $\lVert\cdot\rVert_h$ induced by~\eqref{eq:discrete-ip}.
 \end{proof}
-
-\begin{remark}
-\label{rem:proj-vs-interp}
-The map $f\mapsto I^\delta f$ from~\eqref{eq:interp} coincides with $\Pi_h$ on
-$V_h$, but not on $C^0(I)$ in general. Using $c_i[f]=f(r_i)/\psi_i(r_i)$ as a
-substitute for $\langle f,\psi_i\rangle$ is the collocation step of the
-\dziti{} scheme. All consistency estimates below are stated for the operator
-that is actually used.
-\end{remark}
 
 \subsection{Mollification error of the generating kernel}
 
@@ -600,7 +652,7 @@ A complete Jackson estimate for $\inf_{v\in V_h}\lVert f-v\rVert_{L^2(I)}$
 would additionally require polynomial reproduction in $V_h$ (Strang--Fix
 conditions). The space $V_h$ is spanned by $C^\infty$ bumps of width
 $\mathcal{O}(h)$ and does not contain the constants, so we do not claim an
-$h^2$ bound for $\lVert f-\Pi_h f\rVert_{L^2(I)}$ of finite-element type. In
+$h^2$ bound for $\lVert f-f_h\rVert_{L^2(I)}$ of finite-element type. In
 the fully discrete scheme the unknown is represented by its values at the
 nodes $(r_i)$, and the relevant spatial error is the consistency error of the
 discrete Laplacian on that grid, which is $\mathcal{O}(h^2)$ on uniform
@@ -634,7 +686,8 @@ basis of $V_h(\Omega)\subset H^1(\Omega)$ constructed in
 Section~\ref{sec:tensor} (tensor product on the cube, spherical or
 chord-wise construction on the ball). The semi-discrete Galerkin scheme
 consists in seeking $u_h(t)=\sum_{\alpha}c_\alpha(t)\psi_\alpha\in V_h(\Omega)$
-such that $u_h(0)=\Pi_h u_0$ (or $I^\delta u_0$) and
+such that $u_h(0)$ is the \dziti{} reconstruction~\eqref{eq:fh} of the
+initial datum $u_0$, and
 \begin{equation}
 \label{eq:semidisc}
 \bigl(\partial_t u_h(t),v_h\bigr)
@@ -983,12 +1036,11 @@ three-dimensional transient diffusion with Neumann boundary conditions. The
 one-dimensional generators are compactly supported mollifiers; their Gram
 matrix is tridiagonal, which reduces orthonormalisation to a two-term
 recurrence and produces an orthonormal basis of a finite-dimensional subspace
-$V_h\subset L^2$. The roots of that basis define an interpolatory
-reconstruction $I^\delta$ and a quadrature that avoid numerical integration
-rules of Gaussian type. The $L^2$-orthogonal projection onto $V_h$ is the
-best approximation in $V_h$, but it must not be confused with $I^\delta$, nor
-with the combination $\sum_i f(x_i)\varphi_i$, which is not a partition-of-unity
-quasi-interpolant.
+$V_h\subset L^2$. The roots of that basis define the reconstruction $f_h$
+of Lemma~\ref{lem:orthonormal} and a quadrature that avoids numerical
+integration rules of Gaussian type. By that lemma, $f_h$ is the best
+least-squares approximation in $V_h$, and in particular it improves upon the
+generator combination $I_h f=\sum_i f(x_i)\varphi_i$.
 
 The second-order character of the method is that of the generating mollifier
 $\eta_h$ (Theorem~\ref{thm:mollifier}) and of the discrete Laplacian on the
