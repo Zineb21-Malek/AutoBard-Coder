@@ -722,53 +722,81 @@ $F_\alpha(t)=\ell(t;\psi_\alpha)$. No mass-matrix inversion is required.
 
 \begin{theorem}[Energy stability of the semi-discrete scheme]
 \label{thm:semi}
-Assume $k\ge k_{\min}>0$, $f\in L^2(0,T;L^2(\Omega))$ and
-$g\in L^2(0,T;L^2(\partial\Omega))$. Let $u_h$ solve~\eqref{eq:semidisc}. Then,
-for every $t\in[0,T]$,
+Let $k>0$ be constant, $f\in L^2(0,T;L^2(\Omega))$ and
+$g\in L^2(0,T;L^2(\partial\Omega))$. Let $u_h\in C^1([0,T];V_h(\Omega))$
+solve~\eqref{eq:semidisc}. Then there exists a constant $C_T>0$, depending
+only on $\Omega$, $k$ and $T$, such that for every $t\in[0,T]$,
 \begin{equation}
 \label{eq:energy}
 \begin{aligned}
 \lVert u_h(t)\rVert_{L^2(\Omega)}^2
-&+k_{\min}\int_0^t\lVert\nabla u_h(s)\rVert_{L^2(\Omega)}^2\,\dd s \\
+&+k\int_0^t\lVert\nabla u_h(s)\rVert_{L^2(\Omega)}^2\,\dd s \\
 &\le
+C_T\Biggl(
 \lVert u_h(0)\rVert_{L^2(\Omega)}^2
-+C\int_0^t\Bigl(\lVert f(s)\rVert_{L^2(\Omega)}^2
-+\lVert g(s)\rVert_{L^2(\partial\Omega)}^2\Bigr)\,\dd s,
++\int_0^t\Bigl(
+\lVert f(s)\rVert_{L^2(\Omega)}^2
++\lVert g(s)\rVert_{L^2(\partial\Omega)}^2
+\Bigr)\,\dd s
+\Biggr).
 \end{aligned}
 \end{equation}
-where $C$ depends only on $\Omega$, $T$ and $k_{\min}$ (through a trace
-inequality). In particular, the semi-discrete scheme is unconditionally
-stable in $L^2(\Omega)$.
+In particular, the semi-discrete scheme is unconditionally stable in
+$L^2(\Omega)$: the bound does not restrict $\Delta t$ or $h$.
 \end{theorem}
 
 \begin{proof}
-Take $v_h=u_h(t)$ in~\eqref{eq:semidisc}:
+Take $v_h=u_h(t)$ in~\eqref{eq:semidisc}. Since $a(u_h,u_h)=k\lVert\nabla u_h\rVert_{L^2(\Omega)}^2$,
 \begin{equation}
 \frac12\frac{\dd}{\dd t}\lVert u_h\rVert_{L^2(\Omega)}^2
 +k\lVert\nabla u_h\rVert_{L^2(\Omega)}^2
 =(f,u_h)+\langle g,u_h\rangle_{\partial\Omega}.
 \end{equation}
-The Cauchy--Schwarz inequality and the trace theorem give
+The Cauchy--Schwarz inequality and the trace theorem yield
 \begin{equation}
+\begin{aligned}
 \bigl\lvert(f,u_h)+\langle g,u_h\rangle_{\partial\Omega}\bigr\rvert
-\le
-\lVert f\rVert_{L^2(\Omega)}\lVert u_h\rVert_{L^2(\Omega)}
+&\le
+\lVert f\rVert_{L^2(\Omega)}\lVert u_h\rVert_{L^2(\Omega)}\\
+&\qquad
 +C_{\mathrm{tr}}\lVert g\rVert_{L^2(\partial\Omega)}
 \bigl(\lVert u_h\rVert_{L^2(\Omega)}+\lVert\nabla u_h\rVert_{L^2(\Omega)}\bigr).
+\end{aligned}
 \end{equation}
-Young's inequality with a parameter $\varepsilon=k/2$ absorbs the gradient
-term on the right-hand side and produces
+Young's inequality with parameters $1$ and $k/2$ gives
 \begin{equation}
+\begin{aligned}
+\lVert f\rVert\lVert u_h\rVert
+&\le \tfrac12\lVert u_h\rVert_{L^2(\Omega)}^2+\tfrac12\lVert f\rVert_{L^2(\Omega)}^2,\\
+C_{\mathrm{tr}}\lVert g\rVert\lVert u_h\rVert
+&\le \tfrac12\lVert u_h\rVert_{L^2(\Omega)}^2+C_1\lVert g\rVert_{L^2(\partial\Omega)}^2,\\
+C_{\mathrm{tr}}\lVert g\rVert\lVert\nabla u_h\rVert
+&\le \tfrac{k}{2}\lVert\nabla u_h\rVert_{L^2(\Omega)}^2
++C_2\lVert g\rVert_{L^2(\partial\Omega)}^2,
+\end{aligned}
+\end{equation}
+with $C_1,C_2$ depending only on $\Omega$ and $k$. Therefore
+\begin{equation}
+\label{eq:energy-diff}
 \frac{\dd}{\dd t}\lVert u_h\rVert_{L^2(\Omega)}^2
 +k\lVert\nabla u_h\rVert_{L^2(\Omega)}^2
 \le
-C\Bigl(\lVert u_h\rVert_{L^2(\Omega)}^2
+2\lVert u_h\rVert_{L^2(\Omega)}^2
 +\lVert f\rVert_{L^2(\Omega)}^2
-+\lVert g\rVert_{L^2(\partial\Omega)}^2\Bigr),
++C_3\lVert g\rVert_{L^2(\partial\Omega)}^2.
 \end{equation}
-with $C$ depending only on $\Omega$ and $k_{\min}$. Gronwall's lemma yields a
-bound on $\lVert u_h(t)\rVert_{L^2(\Omega)}^2$; integrating the dissipation
-term then gives~\eqref{eq:energy}.
+Dropping the gradient term and applying Gronwall's lemma, we obtain
+\begin{equation}
+\lVert u_h(t)\rVert_{L^2(\Omega)}^2
+\le
+e^{2t}\lVert u_h(0)\rVert_{L^2(\Omega)}^2
++\int_0^t e^{2(t-s)}
+\Bigl(\lVert f(s)\rVert_{L^2(\Omega)}^2
++C_3\lVert g(s)\rVert_{L^2(\partial\Omega)}^2\Bigr)\,\dd s.
+\end{equation}
+Integrating~\eqref{eq:energy-diff} over $[0,t]$ and inserting this bound on
+$\int_0^t\lVert u_h\rVert_{L^2(\Omega)}^2\,\dd s$ produces~\eqref{eq:energy},
+with $C_T$ depending on $\Omega$, $k$ and $T$ only.
 \end{proof}
 
 \subsection{Fully discrete explicit scheme}
@@ -814,74 +842,91 @@ the same time-stepping is applied to the spherical Laplacian
 with $\partial_\rho u=g/k$ at $\rho=1$ and the usual regularity conditions
 at $\rho=0$ and on the polar axis.
 
-\begin{theorem}[Consistency and CFL stability of the explicit scheme]
+\begin{theorem}[CFL stability of the explicit scheme]
 \label{thm:scheme}
-Assume that the collocation nodes are quasi-uniform, in the sense that
-$c^{-1}h\le h_i\le c h$ for a constant $c\ge 1$ independent of $h$, and that
-$u$ is of class $C^4$ in space and $C^2$ in time in a neighbourhood of
-$\overline\Omega\times[0,T]$.
-\begin{enumerate}
-\item The local truncation error of~\eqref{eq:euler} with the Neumann closure
-is $\mathcal{O}(\Delta t+h^2)$ in the interior and $\mathcal{O}(\Delta t+h)$
-at faces if a first-order Neumann closure is used
-($\mathcal{O}(\Delta t+h^2)$ with a second-order closure).
-\item Let
-$h_{\min}:=\min_i h_i$. If
+Let $L_h$ be the standard seven-point discrete Laplacian on a uniform mesh of
+step $h$, with homogeneous Neumann (or periodic) closure. Then $L_h$ is
+symmetric and negative semi-definite on $\ell^2(\mathcal{R}_h)$, and its
+eigenvalues lie in $[-\Lambda_h,0]$ with $\Lambda_h=12/h^2$. Write
+$\tau=k\Delta t$ and consider the homogeneous forward Euler scheme
+\begin{equation}
+\label{eq:euler-hom}
+U^{n+1}=U^n+\tau L_h U^n=(I+\tau L_h)U^n.
+\end{equation}
+If
 \begin{equation}
 \label{eq:CFL}
-k\Delta t\le\frac{h_{\min}^2}{6c^2},
+k\Delta t\le\frac{h^2}{6},
 \end{equation}
-the homogeneous scheme ($f=0$, $g=0$) satisfies
-$\lVert U^{n+1}\rVert_{\ell^2(\mathcal{R}_h)}
-\le\lVert U^n\rVert_{\ell^2(\mathcal{R}_h)}$,
-and hence
+then $\lVert I+\tau L_h\rVert_{\ell^2\to\ell^2}\le 1$, and therefore
 \begin{equation}
 \label{eq:l2stab}
+\lVert U^{n+1}\rVert_{\ell^2(\mathcal{R}_h)}
+\le
+\lVert U^n\rVert_{\ell^2(\mathcal{R}_h)},
+\qquad
 \max_{0\le n\le N_t}\lVert U^n\rVert_{\ell^2(\mathcal{R}_h)}
-\le\lVert U^0\rVert_{\ell^2(\mathcal{R}_h)}.
+\le
+\lVert U^0\rVert_{\ell^2(\mathcal{R}_h)}.
 \end{equation}
-\end{enumerate}
+On a quasi-uniform mesh with $c^{-1}h\le h_i\le c h$, the same argument holds
+with~\eqref{eq:CFL} replaced by
+$k\Delta t\le h_{\min}^2/(6c^2)$, where $h_{\min}:=\min_i h_i$.
+
+If $f$ and $g$ are not zero, the same CFL condition yields
+\begin{equation}
+\label{eq:l2stab-inhom}
+\lVert U^n\rVert_{\ell^2(\mathcal{R}_h)}
+\le
+\lVert U^0\rVert_{\ell^2(\mathcal{R}_h)}
++\Delta t\sum_{j=0}^{n-1}\lVert F^j\rVert_{\ell^2(\mathcal{R}_h)},
+\end{equation}
+where $F^j$ collects the source and boundary data at time $t_j$.
 \end{theorem}
 
 \begin{proof}
-(i) Taylor expansion of a $C^4$ function on a quasi-uniform mesh shows that
-\eqref{eq:dxx} equals $\partial_{xx}u$ up to $\mathcal{O}(h^2)$; see, e.g.,
-\cite{Quarteroni2008}. Summing the three directions and replacing
-$\partial_t u$ by the forward difference
-$(u(t_{n+1})-u(t_n))/\Delta t=\partial_t u(t_n)+\mathcal{O}(\Delta t)$ gives
-the interior truncation error. The Neumann closure is a standard one-sided
-difference.
+The operator $-L_h$ is symmetric positive semi-definite, so
+$\lVert L_h V\rVert_{\ell^2}^2\le\Lambda_h\bigl(-(L_h V,V)_{\ell^2}\bigr)$
+for every $V$, with $\Lambda_h=\lVert L_h\rVert_{\ell^2\to\ell^2}=12/h^2$
+in three dimensions (the symbol is
+$-(4/h^2)\sum_{\ell=1}^3\sin^2(\xi_\ell h/2)$). Expanding~\eqref{eq:euler-hom},
+\begin{equation}
+\begin{aligned}
+\lVert U^{n+1}\rVert_{\ell^2}^2
+&=\lVert U^n\rVert_{\ell^2}^2
++2\tau(L_h U^n,U^n)_{\ell^2}
++\tau^2\lVert L_h U^n\rVert_{\ell^2}^2 \\
+&\le
+\lVert U^n\rVert_{\ell^2}^2
++2\tau(L_h U^n,U^n)_{\ell^2}
++\tau^2\Lambda_h\bigl(-(L_h U^n,U^n)_{\ell^2}\bigr) \\
+&=\lVert U^n\rVert_{\ell^2}^2
++\bigl(2\tau-\tau^2\Lambda_h\bigr)(L_h U^n,U^n)_{\ell^2}.
+\end{aligned}
+\end{equation}
+The inner product $(L_h U^n,U^n)_{\ell^2}$ is nonpositive. Hence
+$\lVert U^{n+1}\rVert_{\ell^2}\le\lVert U^n\rVert_{\ell^2}$ as soon as
+$2\tau-\tau^2\Lambda_h\ge 0$, that is $\tau\le 2/\Lambda_h=h^2/6$, which is
+\eqref{eq:CFL}. On a quasi-uniform mesh one has
+$\Lambda_h\le 12c^2/h_{\min}^2$, and the same computation gives
+$k\Delta t\le h_{\min}^2/(6c^2)$.
 
-(ii) Write $L_h$ for the standard seven-point discrete Laplacian on a uniform
-grid of step $h$, with homogeneous Neumann (or periodic) closure. The operator
-$L_h$ is symmetric and negative semi-definite on $\ell^2(\mathcal{R}_h)$, and
-its eigenvalues lie in $[-12/h^2,0]$. The homogeneous interior scheme is
-$U^{n+1}=(I+\tau L_h)U^n$ with $\tau=k\Delta t$. For every eigenvalue
-$\lambda\in[-12/h^2,0]$ one has $\lvert 1+\tau\lambda\rvert\le 1$ if and only
-if $\tau\le 2/(12/h^2)=h^2/6$. Hence
-$\lVert I+\tau L_h\rVert_{\ell^2\to\ell^2}\le 1$, which is~\eqref{eq:l2stab}.
-Quasi-uniformity replaces $h$ by $h_{\min}/c$ and produces~\eqref{eq:CFL}.
-The inhomogeneous case follows by Duhamel's formula, at the cost of an
-additional term of order
-$\Delta t\sum_n\bigl(\lVert f^n\rVert_{\ell^2}+\lVert g^n\rVert_{\ell^2}\bigr)$.
+In the inhomogeneous case, $U^{n+1}=(I+\tau L_h)U^n+\Delta t F^n$. Under the
+CFL condition, $\lVert I+\tau L_h\rVert\le 1$, therefore
+$\lVert U^{n+1}\rVert\le\lVert U^n\rVert+\Delta t\lVert F^n\rVert$. Summing
+the resulting telescoping inequality yields~\eqref{eq:l2stab-inhom}.
 \end{proof}
 
 \begin{remark}
-The constant $1/6$ is the three-dimensional analogue of the classical
-conditions $\Delta t\le h^2/(2k)$ in one dimension and
-$\Delta t\le h^2/(4k)$ in two dimensions. On the ball, $h_{\min}$ is the
-smallest spacing among the radial and angular collocation nodes (multiplied
-by the appropriate metric factors near the origin). In all numerical tests
-we enforce~\eqref{eq:CFL}. This is consistent with the CFL numbers close to
-$0.8$--$0.9$ reported for related \dziti{} schemes in two dimensions
-\cite{Malek2021,Bsiss2017}.
+The threshold \(h^2/6\) is the three-dimensional analogue of the classical
+restrictions \(k\Delta t\le h^2/2\) in one dimension and
+\(k\Delta t\le h^2/4\) in two dimensions, corresponding to a stencil with
+\(2d+1\) points. On the ball, \(h_{\min}\) is the smallest spacing among the
+radial and angular collocation nodes, multiplied by the appropriate metric
+factors near the origin. The condition is independent of the orthonormal
+\dziti{} basis: it is a restriction on the explicit Euler discretisation of
+the discrete Laplacian.
 \end{remark}
-
-Combining Theorems~\ref{thm:error} and~\ref{thm:scheme} with the
-Lax equivalence principle for linear well-posed evolution problems, one
-obtains convergence of the fully discrete solution to $u$ as
-$(h,\Delta t)\to 0$ under~\eqref{eq:CFL}, with interior rate
-$\mathcal{O}(\Delta t+h^2)$ for smooth solutions.
 
 %==============================================================================
 \section{Numerical experiments}
