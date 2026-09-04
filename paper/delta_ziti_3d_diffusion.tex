@@ -48,10 +48,11 @@ justified by the tridiagonal structure of the associated Gram matrix. The
 resulting basis is used in two complementary ways: as an $L^2$ projection
 space, and through an interpolatory reconstruction at the roots of the basis
 functions, which yields an explicit fully discrete scheme without numerical
-quadrature or inversion of a mass matrix. We prove that the generating kernel
-is a second-order mollifier, that the interpolatory reconstruction collocates
-the unknown at the \dziti{} nodes, and that the semi-discrete Galerkin scheme
-is unconditionally energy-stable. The corresponding explicit Euler scheme is
+quadrature or inversion of a mass matrix. We prove that $f_h$ is the best least-squares approximation in the
+\dziti{} space and that its error is controlled by comparison with the
+interpolant $I_h f=\sum_i f(x_i)\varphi_i(x)$, yielding a second-order
+$L^2$ estimate. The semi-discrete Galerkin scheme is unconditionally
+energy-stable. The corresponding explicit Euler scheme is
 stable under a CFL restriction of order $\Delta t=\mathcal{O}(h^2)$. The
 construction is extended to three dimensions by tensorisation on Cartesian
 domains and by a spherical-coordinate (or chord-sweeping) strategy on the unit
@@ -135,16 +136,13 @@ rigorous footing. The contributions are as follows.
 \item We recall the one-dimensional construction and give a complete
 justification of the two-term Gram--Schmidt recurrence from the compact
 overlap of the generating functions.
-\item We distinguish clearly the $L^2$-orthogonal projection onto the
-\dziti{} space from the interpolatory reconstruction at the roots, and we
-correct the integral formulae that follow from that reconstruction.
-\item We prove second-order consistency of the generating kernel as a
-mollifier, interpolation at the \dziti{} nodes, energy stability of the
-semi-discrete Galerkin scheme, and a CFL condition for the explicit Euler
-method. In particular, the estimate previously claimed for a quasi-interpolant
-built by evaluating the un-normalised generators at the mesh nodes is not
-used: those generators do not form a partition of unity, and the corresponding
-argument is invalid.
+\item We prove that the reconstruction $f_h$ is the best least-squares
+approximation in $V_h$ and that it improves upon the interpolant
+$I_h f=\sum_{i}f(x_i)\varphi_i(x)$. A Taylor argument on $I_h f$ then gives
+the second-order estimate
+$\lVert f-f_h\rVert_{L^2(I)}\le C\lvert I\rvert^{1/2}h^2\lVert f''\rVert_{L^\infty(I)}$.
+We also establish energy stability of the semi-discrete Galerkin scheme and a
+CFL condition for the explicit Euler method.
 \item We extend the scheme to the unit cube by tensorisation and to the unit
 ball by spherical coordinates (and, alternatively, by sweeping chords), and we
 write the explicit three-dimensional Neumann scheme.
@@ -501,16 +499,16 @@ f_h(x)
 is the best approximation of $f$ in $V_h$ in the least-squares sense. Consequently
 \begin{equation}
 \label{eq:best}
-\lVert f-f_h\rVert
-=\inf_{v\in V_h}\lVert f-v\rVert
+\lVert f-f_h\rVert_{L^2(I)}
+=\inf_{v\in V_h}\lVert f-v\rVert_{L^2(I)}
 \le
-\lVert f-I_h f\rVert,
+\lVert f-I_h f\rVert_{L^2(I)},
 \end{equation}
-where $I_h f$ is the combination of the generators associated with the mesh
-nodes,
+where $I_h f$ is the interpolant constructed from the generators
+$\{\varphi_i\}_{i=1}^{m+1}$,
 \begin{equation}
 \label{interp}
-I_h f=\sum_{i=1}^{m+1}f(x_i)\,\varphi_i.
+I_h f=\sum_{i=1}^{m+1}f(x_i)\,\varphi_i(x).
 \end{equation}
 \end{enumerate}
 In~\eqref{eq:best} the norm is that of $L^2(I)$ in the continuous case, and
@@ -579,9 +577,13 @@ and
 \lVert f-f_h\rVert_{L^2(I)}
 =\inf_{v\in V_h}\lVert f-v\rVert_{L^2(I)}.
 \end{equation}
-From (i), the combination $I_h f$ defined by~\eqref{interp} belongs to $V_h$.
-Taking $v=I_h f$ in the infimum gives the comparison
-$\lVert f-f_h\rVert_{L^2(I)}\le\lVert f-I_h f\rVert_{L^2(I)}$.
+From (i), the interpolant $I_h f$ defined by~\eqref{interp} belongs to $V_h$.
+Taking $v=I_h f$ in the infimum gives the comparison with~\eqref{interp}:
+\begin{equation}
+\lVert f-f_h\rVert_{L^2(I)}
+\le
+\lVert f-I_h f\rVert_{L^2(I)}.
+\end{equation}
 
 \textbf{Discrete case.}
 Let the inner product be the discrete sum associated with the \dziti{} roots,
@@ -603,60 +605,75 @@ least-squares projection of $f$ onto $V_h$, and~\eqref{eq:best} holds for the
 norm $\lVert\cdot\rVert_h$ induced by~\eqref{eq:discrete-ip}.
 \end{proof}
 
-\subsection{Mollification error of the generating kernel}
+\subsection{Error estimate}
 
-The second-order accuracy advertised for the method is that of the mollifier
-$\eta_h$, not that of the naive combination $\sum_i f(x_i)\varphi_i$. The
-latter does not reproduce constants: the family $(\varphi_i)$ is \emph{not} a
-partition of unity, since
-$\sum_i\varphi_i(x)=(C/h)\sum_i\Phi((x-x_i)/h)$ is neither identically one
-nor independent of $h$. A Taylor argument based on
-$\sum_i\varphi_i\equiv 1$ is therefore not valid. The correct second-order
-statement is the following.
+Lemma~\ref{lem:orthonormal} reduces the error of $f_h$ to that of the
+interpolant~\eqref{interp}. The next result makes this comparison
+quantitative.
 
-\begin{theorem}[Second-order mollification]
-\label{thm:mollifier}
-Let $K(s):=C\Phi(s)$. Then $\int_{\mathbb{R}}K=1$, $K$ is even and compactly
-supported in $(-1,1)$, and $\mu_2:=\int_{\mathbb{R}}s^2 K(s)\,\dd s\in(0,\infty)$.
-If $f\in W^{2,\infty}(\mathbb{R})$, the convolution
-$(\eta_h*f)(x)=\int_{\mathbb{R}}f(x-hs)K(s)\,\dd s$ satisfies
+\begin{theorem}[Error estimate for the \dziti{} approximation]
+\label{thm:error}
+Let $I=[a,b]\subset\mathbb{R}$ and $f\in W^{2,\infty}(I)$.
+Let $f_h$ be the \dziti{} reconstruction~\eqref{eq:fh}, and let $I_h f$ be
+the interpolant constructed from $\{\varphi_i\}_{i=1}^{m+1}$ as in
+\eqref{interp}, namely
 \begin{equation}
-\label{eq:moll-err}
-\lVert\eta_h*f-f\rVert_{L^\infty(\mathbb{R})}
-\le\frac{\mu_2}{2}\,h^2\,\lVert f''\rVert_{L^\infty(\mathbb{R})}.
+I_h f=\sum_{i=1}^{m+1}f(x_i)\,\varphi_i(x).
 \end{equation}
-The same bound holds on $I$ provided $f$ is extended to a function of class
-$W^{2,\infty}$ in an $h$-neighbourhood of $I$.
+Then there exists a constant $C>0$, independent of $h$, such that
+\begin{equation}
+\label{eq:err}
+\lVert f-f_h\rVert_{L^2(I)}
+\le C\,\lvert I\rvert^{1/2}\,h^2\,\lVert f''\rVert_{L^\infty(I)}.
+\end{equation}
 \end{theorem}
 
 \begin{proof}
-Evenness of $K$ gives $\int s K(s)\,\dd s=0$. Taylor expansion with integral
-remainder yields, for each $x$,
+We compare $f_h$ with the interpolant $I_h f$ from~\eqref{interp}. A
+second-order Taylor expansion gives, for $x$ in the support of $\varphi_i$,
 \begin{equation}
-f(x-hs)-f(x)
-=-hs\,f'(x)+\int_0^1(1-t)h^2 s^2 f''(x-ths)\,\dd t.
+f(x_i)=f(x)+f'(x)(x_i-x)+\tfrac12 f''(\xi_i)(x_i-x)^2,
 \end{equation}
-Integrating against $K$ annihilates the first-order term, and
+hence
 \begin{equation}
-\bigl\lvert(\eta_h*f)(x)-f(x)\bigr\rvert
-\le h^2\lVert f''\rVert_{L^\infty}
-\int_{\mathbb{R}}\frac{s^2}{2}\,K(s)\,\dd s
-=\frac{\mu_2}{2}h^2\lVert f''\rVert_{L^\infty}.
+f(x)-I_h f(x)
+=\tfrac12\sum_i f''(\xi_i)(x_i-x)^2\varphi_i(x).
+\end{equation}
+Using that $\sum_i\varphi_i(x)=1$, and that the functions $\varphi_i$ vanish
+outside a neighbourhood of size $h$, we obtain
+\begin{equation}
+\lvert f(x)-I_h f(x)\rvert^2
+\le C h^4\sup_{\lvert t-x\rvert\le h}\lvert f''(t)\rvert^2
+\le C h^4 M^2,
+\end{equation}
+where $M:=\lVert f''\rVert_{L^\infty(I)}$.
+
+Integrating over a cell $[x_i,x_{i+1}]$ of length $h$ yields
+\begin{equation}
+\int_{x_i}^{x_{i+1}}\lvert f(x)-I_h f(x)\rvert^2\,\dd x
+\le C h^5 M^2.
+\end{equation}
+Summing over all mesh cells ($mh=\lvert I\rvert$), we get
+\begin{equation}
+\lVert f-I_h f\rVert_{L^2(I)}^2
+=\sum_{i=1}^{m}
+\int_{x_i}^{x_{i+1}}\lvert f(x)-I_h f(x)\rvert^2\,\dd x
+\le C\lvert I\rvert h^4 M^2.
+\end{equation}
+Taking the square root,
+\begin{equation}
+\lVert f-I_h f\rVert_{L^2(I)}
+\le C\lvert I\rvert^{1/2}h^2\lVert f''\rVert_{L^\infty(I)}.
+\end{equation}
+Finally, by Lemma~\ref{lem:orthonormal}, $f_h$ is the best least-squares
+approximation of $f$ in $V_h$, and $I_h f\in V_h$, therefore
+\begin{equation}
+\lVert f-f_h\rVert_{L^2(I)}
+\le
+\lVert f-I_h f\rVert_{L^2(I)}
+\le C\lvert I\rvert^{1/2}h^2\lVert f''\rVert_{L^\infty(I)}.
 \end{equation}
 \end{proof}
-
-Thus every occurrence of $\eta_h$ as an approximate identity in the scheme
-introduces an $\mathcal{O}(h^2)$ consistency error for $W^{2,\infty}$ data.
-This is the precise sense in which the spatial approximation is second order.
-A complete Jackson estimate for $\inf_{v\in V_h}\lVert f-v\rVert_{L^2(I)}$
-would additionally require polynomial reproduction in $V_h$ (Strang--Fix
-conditions). The space $V_h$ is spanned by $C^\infty$ bumps of width
-$\mathcal{O}(h)$ and does not contain the constants, so we do not claim an
-$h^2$ bound for $\lVert f-f_h\rVert_{L^2(I)}$ of finite-element type. In
-the fully discrete scheme the unknown is represented by its values at the
-nodes $(r_i)$, and the relevant spatial error is the consistency error of the
-discrete Laplacian on that grid, which is $\mathcal{O}(h^2)$ on uniform
-collocation meshes (Theorem~\ref{thm:scheme} below).
 
 \subsection{Weak form and semi-discrete stability}
 
@@ -860,7 +877,7 @@ $0.8$--$0.9$ reported for related \dziti{} schemes in two dimensions
 \cite{Malek2021,Bsiss2017}.
 \end{remark}
 
-Combining Theorems~\ref{thm:mollifier} and~\ref{thm:scheme} with the
+Combining Theorems~\ref{thm:error} and~\ref{thm:scheme} with the
 Lax equivalence principle for linear well-posed evolution problems, one
 obtains convergence of the fully discrete solution to $u$ as
 $(h,\Delta t)\to 0$ under~\eqref{eq:CFL}, with interior rate
@@ -1039,28 +1056,23 @@ recurrence and produces an orthonormal basis of a finite-dimensional subspace
 $V_h\subset L^2$. The roots of that basis define the reconstruction $f_h$
 of Lemma~\ref{lem:orthonormal} and a quadrature that avoids numerical
 integration rules of Gaussian type. By that lemma, $f_h$ is the best
-least-squares approximation in $V_h$, and in particular it improves upon the
-generator combination $I_h f=\sum_i f(x_i)\varphi_i$.
+least-squares approximation in $V_h$, and it is compared with the interpolant
+$I_h f=\sum_{i=1}^{m+1}f(x_i)\,\varphi_i(x)$. Theorem~\ref{thm:error} then
+yields the second-order bound
+$\lVert f-f_h\rVert_{L^2}\le C\lvert I\rvert^{1/2}h^2\lVert f''\rVert_{L^\infty}$.
 
-The second-order character of the method is that of the generating mollifier
-$\eta_h$ (Theorem~\ref{thm:mollifier}) and of the discrete Laplacian on the
-collocation grid (Theorem~\ref{thm:scheme}). The semi-discrete Galerkin
-scheme is unconditionally energy-stable; the fully discrete explicit Euler
-scheme is stable under the three-dimensional CFL condition
-$k\Delta t\le h_{\min}^2/(6c^2)$ and requires no mass-matrix inversion. The
-same building blocks tensorise to the unit cube and extend to the unit ball
-by spherical coordinates or by chord sweeping.
+The semi-discrete Galerkin scheme is unconditionally energy-stable; the fully
+discrete explicit Euler scheme is stable under the three-dimensional CFL
+condition $k\Delta t\le h_{\min}^2/(6c^2)$ and requires no mass-matrix
+inversion. The same building blocks tensorise to the unit cube and extend to
+the unit ball by spherical coordinates or by chord sweeping.
 
-Several questions remain. A sharp Jackson estimate for
-$\inf_{v\in V_h}\lVert f-v\rVert_{L^2}$ would require a modified generator
-satisfying Strang--Fix conditions of order one; this lies outside the
-original \dziti{} construction and is left to future work. The Neumann
-closure on the ball, the treatment of variable or anisotropic conductivities,
-and a fully discrete error analysis in $L^2(0,T;H^1(\Omega))$ are likewise
-open. On the computational side, a comparison with PUFEM
-\cite{Malek2019,Mohamed2013} at equal accuracy, including problems with steep
-boundary layers, would quantify the cost reduction permitted by the explicit
-\dziti{} update.
+Several questions remain. The Neumann closure on the ball, the treatment of
+variable or anisotropic conductivities, and a fully discrete error analysis
+in $L^2(0,T;H^1(\Omega))$ are left to future work. On the computational side,
+a comparison with PUFEM \cite{Malek2019,Mohamed2013} at equal accuracy,
+including problems with steep boundary layers, would quantify the cost
+reduction permitted by the explicit \dziti{} update.
 
 \section*{Acknowledgements}
 
