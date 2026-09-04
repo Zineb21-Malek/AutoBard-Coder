@@ -722,10 +722,20 @@ $F_\alpha(t)=\ell(t;\psi_\alpha)$. No mass-matrix inversion is required.
 
 \begin{theorem}[Energy stability of the semi-discrete scheme]
 \label{thm:semi}
-Let $k>0$ be constant, $f\in L^2(0,T;L^2(\Omega))$ and
-$g\in L^2(0,T;L^2(\partial\Omega))$. Let $u_h\in C^1([0,T];V_h(\Omega))$
-solve~\eqref{eq:semidisc}. Then there exists a constant $C_T>0$, depending
-only on $\Omega$, $k$ and $T$, such that for every $t\in[0,T]$,
+Let $k>0$ be constant and let $u_h\in C^1([0,T];V_h(\Omega))$
+solve~\eqref{eq:semidisc}.
+\begin{enumerate}
+\item If $f=0$ and $g=0$, the scheme dissipates energy:
+\begin{equation}
+\label{eq:energy-hom}
+\lVert u_h(t)\rVert_{L^2(\Omega)}^2
++2k\int_0^t\lVert\nabla u_h(s)\rVert_{L^2(\Omega)}^2\,\dd s
+=
+\lVert u_h(0)\rVert_{L^2(\Omega)}^2.
+\end{equation}
+\item If $f\in L^2(0,T;L^2(\Omega))$ and
+$g\in L^2(0,T;L^2(\partial\Omega))$, there exists $C_T>0$, depending only
+on $\Omega$, $k$ and $T$, such that for every $t\in[0,T]$,
 \begin{equation}
 \label{eq:energy}
 \begin{aligned}
@@ -741,18 +751,25 @@ C_T\Biggl(
 \Biggr).
 \end{aligned}
 \end{equation}
-In particular, the semi-discrete scheme is unconditionally stable in
-$L^2(\Omega)$: the bound does not restrict $\Delta t$ or $h$.
+\end{enumerate}
+The estimates are independent of $h$. In particular, the semi-discrete
+scheme is unconditionally stable in $L^2(\Omega)$.
 \end{theorem}
 
 \begin{proof}
-Take $v_h=u_h(t)$ in~\eqref{eq:semidisc}. Since $a(u_h,u_h)=k\lVert\nabla u_h\rVert_{L^2(\Omega)}^2$,
+Take $v_h=u_h(t)$ in~\eqref{eq:semidisc}. Since
+$a(u_h,u_h)=k\lVert\nabla u_h\rVert_{L^2(\Omega)}^2$,
 \begin{equation}
+\label{eq:energy-id}
 \frac12\frac{\dd}{\dd t}\lVert u_h\rVert_{L^2(\Omega)}^2
 +k\lVert\nabla u_h\rVert_{L^2(\Omega)}^2
 =(f,u_h)+\langle g,u_h\rangle_{\partial\Omega}.
 \end{equation}
-The Cauchy--Schwarz inequality and the trace theorem yield
+If $f=0$ and $g=0$, the right-hand side vanishes. Integrating in time
+yields~\eqref{eq:energy-hom}.
+
+In the inhomogeneous case, the Cauchy--Schwarz inequality and the trace
+theorem give
 \begin{equation}
 \begin{aligned}
 \bigl\lvert(f,u_h)+\langle g,u_h\rangle_{\partial\Omega}\bigr\rvert
@@ -763,7 +780,7 @@ The Cauchy--Schwarz inequality and the trace theorem yield
 \bigl(\lVert u_h\rVert_{L^2(\Omega)}+\lVert\nabla u_h\rVert_{L^2(\Omega)}\bigr).
 \end{aligned}
 \end{equation}
-Young's inequality with parameters $1$ and $k/2$ gives
+Young's inequality absorbs the gradient trace term into the dissipation:
 \begin{equation}
 \begin{aligned}
 \lVert f\rVert\lVert u_h\rVert
@@ -799,6 +816,21 @@ $\int_0^t\lVert u_h\rVert_{L^2(\Omega)}^2\,\dd s$ produces~\eqref{eq:energy},
 with $C_T$ depending on $\Omega$, $k$ and $T$ only.
 \end{proof}
 
+\begin{remark}[Forward Euler on the Galerkin ODE]
+\label{rem:galerkin-euler}
+Because the \dziti{} basis is orthonormal,~\eqref{eq:ode} has mass matrix
+equal to the identity. Advancing it by forward Euler,
+$C^{n+1}=(I-\Delta t\,A)C^n+\Delta t\,F^n$, is stable in $\ell^2$ if and
+only if $\Delta t\,\rho(A)\le 2$. The stiffness matrix $A$ is symmetric
+positive semi-definite, and the inverse inequality
+$\lVert\nabla v_h\rVert_{L^2(\Omega)}\le C_{\mathrm{inv}}h^{-1}\lVert v_h\rVert_{L^2(\Omega)}$
+on $V_h$ yields $\rho(A)\le C_{\mathrm{inv}}^2 k\,h^{-2}$, with
+$C_{\mathrm{inv}}$ independent of $h$. A sufficient CFL condition is therefore
+$k\Delta t\le 2h^2/C_{\mathrm{inv}}^2$. This restriction is of the same order
+as~\eqref{eq:CFL} below; the constant $C_{\mathrm{inv}}$ is not needed for
+the collocation scheme analysed next.
+\end{remark}
+
 \subsection{Fully discrete explicit scheme}
 
 Let $\Delta t=T/N_t$ and $t_n=n\Delta t$. Write $u_\alpha^n$ for the
@@ -827,10 +859,11 @@ u_{ijk}^{n+1}
 +\Delta t\,f(t_n,r_i,r_j,r_k),
 \end{equation}
 for $2\le i,j,k\le m$. At the faces of the cube the Neumann condition is
-enforced by a first-order one-sided difference, or, equivalently, by a ghost
-value that realises
-$k\partial_n u=g$ to first order; a second-order one-sided closure may be
-substituted without changing the stability argument below. On the unit ball
+enforced by a symmetric ghost value realising $k\partial_n u=g$; this keeps
+the discrete Laplacian self-adjoint, which is used in the stability argument
+below. A first-order one-sided closure may be used in computations, but it
+need not be symmetric, and the $\ell^2$ contraction of Theorem~\ref{thm:scheme}
+is then no longer guaranteed by the same energy identity. On the unit ball
 the same time-stepping is applied to the spherical Laplacian
 \begin{equation}
 \label{eq:sph-lap}
@@ -842,23 +875,31 @@ the same time-stepping is applied to the spherical Laplacian
 with $\partial_\rho u=g/k$ at $\rho=1$ and the usual regularity conditions
 at $\rho=0$ and on the polar axis.
 
-\begin{theorem}[CFL stability of the explicit scheme]
+\begin{theorem}[CFL stability of the explicit collocation scheme]
 \label{thm:scheme}
-Let $L_h$ be the standard seven-point discrete Laplacian on a uniform mesh of
-step $h$, with homogeneous Neumann (or periodic) closure. Then $L_h$ is
-symmetric and negative semi-definite on $\ell^2(\mathcal{R}_h)$, and its
-eigenvalues lie in $[-\Lambda_h,0]$ with $\Lambda_h=12/h^2$. Write
-$\tau=k\Delta t$ and consider the homogeneous forward Euler scheme
+Let $\Delta_h$ denote the standard seven-point discrete Laplacian on a
+uniform Cartesian mesh of step $h$, with homogeneous Neumann (or periodic)
+closure realised by symmetric ghost values. Then $\Delta_h$ is symmetric and
+negative semi-definite on $\ell^2(\mathcal{R}_h)$, and its eigenvalues lie in
+$[-\Lambda_h,0]$ with $\Lambda_h=12/h^2$. Write $\tau=k\Delta t$ and consider
+the homogeneous forward Euler scheme
 \begin{equation}
 \label{eq:euler-hom}
-U^{n+1}=U^n+\tau L_h U^n=(I+\tau L_h)U^n.
+U^{n+1}=U^n+\tau\Delta_h U^n=(I+\tau\Delta_h)U^n.
 \end{equation}
-If
+The following are equivalent:
+\begin{enumerate}
+\item $k\Delta t\le h^2/6$;
+\item $\lvert 1+\tau\lambda\rvert\le 1$ for every eigenvalue $\lambda$ of
+$\Delta_h$;
+\item $\lVert I+\tau\Delta_h\rVert_{\ell^2\to\ell^2}\le 1$.
+\end{enumerate}
+In particular, if
 \begin{equation}
 \label{eq:CFL}
 k\Delta t\le\frac{h^2}{6},
 \end{equation}
-then $\lVert I+\tau L_h\rVert_{\ell^2\to\ell^2}\le 1$, and therefore
+then
 \begin{equation}
 \label{eq:l2stab}
 \lVert U^{n+1}\rVert_{\ell^2(\mathcal{R}_h)}
@@ -869,63 +910,100 @@ then $\lVert I+\tau L_h\rVert_{\ell^2\to\ell^2}\le 1$, and therefore
 \le
 \lVert U^0\rVert_{\ell^2(\mathcal{R}_h)}.
 \end{equation}
-On a quasi-uniform mesh with $c^{-1}h\le h_i\le c h$, the same argument holds
-with~\eqref{eq:CFL} replaced by
-$k\Delta t\le h_{\min}^2/(6c^2)$, where $h_{\min}:=\min_i h_i$.
 
-If $f$ and $g$ are not zero, the same CFL condition yields
+On a nonuniform mesh, let $h_{\min}:=\min_i h_i$ and let
+\begin{equation}
+\label{eq:weighted}
+(U,V)_h
+:=\sum_{i,j,k}U_{ijk}V_{ijk}\,\omega_i\omega_j\omega_k,
+\qquad
+\omega_i:=\frac{h_i+h_{i-1}}{2},
+\end{equation}
+be the weighted inner product associated with the cell volumes. If the
+stencil~\eqref{eq:dxx} is used with a symmetric Neumann closure, then
+$\Delta_h$ is self-adjoint and negative semi-definite on this inner product.
+Gershgorin's theorem yields $\Lambda_h\le 12/h_{\min}^2$, and the same energy
+argument gives the sufficient condition
+\begin{equation}
+\label{eq:CFL-nu}
+k\Delta t\le\frac{h_{\min}^2}{6}
+\end{equation}
+for stability in the norm $\lVert\,\cdot\,\rVert_h$.
+
+If $f$ and $g$ are not zero, write $U^{n+1}=(I+\tau\Delta_h)U^n+\Delta t F^n$.
+Under~\eqref{eq:CFL} (resp.~\eqref{eq:CFL-nu}),
 \begin{equation}
 \label{eq:l2stab-inhom}
-\lVert U^n\rVert_{\ell^2(\mathcal{R}_h)}
+\lVert U^n\rVert
 \le
-\lVert U^0\rVert_{\ell^2(\mathcal{R}_h)}
-+\Delta t\sum_{j=0}^{n-1}\lVert F^j\rVert_{\ell^2(\mathcal{R}_h)},
+\lVert U^0\rVert
++\Delta t\sum_{j=0}^{n-1}\lVert F^j\rVert,
 \end{equation}
-where $F^j$ collects the source and boundary data at time $t_j$.
+where $F^j$ collects the source and boundary data at time $t_j$, and the
+norm is $\ell^2(\mathcal{R}_h)$ in the uniform case and $\lVert\,\cdot\,\rVert_h$
+in the nonuniform case.
 \end{theorem}
 
 \begin{proof}
-The operator $-L_h$ is symmetric positive semi-definite, so
-$\lVert L_h V\rVert_{\ell^2}^2\le\Lambda_h\bigl(-(L_h V,V)_{\ell^2}\bigr)$
-for every $V$, with $\Lambda_h=\lVert L_h\rVert_{\ell^2\to\ell^2}=12/h^2$
-in three dimensions (the symbol is
-$-(4/h^2)\sum_{\ell=1}^3\sin^2(\xi_\ell h/2)$). Expanding~\eqref{eq:euler-hom},
+On a uniform mesh the symbol of $\Delta_h$ is
+$-(4/h^2)\sum_{\ell=1}^3\sin^2(\xi_\ell h/2)$ (cosine modes in the Neumann
+case). Hence the spectrum lies in $[-12/h^2,0]$, with $\Lambda_h=12/h^2$.
+Since $\Delta_h$ is symmetric, $\lVert I+\tau\Delta_h\rVert_{\ell^2\to\ell^2}$
+equals the spectral radius of $I+\tau\Delta_h$. For $\lambda\in[-\Lambda_h,0]$,
+the inequality $\lvert 1+\tau\lambda\rvert\le 1$ holds for all such $\lambda$
+if and only if $0\le\tau\Lambda_h\le 2$, that is $\tau\le h^2/6$. This is
+the equivalence of the three statements, and~\eqref{eq:l2stab} follows.
+
+The same conclusion is reached by an energy identity, without Fourier
+analysis. Because $-\Delta_h$ is symmetric positive semi-definite,
+$\lVert\Delta_h V\rVert_{\ell^2}^2\le\Lambda_h\bigl(-(\Delta_h V,V)_{\ell^2}\bigr)$
+for every $V$. Expanding~\eqref{eq:euler-hom},
 \begin{equation}
 \begin{aligned}
 \lVert U^{n+1}\rVert_{\ell^2}^2
 &=\lVert U^n\rVert_{\ell^2}^2
-+2\tau(L_h U^n,U^n)_{\ell^2}
-+\tau^2\lVert L_h U^n\rVert_{\ell^2}^2 \\
++2\tau(\Delta_h U^n,U^n)_{\ell^2}
++\tau^2\lVert\Delta_h U^n\rVert_{\ell^2}^2 \\
 &\le
 \lVert U^n\rVert_{\ell^2}^2
-+2\tau(L_h U^n,U^n)_{\ell^2}
-+\tau^2\Lambda_h\bigl(-(L_h U^n,U^n)_{\ell^2}\bigr) \\
++2\tau(\Delta_h U^n,U^n)_{\ell^2}
++\tau^2\Lambda_h\bigl(-(\Delta_h U^n,U^n)_{\ell^2}\bigr) \\
 &=\lVert U^n\rVert_{\ell^2}^2
-+\bigl(2\tau-\tau^2\Lambda_h\bigr)(L_h U^n,U^n)_{\ell^2}.
++\bigl(2\tau-\tau^2\Lambda_h\bigr)(\Delta_h U^n,U^n)_{\ell^2}.
 \end{aligned}
 \end{equation}
-The inner product $(L_h U^n,U^n)_{\ell^2}$ is nonpositive. Hence
+The inner product $(\Delta_h U^n,U^n)_{\ell^2}$ is nonpositive. Hence
 $\lVert U^{n+1}\rVert_{\ell^2}\le\lVert U^n\rVert_{\ell^2}$ as soon as
-$2\tau-\tau^2\Lambda_h\ge 0$, that is $\tau\le 2/\Lambda_h=h^2/6$, which is
-\eqref{eq:CFL}. On a quasi-uniform mesh one has
-$\Lambda_h\le 12c^2/h_{\min}^2$, and the same computation gives
-$k\Delta t\le h_{\min}^2/(6c^2)$.
+$2\tau-\tau^2\Lambda_h\ge 0$, that is $\tau\le 2/\Lambda_h=h^2/6$.
 
-In the inhomogeneous case, $U^{n+1}=(I+\tau L_h)U^n+\Delta t F^n$. Under the
-CFL condition, $\lVert I+\tau L_h\rVert\le 1$, therefore
-$\lVert U^{n+1}\rVert\le\lVert U^n\rVert+\Delta t\lVert F^n\rVert$. Summing
-the resulting telescoping inequality yields~\eqref{eq:l2stab-inhom}.
+On a nonuniform mesh the operator defined by~\eqref{eq:dxx} is not symmetric
+in the unweighted $\ell^2$ product, but it is symmetric in~\eqref{eq:weighted}.
+The diagonal coefficient of $\delta_{xx}$ is $-2/(h_i h_{i-1})$, so the
+Gershgorin radius of $-\delta_{xx}$ is at most $4/h_{\min}^2$. Summing the
+three directions gives $\Lambda_h\le 12/h_{\min}^2$. Repeating the energy
+estimate in the inner product $(\,\cdot\,,\,\cdot\,)_h$ yields~\eqref{eq:CFL-nu}.
+
+In the inhomogeneous case, $\lVert I+\tau\Delta_h\rVert\le 1$ under the CFL
+condition, therefore $\lVert U^{n+1}\rVert\le\lVert U^n\rVert+\Delta t\lVert F^n\rVert$.
+Summing the resulting telescoping inequality yields~\eqref{eq:l2stab-inhom}.
 \end{proof}
 
 \begin{remark}
-The threshold \(h^2/6\) is the three-dimensional analogue of the classical
-restrictions \(k\Delta t\le h^2/2\) in one dimension and
-\(k\Delta t\le h^2/4\) in two dimensions, corresponding to a stencil with
-\(2d+1\) points. On the ball, \(h_{\min}\) is the smallest spacing among the
-radial and angular collocation nodes, multiplied by the appropriate metric
-factors near the origin. The condition is independent of the orthonormal
-\dziti{} basis: it is a restriction on the explicit Euler discretisation of
-the discrete Laplacian.
+The threshold $h^2/6$ is the three-dimensional analogue of the classical
+restrictions $k\Delta t\le h^2/2$ in one dimension and
+$k\Delta t\le h^2/4$ in two dimensions, corresponding to a stencil with
+$2d+1$ points. It is a restriction on forward Euler applied to the discrete
+Laplacian; it is not a hyperbolic CFL condition of the form
+$\Delta t\le C h$. Stability of a consistent scheme does not by itself imply
+convergence of any particular order: an error estimate requires a truncation
+analysis, which is not claimed here.
+
+On the unit ball the same energy argument applies to the discrete spherical
+Laplacian in the weighted $\ell^2$ product associated with the volume element
+$\rho^2\sin\theta\,\dd\rho\,\dd\theta\,\dd\phi$. The constant $6$ is then
+replaced by a constant that depends on the metric coefficients, and
+$h_{\min}$ is the smallest radial or angular collocation spacing (the
+restriction is most severe near the origin).
 \end{remark}
 
 %==============================================================================
@@ -1106,11 +1184,13 @@ $I_h f=\sum_{i=1}^{m+1}f(x_i)\,\varphi_i(x)$. Theorem~\ref{thm:error} then
 yields the second-order bound
 $\lVert f-f_h\rVert_{L^2}\le C\lvert I\rvert^{1/2}h^2\lVert f''\rVert_{L^\infty}$.
 
-The semi-discrete Galerkin scheme is unconditionally energy-stable; the fully
-discrete explicit Euler scheme is stable under the three-dimensional CFL
-condition $k\Delta t\le h_{\min}^2/(6c^2)$ and requires no mass-matrix
-inversion. The same building blocks tensorise to the unit cube and extend to
-the unit ball by spherical coordinates or by chord sweeping.
+The semi-discrete Galerkin scheme is unconditionally energy-stable. The fully
+discrete explicit Euler scheme on a uniform Cartesian mesh is stable in
+$\ell^2$ if and only if $k\Delta t\le h^2/6$; on a nonuniform mesh the same
+threshold with $h$ replaced by $h_{\min}$ is sufficient in the weighted
+discrete $L^2$ norm. The scheme requires no mass-matrix inversion. The same
+building blocks tensorise to the unit cube and extend to the unit ball by
+spherical coordinates or by chord sweeping.
 
 Several questions remain. The Neumann closure on the ball, the treatment of
 variable or anisotropic conductivities, and a fully discrete error analysis
