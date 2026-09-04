@@ -49,10 +49,11 @@ resulting basis is used in two complementary ways: as an $L^2$ projection
 space, and through an interpolatory reconstruction at the roots of the basis
 functions, which yields an explicit fully discrete scheme without numerical
 quadrature or inversion of a mass matrix. We prove that $f_h$ is the best least-squares approximation in the
-\dziti{} space and that its error is controlled by comparison with the
-interpolant $I_h f=\sum_i f(x_i)\varphi_i(x)$. A second-order $L^2$ bound
-on that interpolant holds if the generators reproduce constants and
-linears; those identities are not implied by the mollifier family used here. The semi-discrete Galerkin scheme is unconditionally
+\dziti{} space and that $\lVert f-f_h\rVert_{L^2}\le\lVert f-I_h f\rVert_{L^2}$
+with $I_h f=\sum_i f(x_i)\varphi_i(x)$. A second-order bound holds for the
+mollification $\eta_h*f$, not for $f_h$: the space $V_h$ does not contain
+constants, so no estimate $\lVert f-f_h\rVert_{L^2}\le C h^2\lVert f''\rVert_{L^\infty}$
+can hold for all $f\in W^{2,\infty}$. The semi-discrete Galerkin scheme is unconditionally
 energy-stable. The corresponding explicit Euler scheme is
 stable under a CFL restriction of order $\Delta t=\mathcal{O}(h^2)$. The
 construction is extended to three dimensions by tensorisation on Cartesian
@@ -138,10 +139,11 @@ rigorous footing. The contributions are as follows.
 justification of the two-term Gram--Schmidt recurrence from the compact
 overlap of the generating functions.
 \item We prove that the reconstruction $f_h$ is the best least-squares
-approximation in $V_h$ and that it improves upon the interpolant
-$I_h f=\sum_{i}f(x_i)\varphi_i(x)$. The Taylor expansion of $I_h f$ yields
-an $O(h^2)$ bound if the generators satisfy the first-order Strang--Fix
-identities; these identities fail for the family~\eqref{eq:phi}.
+approximation in $V_h$ and that $\lVert f-f_h\rVert_{L^2}\le\lVert f-I_h f\rVert_{L^2}$
+with $I_h f=\sum_{i}f(x_i)\varphi_i(x)$. The kernel $\eta_h$ is a second-order
+approximate identity, but $V_h$ does not contain constants, and therefore
+no bound $\lVert f-f_h\rVert_{L^2}\le C h^2\lVert f''\rVert_{L^\infty}$ holds
+for all $f\in W^{2,\infty}$.
 We also establish energy stability of the semi-discrete Galerkin scheme and a
 CFL condition for the explicit Euler method.
 \item We extend the scheme to the unit cube by tensorisation and to the unit
@@ -608,143 +610,131 @@ norm $\lVert\cdot\rVert_h$ induced by~\eqref{eq:discrete-ip}.
 
 \subsection{Error estimate}
 
-Lemma~\ref{lem:orthonormal} reduces the error of $f_h$ to that of the
-interpolant~\eqref{interp}. The next result records the exact Taylor
-remainder of $I_h f$ and isolates the identities that would turn the
-comparison into an $O(h^2)$ bound.
+Lemma~\ref{lem:orthonormal} gives the comparison
+$\lVert f-f_h\rVert_{L^2(I)}\le\lVert f-I_h f\rVert_{L^2(I)}$ with
+$I_h f=\sum_i f(x_i)\varphi_i$, but that comparison does not produce a rate.
+The only second-order estimate attached to the construction is the
+mollification bound for $\eta_h*f$. The reconstruction $f_h$ itself cannot
+satisfy a bound of order $h^2$ in terms of $\lVert f''\rVert_{L^\infty}$,
+because $V_h$ does not contain constants.
 
-\begin{theorem}[Comparison and conditional error estimate]
-\label{thm:error}
-Let $I=[a,b]\subset\mathbb{R}$ and $f\in W^{2,\infty}(I)$.
-Let $f_h$ be the \dziti{} reconstruction~\eqref{eq:fh}, and let $I_h f$ be
-the interpolant constructed from $\{\varphi_i\}_{i=1}^{m+1}$ as in
-\eqref{interp}, namely
+\begin{theorem}[Second-order mollification]
+\label{thm:mollify}
+Let $K(s):=C\Phi(s)$. Then $K$ is even, compactly supported in $(-1,1)$, and
+$\int_{\mathbb{R}}K=1$. Set
+$\mu_2:=\int_{\mathbb{R}}s^2 K(s)\,\dd s\in(0,\infty)$.
+If $f\in W^{2,\infty}(\mathbb{R})$, then
 \begin{equation}
-\label{eq:Ih}
-I_h f=\sum_{i=1}^{m+1}f(x_i)\,\varphi_i(x).
-\end{equation}
-Then $I_h f\in V_h$ and
-\begin{equation}
-\label{eq:err-comp}
-\lVert f-f_h\rVert_{L^2(I)}
+\label{eq:mollify-inf}
+\lVert\eta_h*f-f\rVert_{L^\infty(\mathbb{R})}
 \le
-\lVert f-I_h f\rVert_{L^2(I)}.
+\frac{\mu_2}{2}h^2\lVert f''\rVert_{L^\infty(\mathbb{R})},
 \end{equation}
-Moreover, for every $x\in I$ there exist intermediate points $\xi_i(x)$ such
-that
+and therefore, on any bounded interval $I$,
 \begin{equation}
-\label{eq:taylor}
-\begin{aligned}
-f(x)-I_h f(x)
-&=
-f(x)\Biggl(1-\sum_{i=1}^{m+1}\varphi_i(x)\Biggr)
--f'(x)\sum_{i=1}^{m+1}(x_i-x)\varphi_i(x)\\
-&\qquad
--\frac12\sum_{i=1}^{m+1}f''\bigl(\xi_i(x)\bigr)(x_i-x)^2\varphi_i(x).
-\end{aligned}
-\end{equation}
-If, in addition, the generators satisfy the first-order Strang--Fix
-identities
-\begin{equation}
-\label{eq:SF}
-\sum_{i=1}^{m+1}\varphi_i(x)=1,
-\qquad
-\sum_{i=1}^{m+1}(x_i-x)\varphi_i(x)=0
-\qquad\text{for a.e.\ }x\in I,
-\end{equation}
-then there exists a constant $C>0$, independent of $h$, such that
-\begin{equation}
-\label{eq:err}
-\lVert f-f_h\rVert_{L^2(I)}
+\label{eq:mollify-L2}
+\lVert\eta_h*f-f\rVert_{L^2(I)}
 \le
-\lVert f-I_h f\rVert_{L^2(I)}
-\le C\,\lvert I\rvert^{1/2}\,h^2\,\lVert f''\rVert_{L^\infty(I)}.
+\frac{\mu_2}{2}\lvert I\rvert^{1/2}h^2\lVert f''\rVert_{L^\infty(\mathbb{R})}.
 \end{equation}
+The same bounds hold for $f\in W^{2,\infty}(I)$ after a $W^{2,\infty}$
+extension to an $h$-neighbourhood of $I$.
 \end{theorem}
 
 \begin{proof}
-The comparison~\eqref{eq:err-comp} is Lemma~\ref{lem:orthonormal}(ii), since
-$I_h f\in V_h$ by~\eqref{eq:spans}.
-
-For~\eqref{eq:taylor}, Taylor expansion with remainder at each node gives
+Evenness of $K$ gives $\int_{\mathbb{R}}s K(s)\,\dd s=0$. The Taylor formula
+with integral remainder yields
 \begin{equation}
-f(x_i)=f(x)+f'(x)(x_i-x)+\tfrac12 f''\bigl(\xi_i(x)\bigr)(x_i-x)^2,
+f(x-hs)-f(x)
+=-hs f'(x)
++\int_0^1(1-t)h^2 s^2 f''(x-ths)\,\dd t.
 \end{equation}
-with $\xi_i(x)$ between $x$ and $x_i$. Multiply by $\varphi_i(x)$ and sum
-over $i$:
+Multiply by $K(s)$ and integrate in $s$. The linear term vanishes, and
 \begin{equation}
-\begin{aligned}
-I_h f(x)
-&=
-f(x)\sum_i\varphi_i(x)
-+f'(x)\sum_i(x_i-x)\varphi_i(x)\\
-&\qquad
-+\frac12\sum_i f''\bigl(\xi_i(x)\bigr)(x_i-x)^2\varphi_i(x).
-\end{aligned}
-\end{equation}
-Rearrangement is~\eqref{eq:taylor}.
-
-Now assume~\eqref{eq:SF}. The first two sums on the right-hand side of
-\eqref{eq:taylor} vanish, and $\lvert x_i-x\rvert\le h$ on
-$\supp(\varphi_i)$. The generators~\eqref{eq:phi} are nonnegative, so
-\eqref{eq:SF}$_1$ implies $\sum_i\lvert\varphi_i(x)\rvert=1$. Hence
-\begin{equation}
-\lvert f(x)-I_h f(x)\rvert
+\bigl\lvert(\eta_h*f)(x)-f(x)\bigr\rvert
 \le
-\tfrac12 h^2\lVert f''\rVert_{L^\infty(I)}.
+h^2\lVert f''\rVert_{L^\infty(\mathbb{R})}
+\int_{\mathbb{R}}\int_0^1(1-t)s^2 K(s)\,\dd t\,\dd s
+=\frac{\mu_2}{2}h^2\lVert f''\rVert_{L^\infty(\mathbb{R})},
 \end{equation}
-Squaring, integrating over $I$, and taking the square root yields
+which is~\eqref{eq:mollify-inf}. Integrating the square of this bound over
+$I$ gives~\eqref{eq:mollify-L2}.
+\end{proof}
+
+\begin{theorem}[No $O(h^2)$ bound for $f_h$ in $L^2$]
+\label{thm:error}
+Let $I=[a,b]$ and let $f_h$ be any function in $V_h$, in particular the
+\dziti{} reconstruction~\eqref{eq:fh}. There is no constant $C$, independent
+of $h$ and $f$, such that
 \begin{equation}
-\lVert f-I_h f\rVert_{L^2(I)}
+\label{eq:err-false}
+\lVert f-f_h\rVert_{L^2(I)}
 \le
-\tfrac12\lvert I\rvert^{1/2}h^2\lVert f''\rVert_{L^\infty(I)}.
+C\,\lvert I\rvert^{1/2}\,h^2\,\lVert f''\rVert_{L^\infty(I)}
 \end{equation}
-Combined with~\eqref{eq:err-comp} this is~\eqref{eq:err}.
+holds for every $f\in W^{2,\infty}(I)$ and every mesh size $h=(b-a)/m$.
+Quantitatively, there exists $\gamma>0$, depending only on $\Phi$, such that
+the constant function $f\equiv 1$ satisfies
+\begin{equation}
+\label{eq:err-lower}
+\lVert 1-v\rVert_{L^2(I)}
+\ge
+\gamma\lvert I\rvert^{1/2}
+\qquad\text{for every }v\in V_h\text{ and every }h.
+\end{equation}
+In particular~\eqref{eq:err-lower} holds for $v=f_h$.
+\end{theorem}
+
+\begin{proof}
+On each cell $[x_k,x_{k+1}]$, $k=1,\dots,m$, at most $\varphi_k$ and
+$\varphi_{k+1}$ are nonzero. For $x=x_k+\theta h$ with $\theta\in(0,1)$
+and $v=\sum_i a_i\varphi_i\in V_h$,
+\begin{equation}
+v(x)
+=\frac{C}{h}\bigl(a_k\Phi(\theta)+a_{k+1}\Phi(\theta-1)\bigr)
+=\alpha_k\Phi(\theta)+\alpha_{k+1}\Phi(1-\theta),
+\end{equation}
+where $\alpha_i:=C a_i/h$ and evenness of $\Phi$ was used. Thus
+\begin{equation}
+\lVert 1-v\rVert_{L^2(I)}^2
+=
+\sum_{k=1}^{m}
+h\int_0^1\bigl\lvert 1-\alpha_k\Phi(\theta)-\alpha_{k+1}\Phi(1-\theta)\bigr\rvert^2
+\,\dd\theta.
+\end{equation}
+Set
+\begin{equation}
+\gamma^2
+:=\inf_{\alpha,\beta\in\mathbb{R}}
+\int_0^1\bigl\lvert 1-\alpha\Phi(\theta)-\beta\Phi(1-\theta)\bigr\rvert^2\,\dd\theta.
+\end{equation}
+The infimum is attained (the integrand is a positive definite quadratic in
+$(\alpha,\beta)$ plus lower-order terms) and is strictly positive: the three
+functions $1$, $\Phi(\theta)$ and $\Phi(1-\theta)$ are linearly independent in
+$L^2(0,1)$. Indeed, if $A+B\Phi(\theta)+D\Phi(1-\theta)=0$ almost everywhere,
+then evaluating at $\theta\to 0^+$, $\theta\to 1^-$ and $\theta=1/2$ gives
+$A+B/e=0$, $A+D/e=0$ and $A+(B+D)\Phi(1/2)=0$, with
+$\Phi(1/2)=\exp(-4/3)$. Hence $B=D$ and
+$B\bigl(2\exp(-4/3)-e^{-1}\bigr)=0$. The factor in parentheses is nonzero
+because $e^{1/3}\neq 2$. Thus $A=B=D=0$, so $\gamma>0$.
+
+Therefore
+$\lVert 1-v\rVert_{L^2(I)}^2\ge m h\gamma^2=\lvert I\rvert\gamma^2$,
+which is~\eqref{eq:err-lower}.
+
+If~\eqref{eq:err-false} held, the choice $f\equiv 1$ (so $f''=0$) would force
+$f_h=1$ almost everywhere, contradicting~\eqref{eq:err-lower}.
 \end{proof}
 
 \begin{remark}
-\label{rem:SF-false}
-The identities~\eqref{eq:SF} are hypotheses, not properties of the family
-\eqref{eq:phi}. At a mesh node $x_j$ one has $\varphi_i(x_j)=0$ for
-$i\neq j$, hence
-\begin{equation}
-\sum_{i=1}^{m+1}\varphi_i(x_j)
-=\varphi_j(x_j)
-=\frac{C}{he}\neq 1.
-\end{equation}
-(The value $\varphi_j(x_j)=C/(he)$ is the nodal Kronecker identity for these
-generators.) Thus~\eqref{eq:SF}$_1$ fails, and the $O(h^2)$ conclusion
-\eqref{eq:err} is not available for this interpolant. The comparison
-\eqref{eq:err-comp} remains valid independently of~\eqref{eq:SF}.
-
-The continuous identities for the kernel do not repair this. From
-\eqref{eq:mollifier} one has $\int_{\mathbb{R}}\eta_h=1$ and, by evenness,
-$\int_{\mathbb{R}}s\,\eta_h(s)\,\dd s=0$, or equivalently
-\begin{equation}
-\label{eq:cont-SF}
-\int_{\mathbb{R}}\eta_h(x-y)\,\dd y=1,
-\qquad
-\int_{\mathbb{R}}(y-x)\eta_h(x-y)\,\dd y=0.
-\end{equation}
-These are integral identities for the mollifier, not summation identities for
-the nodal translates. A Riemann-sum analogue would replace $\mathrm{d}y$ by
-the mesh weight $h$, and would read
-$\sum_i\varphi_i(x)\,h\approx 1$, that is
-$\sum_i\varphi_i(x)\approx 1/h$, which is not~\eqref{eq:SF}$_1$. Moreover the
-support of $\eta_h(x-\,\cdot\,)$ has width $2h$, so only two nodes
-$x_k,x_{k+1}$ contribute. For $x=x_k+\theta h$ with $\theta\in(0,1)$,
-\begin{equation}
-\label{eq:discrete-mass}
-\sum_{i}\varphi_i(x)
-=\frac{C}{h}\bigl(\Phi(\theta)+\Phi(1-\theta)\bigr),
-\qquad
-\sum_{i}(x_i-x)\varphi_i(x)
-=C\bigl(-\theta\Phi(\theta)+(1-\theta)\Phi(1-\theta)\bigr).
-\end{equation}
-Neither right-hand side is independent of $\theta$: the first is of order
-$h^{-1}$, and the second vanishes at midpoints $\theta=1/2$ but not in
-general. Thus~\eqref{eq:cont-SF} cannot be converted into~\eqref{eq:SF} by
-replacing integrals with sums.
+\label{rem:mollify-vs-fh}
+Theorem~\ref{thm:mollify} is the precise sense in which the generating kernel
+is second order: convolution against $\eta_h$ reproduces $W^{2,\infty}$ data
+up to $O(h^2)$. That operator is not the reconstruction $f_h$, and
+$\eta_h*f\notin V_h$ in general. Lemma~\ref{lem:orthonormal} still yields
+$\lVert f-f_h\rVert_{L^2(I)}\le\lVert f-I_h f\rVert_{L^2(I)}$, but the
+right-hand side does not tend to zero like $O(h^2)$, consistently with
+Theorem~\ref{thm:error}.
 \end{remark}
 
 \subsection{Weak form and semi-discrete stability}
@@ -1252,10 +1242,10 @@ $V_h\subset L^2$. The roots of that basis define the reconstruction $f_h$
 of Lemma~\ref{lem:orthonormal} and a quadrature that avoids numerical
 integration rules of Gaussian type. By that lemma, $f_h$ is the best
 least-squares approximation in $V_h$, and it is compared with the interpolant
-$I_h f=\sum_{i=1}^{m+1}f(x_i)\,\varphi_i(x)$. Theorem~\ref{thm:error} records
-the comparison $\lVert f-f_h\rVert_{L^2}\le\lVert f-I_h f\rVert_{L^2}$ and
-shows that an $O(h^2)$ bound on the right-hand side requires the first-order
-Strang--Fix identities, which fail for the generators~\eqref{eq:phi}.
+$I_h f=\sum_{i=1}^{m+1}f(x_i)\,\varphi_i(x)$. Theorem~\ref{thm:mollify} gives
+the second-order mollification bound on $\eta_h*f$. Theorem~\ref{thm:error}
+shows that no comparable bound can hold for $\lVert f-f_h\rVert_{L^2}$, because
+$V_h$ does not contain constants.
 
 The semi-discrete Galerkin scheme is unconditionally energy-stable. The fully
 discrete explicit Euler scheme on a uniform Cartesian mesh is stable in
