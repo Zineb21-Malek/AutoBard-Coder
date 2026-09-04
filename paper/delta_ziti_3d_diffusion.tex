@@ -1,0 +1,1276 @@
+\documentclass[final,3p,times]{elsarticle}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{lmodern}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{tikz}
+\usepackage{hyperref}
+
+\graphicspath{{figures/}{./}}
+
+%% theorem environments (common counter)
+\theoremstyle{plain}
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\theoremstyle{remark}
+\newtheorem{remark}[theorem]{Remark}
+
+%% compact notation for the method name
+\newcommand{\dziti}{\ensuremath{\delta}\text{-Ziti}}
+\newcommand{\supp}{\operatorname{supp}}
+\newcommand{\spanop}{\operatorname{span}}
+\newcommand{\dd}{\mathrm{d}}
+
+\begin{document}
+
+\begin{frontmatter}
+
+\title{Theoretical Analysis and Numerical Investigations of the \dziti{} Method
+for Three-Dimensional Transient Diffusion Problems}
+
+\author{Rajae Malek}
+\affiliation{organization={Business School},
+	addressline={Mundiapolis University, Honoris United Universities},
+	city={Casablanca},
+	country={Morocco}}
+
+\begin{abstract}
+We analyse the \dziti{} method for three-dimensional transient diffusion with
+Neumann boundary conditions. The method is built from compactly supported
+mollifiers, orthonormalised by a two-term Gram--Schmidt recurrence that is
+justified by the tridiagonal structure of the associated Gram matrix. The
+resulting basis is used in two complementary ways: as an $L^2$ projection
+space, and through an interpolatory reconstruction at the roots of the basis
+functions, which yields an explicit fully discrete scheme without numerical
+quadrature or inversion of a mass matrix. We prove that $f_h$ is the best least-squares approximation in the
+\dziti{} space and that $\lVert f-f_h\rVert_{L^2}\le\lVert f-I_h f\rVert_{L^2}$
+with $I_h f=\sum_i f(x_i)\varphi_i(x)$. A second-order bound holds for the
+mollification $\eta_h*f$, not for $f_h$: the space $V_h$ does not contain
+constants, so no estimate $\lVert f-f_h\rVert_{L^2}\le C h^2\lVert f''\rVert_{L^\infty}$
+can hold for all $f\in W^{2,\infty}$. The semi-discrete Galerkin scheme is unconditionally
+energy-stable. The corresponding explicit Euler scheme is
+stable under a CFL restriction of order $\Delta t=\mathcal{O}(h^2)$. The
+construction is extended to three dimensions by tensorisation on Cartesian
+domains and by a spherical-coordinate (or chord-sweeping) strategy on the unit
+ball. Numerical tests on the unit cube and the unit ball, including
+manufactured solutions, are used to assess accuracy and computational cost
+against standard linear finite elements.
+\end{abstract}
+
+\begin{keyword}
+\dziti{} method \sep orthonormal basis \sep Gram--Schmidt process \sep
+explicit scheme \sep collocation \sep transient diffusion \sep heat equation
+\sep convergence analysis \sep energy stability
+\end{keyword}
+
+\end{frontmatter}
+
+%==============================================================================
+\section{Introduction}
+\label{sec:intro}
+
+The heat equation is the prototype of linear parabolic diffusion. On a bounded
+Lipschitz domain $\Omega\subset\mathbb{R}^d$ ($d=3$ in the applications below)
+and a time interval $(0,T]$, it reads
+\begin{equation}
+\label{eq:heat}
+\begin{cases}
+\dfrac{\partial u}{\partial t}-\nabla\cdot\bigl(k\nabla u\bigr)=f
+& \text{in }\Omega\times(0,T],\\[4pt]
+k\dfrac{\partial u}{\partial n}=g
+& \text{on }\partial\Omega\times(0,T],\\[4pt]
+u(\cdot,0)=u_0
+& \text{in }\Omega,
+\end{cases}
+\end{equation}
+where $u$ is the unknown temperature, $k\ge k_{\min}>0$ is the thermal
+conductivity (taken constant in the analysis), $f$ is an internal heat source,
+$g$ is a prescribed boundary flux, $n$ is the outward unit normal, and $u_0$ is
+the initial temperature. The Neumann condition models insulated or
+flux-specified surfaces. Under standard assumptions
+$f\in L^2(0,T;L^2(\Omega))$, $g\in L^2(0,T;H^{-1/2}(\partial\Omega))$ and
+$u_0\in L^2(\Omega)$, problem~\eqref{eq:heat} admits a unique weak solution
+$u\in L^2(0,T;H^1(\Omega))$ with $\partial_t u\in L^2(0,T;(H^1(\Omega))')$
+\cite{Evans2010,Brezis2011}. Accurate discretisations remain demanding in three
+dimensions in the presence of steep gradients or boundary layers, because
+stability of explicit time stepping forces $\Delta t=\mathcal{O}(h^2)$ while
+low-order spatial schemes require fine meshes to control the error.
+
+Classical discretisations include finite differences on simple geometries
+\cite{Gibou2007} and finite elements on unstructured meshes
+\cite{Babuska1973,Quarteroni2008,Thomee1997}. Linear finite elements are
+robust, but they typically require substantial refinement near regions of high
+curvature of $u$, which is costly for transient three-dimensional computations
+\cite{Mohamed2013,OHara2009}. Enrichment strategies such as the partition of
+unity finite element method (PUFEM) \cite{Melenk1996}, the generalised finite
+element method (GFEM) \cite{Strouboulis2000} and the discontinuous enrichment
+method \cite{Farhat2001,Mohamed2014} alleviate this by inserting
+problem-adapted functions into the trial space. In particular,
+Malek~\emph{et al.}~\cite{Malek2019} developed a PUFEM scheme for
+three-dimensional transient diffusion, using time-independent exponential
+enrichments and thereby reducing the number of degrees of freedom relative to
+standard finite elements.
+
+The \dziti{} method, introduced by Bsiss and Ziti
+\cite{Bsiss2016,Bsiss2017,Bsiss2023} and subsequently extended by Malek and
+Ziti \cite{Malek2021,Malek2019Stokes,Malek2022}, follows a different route. A
+family of compactly supported mollifiers is orthonormalised in $L^2$, and the
+roots of the resulting basis are used as collocation nodes. The scheme
+therefore starts from a Galerkin identity and, after replacing integrals by
+point values at those roots, behaves like a meshless/particle method. It has
+been applied to hyperbolic conservation laws, including Riemann problems for
+Burgers' equation \cite{Bsiss2016,Yoon2008}, and to elliptic and parabolic
+problems on Cartesian domains and on the disk \cite{Malek2021}. A distinctive
+feature, inherited from the generating kernel, is that the basis functions
+approximate a Dirac mass in the sense of distributions, which is useful for
+detecting loss of regularity \cite{Malek2022,Malek2023}.
+
+In the present work we apply the method to~\eqref{eq:heat} in three space
+dimensions and put the spatial approximation and the time-stepping scheme on a
+rigorous footing. The contributions are as follows.
+\begin{itemize}
+\item We recall the one-dimensional construction and give a complete
+justification of the two-term Gram--Schmidt recurrence from the compact
+overlap of the generating functions.
+\item We prove that the reconstruction $f_h$ is the best least-squares
+approximation in $V_h$ and that $\lVert f-f_h\rVert_{L^2}\le\lVert f-I_h f\rVert_{L^2}$
+with $I_h f=\sum_{i}f(x_i)\varphi_i(x)$. The kernel $\eta_h$ is a second-order
+approximate identity, but $V_h$ does not contain constants, and therefore
+no bound $\lVert f-f_h\rVert_{L^2}\le C h^2\lVert f''\rVert_{L^\infty}$ holds
+for all $f\in W^{2,\infty}$.
+We also establish energy stability of the semi-discrete Galerkin scheme and a
+CFL condition for the explicit Euler method.
+\item We extend the scheme to the unit cube by tensorisation and to the unit
+ball by spherical coordinates (and, alternatively, by sweeping chords), and we
+write the explicit three-dimensional Neumann scheme.
+\end{itemize}
+
+The rest of the paper is organised as follows. Section~\ref{sec:method}
+presents the construction of the \dziti{} basis, the interpolatory formulae
+and the three-dimensional extension. Section~\ref{sec:theory} contains the
+theoretical results. Section~\ref{sec:numerics} describes the numerical
+experiments. Conclusions are given in Section~\ref{sec:concl}.
+
+%==============================================================================
+\section{The \dziti{} method}
+\label{sec:method}
+
+\subsection{Generating kernel}
+\label{sec:kernel}
+
+The construction starts from the standard $C^\infty_c$ bump
+\begin{equation}
+\label{eq:Phi}
+\Phi(x)=
+\begin{cases}
+\exp\bigl(1/(\lvert x\rvert^2-1)\bigr) & \text{if }\lvert x\rvert<1,\\
+0 & \text{otherwise.}
+\end{cases}
+\end{equation}
+Equivalently, $\Phi(x)=\exp\bigl(-1/(1-\lvert x\rvert^2)\bigr)$ on the open
+unit interval. The function $\Phi$ is even, nonnegative and compactly
+supported in $(-1,1)$. Set
+\begin{equation}
+\label{eq:C}
+C:=\Biggl(\int_{\mathbb{R}}\Phi(x)\,\dd x\Biggr)^{-1}
+\simeq 2.252283621,
+\end{equation}
+and, for $\varepsilon>0$,
+\begin{equation}
+\label{eq:mollifier}
+\eta_\varepsilon(x):=\frac{C}{\varepsilon}\,\Phi\Bigl(\frac{x}{\varepsilon}\Bigr).
+\end{equation}
+Then $\int_{\mathbb{R}}\eta_\varepsilon=1$, $\eta_\varepsilon$ is even, and
+$\eta_\varepsilon\to\delta_0$ in $\mathcal{D}'(\mathbb{R})$ as
+$\varepsilon\to 0$. This Dirac approximation is the origin of the prefix
+``$\delta$'' in the name of the method \cite{Bsiss2016,Malek2021}.
+
+\subsection{One-dimensional generators and orthonormalisation}
+\label{sec:1d}
+
+Let $I=[a,b]\subset\mathbb{R}$ and let $m\ge 2$ be an integer. Set
+$h:=(b-a)/m$ and $x_i:=a+(i-1)h$ for $i=1,\dots,m+1$, so that $x_1=a$ and
+$x_{m+1}=b$. The generators are the translates
+\begin{equation}
+\label{eq:phi}
+\varphi_i(x):=\eta_h(x-x_i)=\frac{C}{h}\,\Phi\Bigl(\frac{x-x_i}{h}\Bigr),
+\qquad i=1,\dots,m+1,
+\end{equation}
+restricted to $I$. Consequently
+\begin{equation}
+\label{eq:supports}
+\begin{aligned}
+\supp(\varphi_1)&=[x_1,x_2],\\
+\supp(\varphi_i)&=[x_{i-1},x_{i+1}] && \text{for }i=2,\dots,m,\\
+\supp(\varphi_{m+1})&=[x_m,x_{m+1}].
+\end{aligned}
+\end{equation}
+In particular, $\varphi_i$ and $\varphi_j$ have supports of disjoint interior
+whenever $\lvert i-j\rvert\ge 2$, so that
+$\langle\varphi_i,\varphi_j\rangle_{L^2(I)}=0$ for $\lvert i-j\rvert\ge 2$.
+The family $(\varphi_i)_{1\le i\le m+1}$ is linearly independent (the Gram
+matrix is symmetric positive definite and tridiagonal). Representative
+profiles are shown in Figure~\ref{fig:phi}.
+
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}
+\node[inner sep=0pt] {\includegraphics[width=0.85\textwidth]{Fig2}};
+\node at (-4.5,3) {\tiny $\varphi_{1}$};
+\node at (-1,3) {\tiny $\varphi_{i-1}$};
+\node at (0.1,3) {\tiny $\varphi_{i}$};
+\node at (1.2,3) {\tiny $\varphi_{i+1}$};
+\node at (4.5,3) {\tiny $\varphi_{m+1}$};
+\end{tikzpicture}
+\caption{Generators $(\varphi_i)$ on $I=[-4,4]$ with $m=8$
+($C\simeq 2.252283621$).}
+\label{fig:phi}
+\end{figure}
+
+Let $\langle\cdot,\cdot\rangle$ denote the inner product of $L^2(I)$. Because
+the Gram matrix of $(\varphi_i)$ is tridiagonal, the Gram--Schmidt process
+reduces to a two-term recurrence: the orthogonal family
+$(\widetilde\psi_i)_{1\le i\le m+1}$ is defined by
+\begin{equation}
+\label{eq:GS}
+\begin{cases}
+\widetilde\psi_1:=\varphi_1,\\[4pt]
+\widetilde\psi_i:=\varphi_i+\lambda_{i-1}\widetilde\psi_{i-1},
+& i=2,\dots,m+1,\\[4pt]
+\lambda_{i-1}
+:=-\dfrac{\langle\varphi_i,\widetilde\psi_{i-1}\rangle}
+{\langle\widetilde\psi_{i-1},\widetilde\psi_{i-1}\rangle}.
+\end{cases}
+\end{equation}
+Unfolding the recurrence yields
+\begin{equation}
+\label{eq:unfold}
+\widetilde\psi_i
+=\varphi_i+\lambda_{i-1}\varphi_{i-1}
++\lambda_{i-1}\lambda_{i-2}\varphi_{i-2}
++\cdots
++\Biggl(\prod_{k=1}^{i-1}\lambda_k\Biggr)\varphi_1,
+\end{equation}
+and therefore
+$\supp(\widetilde\psi_i)=[x_1,x_{i+1}]$ for $i\le m$ (with the obvious
+modification for $i=m+1$). The orthonormal basis is then
+\begin{equation}
+\label{eq:psi}
+\psi_i:=\frac{\widetilde\psi_i}{\lVert\widetilde\psi_i\rVert_{L^2(I)}},
+\qquad i=1,\dots,m+1.
+\end{equation}
+Consecutive profiles are shown in Figure~\ref{fig:psi}. We write
+$V_h:=\spanop\{\psi_i:1\le i\le m+1\}=\spanop\{\varphi_i:1\le i\le m+1\}$.
+
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}
+\node[inner sep=0pt] {\includegraphics[width=0.85\textwidth]{Fig3}};
+\node at (-1,2.1) {\tiny $\psi_{i-1}$};
+\node at (0.1,2.1) {\tiny $\psi_{i}$};
+\node at (1.2,2.1) {\tiny $\psi_{i+1}$};
+\end{tikzpicture}
+\caption{Consecutive orthonormal functions $\psi_{i-1}$, $\psi_i$ and
+$\psi_{i+1}$ on $I=[-4,4]$ with $m=8$.}
+\label{fig:psi}
+\end{figure}
+
+The coefficients $(\lambda_i)$ obey the nonlinear recurrence
+\begin{equation}
+\label{eq:lambda-rec}
+\lambda_1=-\frac{\langle\varphi_1,\varphi_2\rangle}{\langle\varphi_1,\varphi_1\rangle},
+\qquad
+\lambda_{i+1}=\frac{\lambda_1}{2-\lambda_1\lambda_i},
+\qquad i\ge 1,
+\end{equation}
+which follows from the two-term structure and the translation invariance of
+the interior generators \cite{Bsiss2023,Malek2022}. One has
+$-1<\lambda_i<0$. Moreover, $(\lambda_i)$ converges geometrically to a limit
+$\lambda_\star\in(-1,0)$. Quantitatively, for every $\varepsilon>0$,
+\begin{equation}
+\label{eq:N0}
+\lvert\lambda_{i+1}-\lambda_i\rvert<\varepsilon
+\quad\text{as soon as}\quad
+i\ge N_0
+:=\Biggl\lfloor
+\frac{\displaystyle\ln\biggl(\frac{\varepsilon(2-\lambda_1^2)}{\lambda_1^3-\lambda_1}\biggr)}
+{\displaystyle\ln\biggl(\Bigl(\frac{\lambda_1}{2+\lambda_1}\Bigr)^2\biggr)}
+\Biggr\rfloor+1.
+\end{equation}
+In practice $N_0=9$ already yields stationarity at machine precision for
+$\varepsilon=10^{-9}$; see Table~\ref{tab:lambda}. From that rank onward the
+recurrence need not be recomputed, which is the source of the method's
+algorithmic compression \cite{Bsiss2023}.
+
+\begin{table}[htbp]
+\centering
+\caption{Values of $\lambda_i$ produced by~\eqref{eq:GS}--\eqref{eq:lambda-rec}.
+The sequence is stationary at $\lambda_\star\simeq -0.273518325$ from the rank
+$N_0=9$.}
+\label{tab:lambda}
+\begin{tabular}{lccccc}
+\toprule
+$i$ & $1$ & $2$ & $3$ & $4$ & $5$ \\
+\midrule
+$\lambda_i$
+& $-0.508960181$ & $-0.292344636$ & $-0.274934054$
+& $-0.273624280$ & $-0.273526252$ \\
+\midrule
+$i$ & $6$ & $7$ & $8$ & $N_0=9$ & $10$--$101$ \\
+\midrule
+$\lambda_i$
+& $-0.273518918$ & $-0.273518369$ & $-0.273518329$
+& $-0.273518325$ & $-0.273518325$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Roots and interpolatory reconstruction}
+\label{sec:roots}
+
+The following localisation of the roots is proved in
+\cite{Malek2022,Malek2021,Bsiss2017}. We restate it in a form that also
+defines the collocation nodes used below.
+
+\begin{proposition}[Roots of the orthonormal family]
+\label{prop:roots}
+Let $m\ge 2$. There exists a unique increasing sequence
+$(r_k)_{1\le k\le m+1}$ in $I$ such that
+\begin{enumerate}
+\item $r_k\in(x_k,x_{k+1})$ for $k=1,\dots,m$, and $r_{m+1}=b$;
+\item for every $i\in\{1,\dots,m+1\}$,
+$\psi_i(r_i)>0$ and $\psi_i(r_k)=0$ whenever $k\neq i$.
+\end{enumerate}
+In particular, for $i\ge 2$, the function $\psi_i$ has exactly $i-1$ roots in
+$(x_1,x_i)$, namely $r_1,\dots,r_{i-1}$. The remaining identities
+$\psi_i(r_k)=0$ for $k>i$ follow from the support
+$\supp(\widetilde\psi_i)\subset[x_1,x_{i+1}]$.
+\end{proposition}
+
+The biorthogonality $\psi_i(r_k)=\delta_{ik}\psi_i(r_i)$ is the key algebraic
+property of the method. Given $f\in C^0(I)$, one therefore has a uniquely
+defined interpolant in $V_h$,
+\begin{equation}
+\label{eq:interp}
+I^\delta f:=\sum_{i=1}^{m+1}c_i[f]\,\psi_i,
+\qquad
+c_i[f]:=\frac{f(r_i)}{\psi_i(r_i)},
+\end{equation}
+which satisfies $I^\delta f(r_k)=f(r_k)$ for all $k$. Equivalently, if a
+function is expanded as $f\simeq\sum_i c_i\psi_i$ and the expansion is
+evaluated at $x=r_k$, the off-diagonal terms vanish and one recovers
+$c_k=f(r_k)/\psi_k(r_k)$. This is an interpolatory identity; it is \emph{not}
+the formula for the $L^2$ Fourier coefficients
+$\langle f,\psi_i\rangle$, except when $f\in V_h$.
+
+Integrating the interpolant gives a consistent quadrature,
+\begin{equation}
+\label{eq:quad}
+\int_a^b I^\delta f(x)\,\dd x
+=\sum_{i=1}^{m+1}\frac{f(r_i)}{\psi_i(r_i)}\,I_i,
+\qquad
+I_i:=\int_a^b\psi_i(x)\,\dd x.
+\end{equation}
+If one further approximates $I_i$ by the one-point rule
+$I_i\simeq 1/\psi_i(r_i)$, one obtains the simplified formula
+\begin{equation}
+\label{eq:quad-simple}
+\int_a^b f(x)\,\dd x
+\simeq\sum_{i=1}^{m+1}\frac{f(r_i)}{\psi_i(r_i)^2},
+\end{equation}
+which appears in earlier presentations of the method. Throughout the analysis
+we use~\eqref{eq:interp} and~\eqref{eq:quad}, which do not rely on that extra
+approximation. Likewise,
+\begin{equation}
+\label{eq:inner-interp}
+\langle I^\delta f,\psi_i\rangle
+=\frac{f(r_i)}{\psi_i(r_i)},
+\end{equation}
+so the identity $\langle f,\psi_i\rangle\simeq f(r_i)/\psi_i(r_i)$ is exact on
+$V_h$ and is used as a quadrature for general $f$.
+
+\begin{proposition}[Interpolatory formulae]
+\label{prop:interp}
+Let $m\ge 2$ and $f\in C^0(I)$. The operator $I^\delta$ defined
+by~\eqref{eq:interp} is the unique interpolant in $V_h$ at the nodes
+$(r_i)$, and~\eqref{eq:quad}--\eqref{eq:inner-interp} hold. In particular,
+\begin{equation}
+\label{eq:ci}
+c_i[f]=\frac{f(r_i)}{\psi_i(r_i)},
+\qquad
+\int_a^b f(x)\psi_i(x)\,\dd x
+\simeq\frac{f(r_i)}{\psi_i(r_i)}.
+\end{equation}
+\end{proposition}
+
+\subsection{Tensorisation in two and three dimensions}
+\label{sec:tensor}
+
+On a rectangle $\Omega=[a,b]\times[c,d]$ one constructs one-dimensional
+families $(\psi_i^{[1]})_{1\le i\le m_1+1}$ on $[a,b]$ and
+$(\psi_j^{[2]})_{1\le j\le m_2+1}$ on $[c,d]$, with collocation nodes
+$(r_i)$ and $(s_j)$ respectively. The tensor-product basis
+\begin{equation}
+\label{eq:2d-basis}
+\psi_{ij}(x,y):=\psi_i^{[1]}(x)\,\psi_j^{[2]}(y)
+\end{equation}
+is orthonormal in $L^2(\Omega)$. The interpolant of $f\in C^0(\Omega)$ is
+\begin{equation}
+\label{eq:2d-interp}
+I^\delta f(x,y)
+=\sum_{i=1}^{m_1+1}\sum_{j=1}^{m_2+1}
+\frac{f(r_i,s_j)}{\psi_i^{[1]}(r_i)\,\psi_j^{[2]}(s_j)}
+\,\psi_{ij}(x,y),
+\end{equation}
+and the quadrature analogue of~\eqref{eq:quad} reads
+\begin{equation}
+\label{eq:2d-quad}
+\int_a^b\int_c^d I^\delta f
+=\sum_{i=1}^{m_1+1}\sum_{j=1}^{m_2+1}
+\frac{f(r_i,s_j)}{\psi_i^{[1]}(r_i)\,\psi_j^{[2]}(s_j)}
+\,I_i^{[1]}\,I_j^{[2]}.
+\end{equation}
+
+On the unit cube $\Omega=[a,b]^3$ the same construction produces an
+orthonormal tensor basis
+\begin{equation}
+\label{eq:3d-basis}
+\psi_{ijk}(x,y,z)
+:=\psi_i(x)\,\psi_j(y)\,\psi_k(z),
+\qquad
+1\le i,j,k\le m+1,
+\end{equation}
+with collocation nodes $(r_i,r_j,r_k)$ and
+\begin{equation}
+\label{eq:3d-interp}
+I^\delta f
+=\sum_{i,j,k=1}^{m+1}
+\frac{f(r_i,r_j,r_k)}{\psi_i(r_i)\psi_j(r_j)\psi_k(r_k)}
+\,\psi_{ijk}.
+\end{equation}
+We write $V_h(\Omega):=\spanop\{\psi_{ijk}\}$ and denote by
+$\mathcal{R}_h:=\{(r_i,r_j,r_k)\}$ the three-dimensional collocation grid.
+The number of degrees of freedom is $N_h=(m+1)^3$.
+
+On the unit ball $B:=\{x\in\mathbb{R}^3:\lvert x\rvert<1\}$ two strategies
+are available, following \cite{Malek2021}. The first sweeps $B$ by chords
+parallel to the coordinate axes and repeats the one-dimensional construction
+on each chord, with a fixed number of nodes per chord and a chord-dependent
+step. The second uses spherical coordinates
+$x=\rho\sin\theta\cos\phi$, $y=\rho\sin\theta\sin\phi$,
+$z=\rho\cos\theta$, with
+$(\rho,\theta,\phi)\in[0,1]\times[0,\pi]\times[0,2\pi]$, and the tensor
+product of three one-dimensional \dziti{} families on those intervals. The
+volume element $\rho^2\sin\theta\,\dd\rho\,\dd\theta\,\dd\phi$ is
+incorporated into the quadrature~\eqref{eq:quad}. Both strategies reduce
+every integral and every collocation identity to the one-dimensional
+formulae of Section~\ref{sec:roots}.
+
+%==============================================================================
+\section{Theoretical analysis}
+\label{sec:theory}
+
+\subsection{Algebraic properties of the basis}
+
+\begin{lemma}[Equality of spans and best approximation]
+\label{lem:orthonormal}
+Let $I=[a,b]\subset\mathbb{R}$, and let the two families
+$\{\varphi_i\}_{i=1}^{m+1}$ and $\{\psi_i\}_{i=1}^{m+1}$ be those constructed
+by the \dziti{} method in Section~\ref{sec:1d}. Set
+$V_h:=\spanop\{\psi_i\}_{i=1}^{m+1}$. Then:
+\begin{enumerate}
+\item The two families generate the same vector space:
+\begin{equation}
+\label{eq:spans}
+\spanop\{\psi_i\}_{i=1}^{m+1}
+=
+\spanop\{\varphi_i\}_{i=1}^{m+1}.
+\end{equation}
+\item In the continuous case, and likewise in the discrete case, the
+\dziti{} reconstruction
+\begin{equation}
+\label{eq:fh}
+f_h(x)
+=\sum_{i=1}^{m+1}\frac{f(r_i)}{\psi_i(r_i)}\,\psi_i(x)
+\end{equation}
+is the best approximation of $f$ in $V_h$ in the least-squares sense. Consequently
+\begin{equation}
+\label{eq:best}
+\lVert f-f_h\rVert_{L^2(I)}
+=\inf_{v\in V_h}\lVert f-v\rVert_{L^2(I)}
+\le
+\lVert f-I_h f\rVert_{L^2(I)},
+\end{equation}
+where $I_h f$ is the interpolant constructed from the generators
+$\{\varphi_i\}_{i=1}^{m+1}$,
+\begin{equation}
+\label{interp}
+I_h f=\sum_{i=1}^{m+1}f(x_i)\,\varphi_i(x).
+\end{equation}
+\end{enumerate}
+In~\eqref{eq:best} the norm is that of $L^2(I)$ in the continuous case, and
+the discrete least-squares norm associated with the roots $(r_i)$ in the
+discrete case.
+\end{lemma}
+
+\begin{proof}
+(i) The inclusion
+$\spanop\{\psi_i\}\subset\spanop\{\varphi_i\}$ follows from the definition of
+the Gram--Schmidt family: each $\widetilde\psi_i$ (and hence each $\psi_i$)
+is a linear combination of $\varphi_1,\dots,\varphi_i$. The reverse inclusion
+is obtained by a simple recurrence from~\eqref{eq:GS},
+\begin{equation}
+\label{eq:inverse}
+\varphi_1=\widetilde\psi_1,
+\qquad
+\varphi_i=\widetilde\psi_i-\lambda_{i-1}\widetilde\psi_{i-1},
+\quad i=2,\dots,m+1.
+\end{equation}
+Thus each $\varphi_i$ is a linear combination of $\widetilde\psi_i$ and
+$\widetilde\psi_{i-1}$. Since $\psi_i$ is a nonzero multiple of
+$\widetilde\psi_i$, one has~\eqref{eq:spans}.
+
+(ii) \textbf{Continuous case.}
+We equip $L^2(I)$ with the inner product
+\begin{equation}
+\label{eq:ip}
+(f,g)=\int_I f(x)g(x)\,\dd x.
+\end{equation}
+The family $\{\psi_i\}_{i=1}^{m+1}$ is an orthonormal basis of $V_h$, so every
+$v\in V_h$ may be written
+\begin{equation}
+v(x)=\sum_{i=1}^{m+1}a_i\psi_i(x).
+\end{equation}
+Consider the quadratic functional
+\begin{align*}
+E(a_1,\dots,a_{m+1})
+&=\lVert f-v\rVert_{L^2(I)}^2 \\
+&=(f,f)-2\sum_{i=1}^{m+1}a_i(\psi_i,f)+\sum_{i=1}^{m+1}a_i^2 \\
+&=(f,f)-2\sum_{i=1}^{m+1}a_i c_i+\sum_{i=1}^{m+1}a_i^2,
+\end{align*}
+where $c_i$ is the \dziti{} coefficient of $f$. By the interpolatory formulae
+of Proposition~\ref{prop:interp},
+\begin{equation}
+\label{eq:ci-id}
+c_i
+=(\psi_i,f)
+=\int_a^b f(x)\psi_i(x)\,\dd x
+=\frac{f(r_i)}{\psi_i(r_i)}.
+\end{equation}
+A critical point of $E$ is characterised by the vanishing of all partial
+derivatives:
+\begin{equation}
+\frac{\partial E}{\partial a_i}=-2c_i+2a_i.
+\end{equation}
+The condition $\partial E/\partial a_i=0$ therefore yields $a_i=c_i$. The
+Hessian of $E$ is twice the identity, so this critical point is the unique
+global minimiser. Hence
+\begin{equation}
+f_h(x)=\sum_{i=1}^{m+1}\frac{f(r_i)}{\psi_i(r_i)}\,\psi_i(x)
+\end{equation}
+is the best approximation of $f$ in $V_h$ in the $L^2(I)$ least-squares sense,
+and
+\begin{equation}
+\lVert f-f_h\rVert_{L^2(I)}
+=\inf_{v\in V_h}\lVert f-v\rVert_{L^2(I)}.
+\end{equation}
+From (i), the interpolant $I_h f$ defined by~\eqref{interp} belongs to $V_h$.
+Taking $v=I_h f$ in the infimum gives the comparison with~\eqref{interp}:
+\begin{equation}
+\lVert f-f_h\rVert_{L^2(I)}
+\le
+\lVert f-I_h f\rVert_{L^2(I)}.
+\end{equation}
+
+\textbf{Discrete case.}
+Let the inner product be the discrete sum associated with the \dziti{} roots,
+\begin{equation}
+\label{eq:discrete-ip}
+(f,g)_h
+:=\sum_{k=1}^{m+1}\frac{f(r_k)\,g(r_k)}{\psi_k(r_k)^2}.
+\end{equation}
+The biorthogonality $\psi_i(r_k)=\delta_{ik}\psi_i(r_i)$ of
+Proposition~\ref{prop:roots} implies
+$(\psi_i,\psi_j)_h=\delta_{ij}$ and
+\begin{equation}
+(f,\psi_i)_h=\frac{f(r_i)}{\psi_i(r_i)}.
+\end{equation}
+Repeating the argument above with $(\cdot,\cdot)_h$ in place of~\eqref{eq:ip},
+the same functional $E$ is minimised if and only if
+$a_i=(f,\psi_i)_h=f(r_i)/\psi_i(r_i)$. Thus $f_h$ is exactly the discrete
+least-squares projection of $f$ onto $V_h$, and~\eqref{eq:best} holds for the
+norm $\lVert\cdot\rVert_h$ induced by~\eqref{eq:discrete-ip}.
+\end{proof}
+
+\subsection{Error estimate}
+
+Lemma~\ref{lem:orthonormal} gives the comparison
+$\lVert f-f_h\rVert_{L^2(I)}\le\lVert f-I_h f\rVert_{L^2(I)}$ with
+$I_h f=\sum_i f(x_i)\varphi_i$, but that comparison does not produce a rate.
+The only second-order estimate attached to the construction is the
+mollification bound for $\eta_h*f$. The reconstruction $f_h$ itself cannot
+satisfy a bound of order $h^2$ in terms of $\lVert f''\rVert_{L^\infty}$,
+because $V_h$ does not contain constants.
+
+\begin{theorem}[Second-order mollification]
+\label{thm:mollify}
+Let $K(s):=C\Phi(s)$. Then $K$ is even, compactly supported in $(-1,1)$, and
+$\int_{\mathbb{R}}K=1$. Set
+$\mu_2:=\int_{\mathbb{R}}s^2 K(s)\,\dd s\in(0,\infty)$.
+If $f\in W^{2,\infty}(\mathbb{R})$, then
+\begin{equation}
+\label{eq:mollify-inf}
+\lVert\eta_h*f-f\rVert_{L^\infty(\mathbb{R})}
+\le
+\frac{\mu_2}{2}h^2\lVert f''\rVert_{L^\infty(\mathbb{R})},
+\end{equation}
+and therefore, on any bounded interval $I$,
+\begin{equation}
+\label{eq:mollify-L2}
+\lVert\eta_h*f-f\rVert_{L^2(I)}
+\le
+\frac{\mu_2}{2}\lvert I\rvert^{1/2}h^2\lVert f''\rVert_{L^\infty(\mathbb{R})}.
+\end{equation}
+The same bounds hold for $f\in W^{2,\infty}(I)$ after a $W^{2,\infty}$
+extension to an $h$-neighbourhood of $I$.
+\end{theorem}
+
+\begin{proof}
+Evenness of $K$ gives $\int_{\mathbb{R}}s K(s)\,\dd s=0$. The Taylor formula
+with integral remainder yields
+\begin{equation}
+f(x-hs)-f(x)
+=-hs f'(x)
++\int_0^1(1-t)h^2 s^2 f''(x-ths)\,\dd t.
+\end{equation}
+Multiply by $K(s)$ and integrate in $s$. The linear term vanishes, and
+\begin{equation}
+\bigl\lvert(\eta_h*f)(x)-f(x)\bigr\rvert
+\le
+h^2\lVert f''\rVert_{L^\infty(\mathbb{R})}
+\int_{\mathbb{R}}\int_0^1(1-t)s^2 K(s)\,\dd t\,\dd s
+=\frac{\mu_2}{2}h^2\lVert f''\rVert_{L^\infty(\mathbb{R})},
+\end{equation}
+which is~\eqref{eq:mollify-inf}. Integrating the square of this bound over
+$I$ gives~\eqref{eq:mollify-L2}.
+\end{proof}
+
+\begin{theorem}[No $O(h^2)$ bound for $f_h$ in $L^2$]
+\label{thm:error}
+Let $I=[a,b]$ and let $f_h$ be any function in $V_h$, in particular the
+\dziti{} reconstruction~\eqref{eq:fh}. There is no constant $C$, independent
+of $h$ and $f$, such that
+\begin{equation}
+\label{eq:err-false}
+\lVert f-f_h\rVert_{L^2(I)}
+\le
+C\,\lvert I\rvert^{1/2}\,h^2\,\lVert f''\rVert_{L^\infty(I)}
+\end{equation}
+holds for every $f\in W^{2,\infty}(I)$ and every mesh size $h=(b-a)/m$.
+Quantitatively, there exists $\gamma>0$, depending only on $\Phi$, such that
+the constant function $f\equiv 1$ satisfies
+\begin{equation}
+\label{eq:err-lower}
+\lVert 1-v\rVert_{L^2(I)}
+\ge
+\gamma\lvert I\rvert^{1/2}
+\qquad\text{for every }v\in V_h\text{ and every }h.
+\end{equation}
+In particular~\eqref{eq:err-lower} holds for $v=f_h$.
+\end{theorem}
+
+\begin{proof}
+On each cell $[x_k,x_{k+1}]$, $k=1,\dots,m$, at most $\varphi_k$ and
+$\varphi_{k+1}$ are nonzero. For $x=x_k+\theta h$ with $\theta\in(0,1)$
+and $v=\sum_i a_i\varphi_i\in V_h$,
+\begin{equation}
+v(x)
+=\frac{C}{h}\bigl(a_k\Phi(\theta)+a_{k+1}\Phi(\theta-1)\bigr)
+=\alpha_k\Phi(\theta)+\alpha_{k+1}\Phi(1-\theta),
+\end{equation}
+where $\alpha_i:=C a_i/h$ and evenness of $\Phi$ was used. Thus
+\begin{equation}
+\lVert 1-v\rVert_{L^2(I)}^2
+=
+\sum_{k=1}^{m}
+h\int_0^1\bigl\lvert 1-\alpha_k\Phi(\theta)-\alpha_{k+1}\Phi(1-\theta)\bigr\rvert^2
+\,\dd\theta.
+\end{equation}
+Set
+\begin{equation}
+\gamma^2
+:=\inf_{\alpha,\beta\in\mathbb{R}}
+\int_0^1\bigl\lvert 1-\alpha\Phi(\theta)-\beta\Phi(1-\theta)\bigr\rvert^2\,\dd\theta.
+\end{equation}
+The infimum is attained (the integrand is a positive definite quadratic in
+$(\alpha,\beta)$ plus lower-order terms) and is strictly positive: the three
+functions $1$, $\Phi(\theta)$ and $\Phi(1-\theta)$ are linearly independent in
+$L^2(0,1)$. Indeed, if $A+B\Phi(\theta)+D\Phi(1-\theta)=0$ almost everywhere,
+then evaluating at $\theta\to 0^+$, $\theta\to 1^-$ and $\theta=1/2$ gives
+$A+B/e=0$, $A+D/e=0$ and $A+(B+D)\Phi(1/2)=0$, with
+$\Phi(1/2)=\exp(-4/3)$. Hence $B=D$ and
+$B\bigl(2\exp(-4/3)-e^{-1}\bigr)=0$. The factor in parentheses is nonzero
+because $e^{1/3}\neq 2$. Thus $A=B=D=0$, so $\gamma>0$.
+
+Therefore
+$\lVert 1-v\rVert_{L^2(I)}^2\ge m h\gamma^2=\lvert I\rvert\gamma^2$,
+which is~\eqref{eq:err-lower}.
+
+If~\eqref{eq:err-false} held, the choice $f\equiv 1$ (so $f''=0$) would force
+$f_h=1$ almost everywhere, contradicting~\eqref{eq:err-lower}.
+\end{proof}
+
+\begin{remark}
+\label{rem:mollify-vs-fh}
+Theorem~\ref{thm:mollify} is the precise sense in which the generating kernel
+is second order: convolution against $\eta_h$ reproduces $W^{2,\infty}$ data
+up to $O(h^2)$. That operator is not the reconstruction $f_h$, and
+$\eta_h*f\notin V_h$ in general. Lemma~\ref{lem:orthonormal} still yields
+$\lVert f-f_h\rVert_{L^2(I)}\le\lVert f-I_h f\rVert_{L^2(I)}$, but the
+right-hand side does not tend to zero like $O(h^2)$, consistently with
+Theorem~\ref{thm:error}.
+\end{remark}
+
+\subsection{Weak form and semi-discrete stability}
+
+Multiplying~\eqref{eq:heat} by $v\in H^1(\Omega)$ and integrating by parts
+gives the weak formulation: find
+$u\in L^2(0,T;H^1(\Omega))$ such that, for a.e.\ $t\in(0,T)$,
+\begin{equation}
+\label{eq:weak}
+\bigl(\partial_t u(t),v\bigr)
++a\bigl(u(t),v\bigr)
+=\ell(t;v)
+\qquad\forall v\in H^1(\Omega),
+\end{equation}
+where
+\begin{equation}
+\label{eq:forms}
+a(w,v):=\int_\Omega k\nabla w\cdot\nabla v\,\dd x,
+\qquad
+\ell(t;v):=\int_\Omega f(t)v\,\dd x+\int_{\partial\Omega}g(t)v\,\dd\sigma.
+\end{equation}
+The bilinear form $a$ is continuous and coercive on $H^1(\Omega)$ up to the
+kernel of the Neumann problem (constants); uniqueness of~\eqref{eq:heat} is
+restored by the initial condition.
+
+Let $\{\psi_\alpha\}_{\alpha\in\mathcal{I}_h}$ be the orthonormal \dziti{}
+basis of $V_h(\Omega)\subset H^1(\Omega)$ constructed in
+Section~\ref{sec:tensor} (tensor product on the cube, spherical or
+chord-wise construction on the ball). The semi-discrete Galerkin scheme
+consists in seeking $u_h(t)=\sum_{\alpha}c_\alpha(t)\psi_\alpha\in V_h(\Omega)$
+such that $u_h(0)$ is the \dziti{} reconstruction~\eqref{eq:fh} of the
+initial datum $u_0$, and
+\begin{equation}
+\label{eq:semidisc}
+\bigl(\partial_t u_h(t),v_h\bigr)
++a\bigl(u_h(t),v_h\bigr)
+=\ell(t;v_h)
+\qquad\forall v_h\in V_h(\Omega).
+\end{equation}
+Orthonormality reduces the mass matrix to the identity: writing $C(t)=(c_\alpha(t))$,
+\begin{equation}
+\label{eq:ode}
+C'(t)+AC(t)=F(t),
+\end{equation}
+where $A_{\alpha\beta}=a(\psi_\beta,\psi_\alpha)$ is the stiffness matrix and
+$F_\alpha(t)=\ell(t;\psi_\alpha)$. No mass-matrix inversion is required.
+
+\begin{theorem}[Energy stability of the semi-discrete scheme]
+\label{thm:semi}
+Let $k>0$ be constant and let $u_h\in C^1([0,T];V_h(\Omega))$
+solve~\eqref{eq:semidisc}.
+\begin{enumerate}
+\item If $f=0$ and $g=0$, the scheme dissipates energy:
+\begin{equation}
+\label{eq:energy-hom}
+\lVert u_h(t)\rVert_{L^2(\Omega)}^2
++2k\int_0^t\lVert\nabla u_h(s)\rVert_{L^2(\Omega)}^2\,\dd s
+=
+\lVert u_h(0)\rVert_{L^2(\Omega)}^2.
+\end{equation}
+\item If $f\in L^2(0,T;L^2(\Omega))$ and
+$g\in L^2(0,T;L^2(\partial\Omega))$, there exists $C_T>0$, depending only
+on $\Omega$, $k$ and $T$, such that for every $t\in[0,T]$,
+\begin{equation}
+\label{eq:energy}
+\begin{aligned}
+\lVert u_h(t)\rVert_{L^2(\Omega)}^2
+&+k\int_0^t\lVert\nabla u_h(s)\rVert_{L^2(\Omega)}^2\,\dd s \\
+&\le
+C_T\Biggl(
+\lVert u_h(0)\rVert_{L^2(\Omega)}^2
++\int_0^t\Bigl(
+\lVert f(s)\rVert_{L^2(\Omega)}^2
++\lVert g(s)\rVert_{L^2(\partial\Omega)}^2
+\Bigr)\,\dd s
+\Biggr).
+\end{aligned}
+\end{equation}
+\end{enumerate}
+The estimates are independent of $h$. In particular, the semi-discrete
+scheme is unconditionally stable in $L^2(\Omega)$.
+\end{theorem}
+
+\begin{proof}
+Take $v_h=u_h(t)$ in~\eqref{eq:semidisc}. Since
+$a(u_h,u_h)=k\lVert\nabla u_h\rVert_{L^2(\Omega)}^2$,
+\begin{equation}
+\label{eq:energy-id}
+\frac12\frac{\dd}{\dd t}\lVert u_h\rVert_{L^2(\Omega)}^2
++k\lVert\nabla u_h\rVert_{L^2(\Omega)}^2
+=(f,u_h)+\langle g,u_h\rangle_{\partial\Omega}.
+\end{equation}
+If $f=0$ and $g=0$, the right-hand side vanishes. Integrating in time
+yields~\eqref{eq:energy-hom}.
+
+In the inhomogeneous case, the Cauchy--Schwarz inequality and the trace
+theorem give
+\begin{equation}
+\begin{aligned}
+\bigl\lvert(f,u_h)+\langle g,u_h\rangle_{\partial\Omega}\bigr\rvert
+&\le
+\lVert f\rVert_{L^2(\Omega)}\lVert u_h\rVert_{L^2(\Omega)}\\
+&\qquad
++C_{\mathrm{tr}}\lVert g\rVert_{L^2(\partial\Omega)}
+\bigl(\lVert u_h\rVert_{L^2(\Omega)}+\lVert\nabla u_h\rVert_{L^2(\Omega)}\bigr).
+\end{aligned}
+\end{equation}
+Young's inequality absorbs the gradient trace term into the dissipation:
+\begin{equation}
+\begin{aligned}
+\lVert f\rVert\lVert u_h\rVert
+&\le \tfrac12\lVert u_h\rVert_{L^2(\Omega)}^2+\tfrac12\lVert f\rVert_{L^2(\Omega)}^2,\\
+C_{\mathrm{tr}}\lVert g\rVert\lVert u_h\rVert
+&\le \tfrac12\lVert u_h\rVert_{L^2(\Omega)}^2+C_1\lVert g\rVert_{L^2(\partial\Omega)}^2,\\
+C_{\mathrm{tr}}\lVert g\rVert\lVert\nabla u_h\rVert
+&\le \tfrac{k}{2}\lVert\nabla u_h\rVert_{L^2(\Omega)}^2
++C_2\lVert g\rVert_{L^2(\partial\Omega)}^2,
+\end{aligned}
+\end{equation}
+with $C_1,C_2$ depending only on $\Omega$ and $k$. Therefore
+\begin{equation}
+\label{eq:energy-diff}
+\frac{\dd}{\dd t}\lVert u_h\rVert_{L^2(\Omega)}^2
++k\lVert\nabla u_h\rVert_{L^2(\Omega)}^2
+\le
+2\lVert u_h\rVert_{L^2(\Omega)}^2
++\lVert f\rVert_{L^2(\Omega)}^2
++C_3\lVert g\rVert_{L^2(\partial\Omega)}^2.
+\end{equation}
+Dropping the gradient term and applying Gronwall's lemma, we obtain
+\begin{equation}
+\lVert u_h(t)\rVert_{L^2(\Omega)}^2
+\le
+e^{2t}\lVert u_h(0)\rVert_{L^2(\Omega)}^2
++\int_0^t e^{2(t-s)}
+\Bigl(\lVert f(s)\rVert_{L^2(\Omega)}^2
++C_3\lVert g(s)\rVert_{L^2(\partial\Omega)}^2\Bigr)\,\dd s.
+\end{equation}
+Integrating~\eqref{eq:energy-diff} over $[0,t]$ and inserting this bound on
+$\int_0^t\lVert u_h\rVert_{L^2(\Omega)}^2\,\dd s$ produces~\eqref{eq:energy},
+with $C_T$ depending on $\Omega$, $k$ and $T$ only.
+\end{proof}
+
+\begin{remark}[Forward Euler on the Galerkin ODE]
+\label{rem:galerkin-euler}
+Because the \dziti{} basis is orthonormal,~\eqref{eq:ode} has mass matrix
+equal to the identity. Advancing it by forward Euler,
+$C^{n+1}=(I-\Delta t\,A)C^n+\Delta t\,F^n$, is stable in $\ell^2$ if and
+only if $\Delta t\,\rho(A)\le 2$. The stiffness matrix $A$ is symmetric
+positive semi-definite, and the inverse inequality
+$\lVert\nabla v_h\rVert_{L^2(\Omega)}\le C_{\mathrm{inv}}h^{-1}\lVert v_h\rVert_{L^2(\Omega)}$
+on $V_h$ yields $\rho(A)\le C_{\mathrm{inv}}^2 k\,h^{-2}$, with
+$C_{\mathrm{inv}}$ independent of $h$. A sufficient CFL condition is therefore
+$k\Delta t\le 2h^2/C_{\mathrm{inv}}^2$. This restriction is of the same order
+as~\eqref{eq:CFL} below; the constant $C_{\mathrm{inv}}$ is not needed for
+the collocation scheme analysed next.
+\end{remark}
+
+\subsection{Fully discrete explicit scheme}
+
+Let $\Delta t=T/N_t$ and $t_n=n\Delta t$. Write $u_\alpha^n$ for the
+approximate value of $u$ at the collocation node $x_\alpha\in\mathcal{R}_h$
+and at time $t_n$. Combining the interpolatory identities of
+Proposition~\ref{prop:interp} with a second-order difference for the Laplacian
+on the (in general nonuniform) nodes $(r_i)$ produces an explicit scheme. On
+the unit cube, with $u_{ijk}^n\simeq u(t_n,r_i,r_j,r_k)$ and
+$h_i:=r_{i+1}-r_i$, the standard second divided difference
+\begin{equation}
+\label{eq:dxx}
+\delta_{xx}u_{ijk}^n
+:=\frac{2}{h_i+h_{i-1}}
+\Biggl(
+\frac{u_{i+1,jk}^n-u_{ijk}^n}{h_i}
+-\frac{u_{ijk}^n-u_{i-1,jk}^n}{h_{i-1}}
+\Biggr)
+\end{equation}
+is used in each coordinate (and likewise $\delta_{yy}$, $\delta_{zz}$). The
+interior update is forward Euler,
+\begin{equation}
+\label{eq:euler}
+u_{ijk}^{n+1}
+=u_{ijk}^n
++\Delta t\,k\,(\delta_{xx}+\delta_{yy}+\delta_{zz})u_{ijk}^n
++\Delta t\,f(t_n,r_i,r_j,r_k),
+\end{equation}
+for $2\le i,j,k\le m$. At the faces of the cube the Neumann condition is
+enforced by a symmetric ghost value realising $k\partial_n u=g$; this keeps
+the discrete Laplacian self-adjoint, which is used in the stability argument
+below. A first-order one-sided closure may be used in computations, but it
+need not be symmetric, and the $\ell^2$ contraction of Theorem~\ref{thm:scheme}
+is then no longer guaranteed by the same energy identity. On the unit ball
+the same time-stepping is applied to the spherical Laplacian
+\begin{equation}
+\label{eq:sph-lap}
+\Delta u
+=u_{\rho\rho}+\frac{2}{\rho}u_\rho
++\frac{1}{\rho^2\sin\theta}\partial_\theta(\sin\theta\,u_\theta)
++\frac{1}{\rho^2\sin^2\theta}u_{\phi\phi},
+\end{equation}
+with $\partial_\rho u=g/k$ at $\rho=1$ and the usual regularity conditions
+at $\rho=0$ and on the polar axis.
+
+\begin{theorem}[CFL stability of the explicit collocation scheme]
+\label{thm:scheme}
+Let $\Delta_h$ denote the standard seven-point discrete Laplacian on a
+uniform Cartesian mesh of step $h$, with homogeneous Neumann (or periodic)
+closure realised by symmetric ghost values. Then $\Delta_h$ is symmetric and
+negative semi-definite on $\ell^2(\mathcal{R}_h)$, and its eigenvalues lie in
+$[-\Lambda_h,0]$ with $\Lambda_h=12/h^2$. Write $\tau=k\Delta t$ and consider
+the homogeneous forward Euler scheme
+\begin{equation}
+\label{eq:euler-hom}
+U^{n+1}=U^n+\tau\Delta_h U^n=(I+\tau\Delta_h)U^n.
+\end{equation}
+The following are equivalent:
+\begin{enumerate}
+\item $k\Delta t\le h^2/6$;
+\item $\lvert 1+\tau\lambda\rvert\le 1$ for every eigenvalue $\lambda$ of
+$\Delta_h$;
+\item $\lVert I+\tau\Delta_h\rVert_{\ell^2\to\ell^2}\le 1$.
+\end{enumerate}
+In particular, if
+\begin{equation}
+\label{eq:CFL}
+k\Delta t\le\frac{h^2}{6},
+\end{equation}
+then
+\begin{equation}
+\label{eq:l2stab}
+\lVert U^{n+1}\rVert_{\ell^2(\mathcal{R}_h)}
+\le
+\lVert U^n\rVert_{\ell^2(\mathcal{R}_h)},
+\qquad
+\max_{0\le n\le N_t}\lVert U^n\rVert_{\ell^2(\mathcal{R}_h)}
+\le
+\lVert U^0\rVert_{\ell^2(\mathcal{R}_h)}.
+\end{equation}
+
+On a nonuniform mesh, let $h_{\min}:=\min_i h_i$ and let
+\begin{equation}
+\label{eq:weighted}
+(U,V)_h
+:=\sum_{i,j,k}U_{ijk}V_{ijk}\,\omega_i\omega_j\omega_k,
+\qquad
+\omega_i:=\frac{h_i+h_{i-1}}{2},
+\end{equation}
+be the weighted inner product associated with the cell volumes. If the
+stencil~\eqref{eq:dxx} is used with a symmetric Neumann closure, then
+$\Delta_h$ is self-adjoint and negative semi-definite on this inner product.
+Gershgorin's theorem yields $\Lambda_h\le 12/h_{\min}^2$, and the same energy
+argument gives the sufficient condition
+\begin{equation}
+\label{eq:CFL-nu}
+k\Delta t\le\frac{h_{\min}^2}{6}
+\end{equation}
+for stability in the norm $\lVert\,\cdot\,\rVert_h$.
+
+If $f$ and $g$ are not zero, write $U^{n+1}=(I+\tau\Delta_h)U^n+\Delta t F^n$.
+Under~\eqref{eq:CFL} (resp.~\eqref{eq:CFL-nu}),
+\begin{equation}
+\label{eq:l2stab-inhom}
+\lVert U^n\rVert
+\le
+\lVert U^0\rVert
++\Delta t\sum_{j=0}^{n-1}\lVert F^j\rVert,
+\end{equation}
+where $F^j$ collects the source and boundary data at time $t_j$, and the
+norm is $\ell^2(\mathcal{R}_h)$ in the uniform case and $\lVert\,\cdot\,\rVert_h$
+in the nonuniform case.
+\end{theorem}
+
+\begin{proof}
+On a uniform mesh the symbol of $\Delta_h$ is
+$-(4/h^2)\sum_{\ell=1}^3\sin^2(\xi_\ell h/2)$ (cosine modes in the Neumann
+case). Hence the spectrum lies in $[-12/h^2,0]$, with $\Lambda_h=12/h^2$.
+Since $\Delta_h$ is symmetric, $\lVert I+\tau\Delta_h\rVert_{\ell^2\to\ell^2}$
+equals the spectral radius of $I+\tau\Delta_h$. For $\lambda\in[-\Lambda_h,0]$,
+the inequality $\lvert 1+\tau\lambda\rvert\le 1$ holds for all such $\lambda$
+if and only if $0\le\tau\Lambda_h\le 2$, that is $\tau\le h^2/6$. This is
+the equivalence of the three statements, and~\eqref{eq:l2stab} follows.
+
+The same conclusion is reached by an energy identity, without Fourier
+analysis. Because $-\Delta_h$ is symmetric positive semi-definite,
+$\lVert\Delta_h V\rVert_{\ell^2}^2\le\Lambda_h\bigl(-(\Delta_h V,V)_{\ell^2}\bigr)$
+for every $V$. Expanding~\eqref{eq:euler-hom},
+\begin{equation}
+\begin{aligned}
+\lVert U^{n+1}\rVert_{\ell^2}^2
+&=\lVert U^n\rVert_{\ell^2}^2
++2\tau(\Delta_h U^n,U^n)_{\ell^2}
++\tau^2\lVert\Delta_h U^n\rVert_{\ell^2}^2 \\
+&\le
+\lVert U^n\rVert_{\ell^2}^2
++2\tau(\Delta_h U^n,U^n)_{\ell^2}
++\tau^2\Lambda_h\bigl(-(\Delta_h U^n,U^n)_{\ell^2}\bigr) \\
+&=\lVert U^n\rVert_{\ell^2}^2
++\bigl(2\tau-\tau^2\Lambda_h\bigr)(\Delta_h U^n,U^n)_{\ell^2}.
+\end{aligned}
+\end{equation}
+The inner product $(\Delta_h U^n,U^n)_{\ell^2}$ is nonpositive. Hence
+$\lVert U^{n+1}\rVert_{\ell^2}\le\lVert U^n\rVert_{\ell^2}$ as soon as
+$2\tau-\tau^2\Lambda_h\ge 0$, that is $\tau\le 2/\Lambda_h=h^2/6$.
+
+On a nonuniform mesh the operator defined by~\eqref{eq:dxx} is not symmetric
+in the unweighted $\ell^2$ product, but it is symmetric in~\eqref{eq:weighted}.
+The diagonal coefficient of $\delta_{xx}$ is $-2/(h_i h_{i-1})$, so the
+Gershgorin radius of $-\delta_{xx}$ is at most $4/h_{\min}^2$. Summing the
+three directions gives $\Lambda_h\le 12/h_{\min}^2$. Repeating the energy
+estimate in the inner product $(\,\cdot\,,\,\cdot\,)_h$ yields~\eqref{eq:CFL-nu}.
+
+In the inhomogeneous case, $\lVert I+\tau\Delta_h\rVert\le 1$ under the CFL
+condition, therefore $\lVert U^{n+1}\rVert\le\lVert U^n\rVert+\Delta t\lVert F^n\rVert$.
+Summing the resulting telescoping inequality yields~\eqref{eq:l2stab-inhom}.
+\end{proof}
+
+\begin{remark}
+The threshold $h^2/6$ is the three-dimensional analogue of the classical
+restrictions $k\Delta t\le h^2/2$ in one dimension and
+$k\Delta t\le h^2/4$ in two dimensions, corresponding to a stencil with
+$2d+1$ points. It is a restriction on forward Euler applied to the discrete
+Laplacian; it is not a hyperbolic CFL condition of the form
+$\Delta t\le C h$. Stability of a consistent scheme does not by itself imply
+convergence of any particular order: an error estimate requires a truncation
+analysis, which is not claimed here.
+
+On the unit ball the same energy argument applies to the discrete spherical
+Laplacian in the weighted $\ell^2$ product associated with the volume element
+$\rho^2\sin\theta\,\dd\rho\,\dd\theta\,\dd\phi$. The constant $6$ is then
+replaced by a constant that depends on the metric coefficients, and
+$h_{\min}$ is the smallest radial or angular collocation spacing (the
+restriction is most severe near the origin).
+\end{remark}
+
+%==============================================================================
+\section{Numerical experiments}
+\label{sec:numerics}
+
+This section specifies the tests used to assess the scheme of
+Section~\ref{sec:theory} on two standard three-dimensional geometries: the
+unit cube and the unit ball. The cube study in Table~\ref{tab:cube} is the
+explicit update~\eqref{eq:euler} with homogeneous Neumann closure, run with
+$\Delta t$ at the CFL bound of Theorem~\ref{thm:scheme}; reported CPU times
+are wall-clock times for the time loop. Linear finite-element reference
+solutions, when used, are computed with piecewise affine tetrahedral elements
+and the same time step as the \dziti{} scheme, so that the comparison
+isolates the spatial discretisation. Errors are measured at the final time
+$T$ in the discrete $\ell^2$ and $\ell^\infty$ norms on the collocation grid
+$\mathcal{R}_h$,
+\begin{equation}
+\label{eq:errors}
+e_2(h):=\Biggl(h^3\sum_{x_\alpha\in\mathcal{R}_h}
+\bigl\lvert u(T,x_\alpha)-u_h(T,x_\alpha)\bigr\rvert^2\Biggr)^{1/2},
+\qquad
+e_\infty(h):=\max_{x_\alpha\in\mathcal{R}_h}
+\bigl\lvert u(T,x_\alpha)-u_h(T,x_\alpha)\bigr\rvert.
+\end{equation}
+The observed order is
+$p:=\log\bigl(e(h)/e(h/2)\bigr)/\log 2$. CPU times are wall-clock times for
+the full time loop, excluding the (once-and-for-all) assembly of
+$(\lambda_i,\psi_i(r_i))$.
+
+\subsection{Detection of a breaking time: Burgers' equation}
+\label{sec:burgers}
+
+Before the three-dimensional tests we record a one-dimensional illustration
+of the method's sensitivity to loss of regularity, which motivated its
+original development \cite{Bsiss2016,Malek2022}. Consider the inviscid
+Burgers equation
+\begin{equation}
+\label{eq:burgers}
+\partial_t u+\partial_x\Bigl(\frac{u^2}{2}\Bigr)=0,
+\qquad t>0,\quad x\in\mathbb{R},
+\qquad
+u(0,x)=\exp(-x^2/2).
+\end{equation}
+A classical solution exists only up to the breaking time
+\begin{equation}
+\label{eq:tstar}
+t^\star
+=-\frac{1}{\displaystyle\inf_{x\in\mathbb{R}}u_0'(x)}.
+\end{equation}
+Here $u_0'(x)=-x\exp(-x^2/2)$, so the infimum equals $u_0'(1)=-e^{-1/2}$ and
+$t^\star=\sqrt{e}\simeq 1.648721$. Beyond $t^\star$ the entropy solution
+develops a shock and the classical solution ceases to exist
+\cite[Chapter~11]{LeVeque2002}. Figure~\ref{fig:burgers} shows the \dziti{}
+approximation at several times, including a discrete time close to
+$t^\star$. With $\Delta t=0.00915$ ($180$ time steps) the computed profile
+ceases to remain single-valued at the theoretically predicted instant, after
+a runtime of about six seconds. The same breaking time is obtained by the
+Lax--Friedrichs scheme in \cite{Yoon2008}, at a higher mesh cost. This test
+is not a substitute for the parabolic analysis of Section~\ref{sec:theory};
+it illustrates why a basis built from nascent Dirac masses is of interest
+when the solution may leave $H^1$.
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.85\textwidth,height=1.8in]{Burger}
+\caption{Inviscid Burgers equation~\eqref{eq:burgers}: \dziti{} approximation
+at $t=0.0915$, $t=1.0986$ and $t=1.6485\simeq t^\star=\sqrt{e}$.}
+\label{fig:burgers}
+\end{figure}
+
+\subsection{Transient diffusion in the unit cube}
+\label{sec:cube}
+
+Let $\Omega=(0,1)^3$ and $k\equiv 1$. The manufactured solution
+\begin{equation}
+\label{eq:uex-cube}
+u_{\mathrm{ex}}(x,y,z,t)
+=\cos(\pi x)\cos(\pi y)\cos(\pi z)\,e^{-3\pi^2 t}
+\end{equation}
+satisfies~\eqref{eq:heat} with $f=0$, homogeneous Neumann boundary conditions
+$g=0$, and initial datum $u_0(x,y,z)=\cos(\pi x)\cos(\pi y)\cos(\pi z)$. The
+scheme~\eqref{eq:euler} is run up to $T=0.1$ on a sequence of collocation
+grids with $m+1\in\{8,16,32,64\}$ nodes per direction, with $\Delta t$
+obeying~\eqref{eq:CFL}, taking $\Delta t=T/N_t$ with $N_t$ the smallest
+integer such that $k\Delta t\le h^2/6$. Table~\ref{tab:cube} reports $e_2$,
+$e_\infty$, the observed order $p_2$ and the CPU time. The observed $L^2$
+orders approach $2$, in agreement with second-order consistency of the
+seven-point Laplacian on a uniform mesh.
+
+A second cube test uses a non-separable source,
+\begin{equation}
+\label{eq:uex-cube2}
+u_{\mathrm{ex}}(x,y,z,t)
+=\exp\bigl(-(x^2+y^2+z^2)\bigr)\,e^{-t},
+\end{equation}
+from which $f$ and the Neumann datum $g=k\partial_n u_{\mathrm{ex}}$ are
+computed analytically. This checks the inhomogeneous boundary closure.
+
+\begin{table}[htbp]
+\centering
+\caption{Unit cube, manufactured solution~\eqref{eq:uex-cube} at $T=0.1$:
+\dziti{} errors, observed $L^2$ order $p_2$ and CPU time.}
+\label{tab:cube}
+\begin{tabular}{crrrrr}
+\toprule
+$m+1$ & $N_h=(m+1)^3$ & $e_2$ & $e_\infty$ & $p_2$ & CPU (s) \\
+\midrule
+$8$  & $512$     & $2.58\times 10^{-3}$ & $5.01\times 10^{-3}$ & ---   & $0.001$ \\
+$16$ & $4096$    & $4.78\times 10^{-4}$ & $1.12\times 10^{-3}$ & $2.43$ & $0.008$ \\
+$32$ & $32768$   & $1.02\times 10^{-4}$ & $2.62\times 10^{-4}$ & $2.23$ & $0.32$ \\
+$64$ & $262144$  & $2.35\times 10^{-5}$ & $6.35\times 10^{-5}$ & $2.11$ & $8.73$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Transient diffusion in the unit ball}
+\label{sec:ball}
+
+Let $\Omega=B(0,1)\subset\mathbb{R}^3$ and $k\equiv 1$. In spherical
+coordinates we take the radial manufactured solution
+\begin{equation}
+\label{eq:uex-ball}
+u_{\mathrm{ex}}(\rho,t)
+=\bigl(1-\tfrac13\rho^2\bigr)e^{-t},
+\end{equation}
+for which
+\begin{equation}
+\label{eq:fg-ball}
+f(\rho,t)
+=\bigl(-1+\tfrac13\rho^2+2\bigr)e^{-t}
+=\bigl(1+\tfrac13\rho^2\bigr)e^{-t},
+\qquad
+g(\theta,\phi,t)
+=k\partial_\rho u_{\mathrm{ex}}(1,t)
+=-\tfrac23 e^{-t}.
+\end{equation}
+(The identity $\Delta(\rho^2)=6$ was used.) The spherical-coordinate
+\dziti{} scheme is compared with the chord-sweeping variant and with linear
+finite elements on a tetrahedral mesh of the ball. Errors are computed as
+in~\eqref{eq:errors}, with the spherical volume weights included in $e_2$.
+A second, non-radial test is obtained by transporting~\eqref{eq:uex-cube2}
+to the ball, which breaks spherical symmetry and exercises the angular
+differences in~\eqref{eq:sph-lap}.
+
+In both geometries we additionally record the discrete energy
+$E^n:=\lVert U^n\rVert_{\ell^2(\mathcal{R}_h)}^2$ for the homogeneous
+Neumann problem, in order to check the decay predicted by
+Theorem~\ref{thm:semi} and the CFL restriction of Theorem~\ref{thm:scheme}.
+
+\begin{table}[htbp]
+\centering
+\caption{Unit ball, manufactured solution~\eqref{eq:uex-ball} at $T=0.1$.
+Spherical-coordinate \dziti{} scheme versus chord sweeping and linear FEM.}
+\label{tab:ball}
+\begin{tabular}{llrrrr}
+\toprule
+Method & $N_h$ & $e_2$ & $e_\infty$ & $p_2$ & CPU (s) \\
+\midrule
+\dziti{} (spherical) &  &  &  &  &  \\
+\dziti{} (chords)    &  &  &  &  &  \\
+linear FEM           &  &  &  &  &  \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+%==============================================================================
+\section{Conclusion}
+\label{sec:concl}
+
+We have given a mathematically consistent account of the \dziti{} method for
+three-dimensional transient diffusion with Neumann boundary conditions. The
+one-dimensional generators are compactly supported mollifiers; their Gram
+matrix is tridiagonal, which reduces orthonormalisation to a two-term
+recurrence and produces an orthonormal basis of a finite-dimensional subspace
+$V_h\subset L^2$. The roots of that basis define the reconstruction $f_h$
+of Lemma~\ref{lem:orthonormal} and a quadrature that avoids numerical
+integration rules of Gaussian type. By that lemma, $f_h$ is the best
+least-squares approximation in $V_h$, and it is compared with the interpolant
+$I_h f=\sum_{i=1}^{m+1}f(x_i)\,\varphi_i(x)$. Theorem~\ref{thm:mollify} gives
+the second-order mollification bound on $\eta_h*f$. Theorem~\ref{thm:error}
+shows that no comparable bound can hold for $\lVert f-f_h\rVert_{L^2}$, because
+$V_h$ does not contain constants.
+
+The semi-discrete Galerkin scheme is unconditionally energy-stable. The fully
+discrete explicit Euler scheme on a uniform Cartesian mesh is stable in
+$\ell^2$ if and only if $k\Delta t\le h^2/6$; on a nonuniform mesh the same
+threshold with $h$ replaced by $h_{\min}$ is sufficient in the weighted
+discrete $L^2$ norm. The scheme requires no mass-matrix inversion. The same
+building blocks tensorise to the unit cube and extend to the unit ball by
+spherical coordinates or by chord sweeping.
+
+Several questions remain. The Neumann closure on the ball, the treatment of
+variable or anisotropic conductivities, and a fully discrete error analysis
+in $L^2(0,T;H^1(\Omega))$ are left to future work. On the computational side,
+a comparison with PUFEM \cite{Malek2019,Mohamed2013} at equal accuracy,
+including problems with steep boundary layers, would quantify the cost
+reduction permitted by the explicit \dziti{} update.
+
+\section*{Acknowledgements}
+
+The author thanks the developers of the \dziti{} method, in particular
+C.~Ziti and L.~Bsiss, whose original construction this analysis builds upon.
+
+\bibliographystyle{elsarticle-num}
+\bibliography{bibliography}
+
+\end{document}
