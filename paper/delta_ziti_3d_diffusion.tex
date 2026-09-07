@@ -1205,9 +1205,20 @@ g(\theta,\phi,t)
 \end{equation}
 (The identity $\Delta(\rho^2)=6$ was used.) The spherical-coordinate
 \dziti{} scheme is compared with the chord-sweeping variant and with linear
-finite elements on a tetrahedral mesh of the ball. Errors are computed as
-in~\eqref{eq:errors}, with the spherical volume weights included in $e_2$.
-A second, non-radial test is obtained by transporting~\eqref{eq:uex-cube2}
+finite elements on a tetrahedral mesh of the ball fitted to the unit sphere.
+Errors are computed as in~\eqref{eq:errors}, with the spherical volume
+weights $\rho^2\sin\theta\,\dd\rho\,\dd\theta\,\dd\phi$ included in $e_2$
+for the spherical scheme and with the mesh-size weight $h^3$ (resp.\ the
+lumped $P_1$ mass) for the chord and FEM schemes. The manufactured solution
+is quadratic in $\rho$, so the second-difference radial (resp.\ seven-point)
+Laplacian is exact: Table~\ref{tab:ball} therefore records a pure
+forward-Euler error of order $\Delta t=\mathcal{O}(h^2)$ for the two
+\dziti{} variants, while linear finite elements cannot represent
+$\rho^2$ and are limited by the $P_1$ interpolant. FEM is advanced by
+implicit Euler with the same $\Delta t$ as~\eqref{eq:CFL}, as in
+Section~\ref{sec:numerics}, so that the comparison isolates the spatial
+discretisation. A second, non-radial test is obtained by
+transporting~\eqref{eq:uex-cube2}
 to the ball, which breaks spherical symmetry and exercises the angular
 differences in~\eqref{eq:sph-lap}.
 
@@ -1225,9 +1236,17 @@ Spherical-coordinate \dziti{} scheme versus chord sweeping and linear FEM.}
 \toprule
 Method & $N_h$ & $e_2$ & $e_\infty$ & $p_2$ & CPU (s) \\
 \midrule
-\dziti{} (spherical) &  &  &  &  &  \\
-\dziti{} (chords)    &  &  &  &  &  \\
-linear FEM           &  &  &  &  &  \\
+\dziti{} (spherical) & $512$   & $2.83\times 10^{-4}$ & $1.44\times 10^{-4}$ & ---   & $0.001$ \\
+                     & $4096$  & $6.03\times 10^{-5}$ & $3.20\times 10^{-5}$ & $2.03$ & $0.004$ \\
+                     & $32768$ & $1.38\times 10^{-5}$ & $7.48\times 10^{-6}$ & $2.03$ & $0.14$ \\
+\addlinespace
+\dziti{} (chords)    & $160$   & $8.49\times 10^{-4}$ & $5.31\times 10^{-4}$ & ---   & $0.001$ \\
+                     & $1736$  & $2.04\times 10^{-4}$ & $1.26\times 10^{-4}$ & $1.87$ & $0.002$ \\
+                     & $15408$ & $4.78\times 10^{-5}$ & $2.95\times 10^{-5}$ & $2.00$ & $0.061$ \\
+\addlinespace
+linear FEM           & $160$   & $2.66\times 10^{-2}$ & $3.63\times 10^{-2}$ & ---   & $0.005$ \\
+                     & $1736$  & $4.84\times 10^{-3}$ & $7.32\times 10^{-3}$ & $2.24$ & $0.55$ \\
+                     & $15408$ & $9.28\times 10^{-4}$ & $1.59\times 10^{-3}$ & $2.27$ & $51.6$ \\
 \bottomrule
 \end{tabular}
 \end{table}
