@@ -6,7 +6,8 @@ SOURCES = \
 	Chapitre1_Suites_reelles_Cours.tex \
 	Chapitre1_Suites_reelles_TD3h.tex \
 	Chapitre1_Suites_reelles_Exercices.tex \
-	Chapitre1_Suites_reelles_Corrections.tex
+	Chapitre1_Suites_reelles_Corrections.tex \
+	Modele_en-tete_logos.tex
 
 .PHONY: all clean
 

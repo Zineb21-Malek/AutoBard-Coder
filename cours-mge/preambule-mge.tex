@@ -3,13 +3,14 @@
 % Mathématiques appliquées à la gestion
 % Licence MGE -- Université Mundiapolis Business School
 % ============================================================
-\usepackage[a4paper,top=2.7cm,bottom=2.5cm,left=2.3cm,right=2.3cm,headheight=32pt]{geometry}
+\usepackage[a4paper,top=2.9cm,bottom=2.5cm,left=2.3cm,right=2.3cm,headheight=1.85cm,headsep=8pt]{geometry}
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
 \usepackage{lmodern}
 \usepackage[french]{babel}
 \usepackage{amsmath,amssymb,mathtools,amsthm}
 \usepackage{graphicx}
+\usepackage[export]{adjustbox}
 \usepackage[dvipsnames]{xcolor}
 \usepackage{titlesec}
 \usepackage{enumitem}
@@ -43,15 +44,39 @@
   {\normalfont\normalsize\bfseries\color{mundigray}}
   {\thesubsubsection}{0.6em}{}
 
+% ---------- Logos Honoris (gauche) / Mundiapolis (droite) ----------
+\graphicspath{{logos/}{./}}
+\newcommand{\logoheight}{1.35cm}
+% Même hauteur + valign=c : les deux logos sont calés sur le même axe horizontal.
+% On ne fixe PAS la largeur : les formats d'origine (Honoris / Mundiapolis) sont différents.
+\newcommand{\putlogo}[1]{%
+  \includegraphics[height=\logoheight,keepaspectratio,valign=b]{#1}%
+}
+\newcommand{\headerlogos}{%
+  \noindent\makebox[\textwidth][s]{%
+    \putlogo{honoris.jpg}\hfill
+    \putlogo{munidia.png}%
+  }%
+}
+
 % ---------- En-tête / pied de page ----------
 \pagestyle{fancy}
 \fancyhf{}
-\renewcommand{\headrulewidth}{0.6pt}
+\renewcommand{\headrulewidth}{0pt}
 \renewcommand{\footrulewidth}{0.4pt}
-\fancyhead[L]{\small\color{mundigray} Mathématiques appliquées à la gestion -- S1 MGE}
-\fancyhead[R]{\small\color{mundigray} Pr.\ Rajae Malek}
-\fancyfoot[L]{\small\color{mundigray} Année universitaire 2026--2027}
-\fancyfoot[R]{\small\color{mundigray} \thepage}
+\fancyhead[L]{\putlogo{honoris.jpg}}
+\fancyhead[R]{\putlogo{munidia.png}}
+\fancyfoot[L]{\small\color{mundigray} Mathématiques appliquées à la gestion -- S1 MGE}
+\fancyfoot[C]{\small\color{mundigray}\thepage}
+\fancyfoot[R]{\small\color{mundigray} Pr.\ Rajae Malek}
+\fancypagestyle{plain}{%
+  \fancyhf{}%
+  \renewcommand{\headrulewidth}{0pt}%
+  \renewcommand{\footrulewidth}{0.4pt}%
+  \fancyhead[L]{\putlogo{honoris.jpg}}%
+  \fancyhead[R]{\putlogo{munidia.png}}%
+  \fancyfoot[C]{\small\color{mundigray}\thepage}%
+}
 
 % ---------- Boîtes pédagogiques ----------
 \newtcolorbox{definitionbox}[1][]{
@@ -150,8 +175,8 @@
 \newcommand{\pagedegarde}[2]{%
 \begin{titlepage}
 \hypersetup{pageanchor=false}
+\headerlogos\\[0.7cm]
 \centering
-\vspace*{0.4cm}
 {\Huge\bfseries\color{mundiblue} UNIVERSITÉ MUNDIAPOLIS}\\[0.45cm]
 {\color{mundigray}\large Business School}\\[0.25cm]
 {\color{mundigray}\rule{0.5\textwidth}{0.4pt}}\\[1.1cm]

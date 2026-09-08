@@ -10,7 +10,10 @@ Support LaTeX pour le cours de **Mathématiques appliquées à la gestion**, Lic
 | `Chapitre1_Suites_reelles_TD3h.tex` | Travaux dirigés calés sur **3 heures** |
 | `Chapitre1_Suites_reelles_Exercices.tex` | Feuille d'entraînement / travail personnel |
 | `Chapitre1_Suites_reelles_Corrections.tex` | Corrigés détaillés (TD + exercices + applications du cours) |
-| `preambule-mge.tex` | Préambule commun (charte, boîtes pédagogiques) |
+| `Modele_en-tete_logos.tex` | En-tête institutionnel : logos Honoris / Mundiapolis alignés |
+| `logos/honoris.jpg` | Logo Honoris United Universities (gauche) |
+| `logos/munidia.png` | Logo Université Mundiapolis (droite) |
+| `preambule-mge.tex` | Préambule commun (charte, boîtes pédagogiques, en-tête logos) |
 
 ## Compilation
 
