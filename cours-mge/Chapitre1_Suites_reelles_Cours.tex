@@ -1,0 +1,468 @@
+\documentclass[12pt,a4paper]{article}
+\input{preambule-mge}
+
+\begin{document}
+
+\pagedegarde{Chapitre 1 -- Les suites réelles}{Support de cours}
+
+\tableofcontents
+\thispagestyle{fancy}
+\clearpage
+
+% ============================================================
+\section*{Présentation du chapitre}
+\addcontentsline{toc}{section}{Présentation du chapitre}
+
+Ce chapitre pose les bases de l'étude des \textbf{suites réelles}, outil central de la modélisation dynamique en gestion : évolution d'un capital, d'un stock, d'un chiffre d'affaires, d'un capital restant dû, d'une valeur d'actif, etc.
+
+\begin{objectifbox}[Objectifs du chapitre]
+À l'issue de ce chapitre, l'étudiant sera capable de :
+\begin{itemize}
+  \item manipuler les notions fondamentales relatives aux suites réelles (monotonie, bornes, convergence) ;
+  \item étudier la convergence d'une suite à l'aide des théorèmes classiques (gendarmes, limite monotone, suites adjacentes) ;
+  \item reconnaître et étudier les suites particulières (arithmétiques, géométriques, arithmético-géométriques, récurrentes d'ordre 2) ;
+  \item appliquer ces outils à des problématiques concrètes de gestion et de finance (emprunts, annuités, capitalisation, dépréciation d'actifs).
+\end{itemize}
+\end{objectifbox}
+
+\begin{gestionbox}[Fil conducteur]
+Une entreprise dispose d'un capital initial $C_0 = 100\,000\MAD$. Si ce capital évolue chaque année selon une règle donnée, on obtient une suite $(C_n)$ représentant le capital à l'année $n$. C'est ce type de modélisation qui justifie l'étude des suites en gestion.
+\end{gestionbox}
+
+% ============================================================
+\section{Définitions générales}
+
+\begin{definitionbox}[1.1 -- Suite réelle]
+Une \textbf{suite réelle} est une application
+\[
+u : \N \longrightarrow \R, \qquad n \longmapsto u(n) = u_n.
+\]
+On la note $(u_n)_{n\in\N}$ ou simplement $\un$. Le réel $u_n$ est appelé le \textbf{terme général} de la suite (ou terme d'indice $n$).
+\end{definitionbox}
+
+\begin{remarquebox}[Remarque 1.1 -- Deux façons de définir une suite]
+Une suite peut être définie de deux façons principales :
+\begin{itemize}
+  \item \textbf{de façon explicite :} $u_n = f(n)$, par exemple $u_n = \dfrac{2n+1}{n+1}$ ;
+  \item \textbf{de façon récurrente :} $u_{n+1} = f(u_n)$ avec $u_0$ donné.
+\end{itemize}
+Dans le premier cas, on calcule directement le terme d'indice $n$. Dans le second, chaque terme dépend du (ou des) précédent(s) : c'est le cadre naturel des modèles financiers (capital, emprunt, stock).
+\end{remarquebox}
+
+\begin{definitionbox}[1.2 -- Suite majorée, minorée, bornée]
+Soit $\un$ une suite réelle.
+\begin{itemize}
+  \item $\un$ est \textbf{majorée} s'il existe $M\in\R$ tel que $u_n \leq M$ pour tout $n$.
+  \item $\un$ est \textbf{minorée} s'il existe $m\in\R$ tel que $u_n \geq m$ pour tout $n$.
+  \item $\un$ est \textbf{bornée} si elle est à la fois majorée et minorée, ce qui équivaut à l'existence de $K\geq 0$ tel que $\lvert u_n\rvert \leq K$ pour tout $n$.
+\end{itemize}
+\end{definitionbox}
+
+\begin{exemplebox}[1.1 -- Capital d'une entreprise]
+Une entreprise dispose d'un capital initial $C_0 = 100\,000\MAD$. Si ce capital évolue chaque année selon une règle donnée, on obtient une suite $(C_n)$ représentant le capital à l'année $n$.
+\end{exemplebox}
+
+% ============================================================
+\section{Suites monotones}
+
+\begin{definitionbox}[2.1 -- Monotonie]
+Soit $\un$ une suite réelle.
+\begin{itemize}
+  \item $\un$ est \textbf{croissante} si $u_{n+1} \geq u_n$ pour tout $n$ (strictement si $u_{n+1} > u_n$).
+  \item $\un$ est \textbf{décroissante} si $u_{n+1} \leq u_n$ pour tout $n$ (strictement si $u_{n+1} < u_n$).
+  \item $\un$ est \textbf{monotone} si elle est croissante ou décroissante.
+\end{itemize}
+\end{definitionbox}
+
+\begin{methodebox}[2.1 -- Étudier la monotonie]
+Pour étudier la monotonie de $\un$, on peut :
+\begin{enumerate}
+  \item étudier le \textbf{signe} de $u_{n+1}-u_n$ ;
+  \item si $u_n > 0$ pour tout $n$, comparer le \textbf{rapport} $\dfrac{u_{n+1}}{u_n}$ à $1$ ;
+  \item si $u_n = f(n)$, étudier les \textbf{variations} de la fonction $f$ sur $[0,+\infty[$.
+\end{enumerate}
+\end{methodebox}
+
+\begin{exemplebox}[2.1]
+Soit $u_n = \dfrac{n}{n+1}$. On a
+\begin{align*}
+u_{n+1}-u_n
+&= \dfrac{n+1}{n+2} - \dfrac{n}{n+1}
+= \dfrac{(n+1)^2 - n(n+2)}{(n+1)(n+2)}
+= \dfrac{1}{(n+1)(n+2)} > 0.
+\end{align*}
+Donc $\un$ est \textbf{strictement croissante}.
+\end{exemplebox}
+
+% ============================================================
+\section{Suites convergentes}
+
+\begin{definitionbox}[3.1 -- Limite finie]
+La suite $\un$ \textbf{converge} vers $\ell\in\R$ si :
+\[
+\forall \eps > 0,\ \exists N\in\N,\ \forall n\geq N,\quad \lvert u_n - \ell\rvert < \eps.
+\]
+On note alors $\limn u_n = \ell$. Si une telle limite $\ell$ n'existe pas, on dit que $\un$ \textbf{diverge}.
+\end{definitionbox}
+
+En langage courant : à partir d'un certain rang, tous les termes de la suite sont aussi proches que l'on veut de $\ell$.
+
+\begin{propbox}[3.1 -- Unicité de la limite]
+Si une suite converge, sa limite est unique.
+\end{propbox}
+
+\begin{propbox}[3.2 -- Convergence et bornitude]
+Toute suite convergente est bornée.
+
+La réciproque est \textbf{fausse} : $u_n = (-1)^n$ est bornée (par $1$) mais ne converge pas.
+\end{propbox}
+
+\begin{exemplebox}[3.1]
+La suite $u_n = \dfrac{1}{n+1}$ converge vers $0$. En gestion, cela peut représenter, par exemple, l'écart relatif entre un indicateur prévisionnel et sa valeur réelle qui s'atténue au fil des périodes.
+\end{exemplebox}
+
+\begin{attentionbox}[Ne pas confondre]
+Une suite qui tend vers $+\infty$ (par exemple $u_n = n$) \textbf{diverge}. On écrit $\limn u_n = +\infty$, mais ce n'est \textbf{pas} une convergence au sens de la définition 3.1.
+\end{attentionbox}
+
+% ============================================================
+\section{Opérations sur les suites}
+
+\begin{theoremebox}[4.1 -- Opérations algébriques sur les limites]
+Soient $\un$ et $\vn$ deux suites convergeant respectivement vers $\ell_1$ et $\ell_2$ (réels), et $\lambda\in\R$. Alors :
+\begin{align*}
+\limn (u_n + v_n) &= \ell_1 + \ell_2, \\
+\limn (\lambda u_n) &= \lambda\,\ell_1, \\
+\limn (u_n \cdot v_n) &= \ell_1 \cdot \ell_2, \\
+\limn \dfrac{u_n}{v_n} &= \dfrac{\ell_1}{\ell_2} \qquad \text{si }\ell_2 \neq 0.
+\end{align*}
+\end{theoremebox}
+
+\begin{attentionbox}[Formes indéterminées]
+Les cas $\infty-\infty$, $0\times\infty$, $\dfrac{\infty}{\infty}$ et $\dfrac{0}{0}$ sont des \textbf{formes indéterminées} : le théorème ci-dessus ne s'applique pas directement. Il faut lever l'indétermination (factorisation, quantité conjuguée, terme dominant\ldots).
+\end{attentionbox}
+
+\begin{exemplebox}[4.1 -- Terme dominant]
+Calculons $\displaystyle\limn \dfrac{3n^2+2n}{5n^2-n+1}$. En factorisant par $n^2$ au numérateur et au dénominateur :
+\[
+\dfrac{3n^2+2n}{5n^2-n+1}
+= \dfrac{3 + \dfrac{2}{n}}{5 - \dfrac{1}{n} + \dfrac{1}{n^2}}
+\xrightarrow[n\to+\infty]{} \dfrac{3}{5}.
+\]
+\end{exemplebox}
+
+\begin{methodebox}[4.1 -- Quotients de polynômes]
+Pour $\dfrac{a_p n^p + \cdots}{b_q n^q + \cdots}$ :
+\begin{itemize}
+  \item si $p=q$, la limite est $\dfrac{a_p}{b_q}$ ;
+  \item si $p<q$, la limite est $0$ ;
+  \item si $p>q$, la suite diverge vers $\pm\infty$ (selon le signe de $\dfrac{a_p}{b_q}$).
+\end{itemize}
+\end{methodebox}
+
+% ============================================================
+\section{Théorème des gendarmes et applications}
+
+\begin{theoremebox}[5.1 -- Théorème des gendarmes]
+Soient $\un$, $\vn$ et $\wn$ trois suites telles que, à partir d'un certain rang,
+\[
+v_n \leq u_n \leq w_n.
+\]
+Si $\vn$ et $\wn$ convergent vers la \textbf{même} limite $\ell$, alors $\un$ converge également vers $\ell$.
+\end{theoremebox}
+
+\begin{exemplebox}[5.1]
+Soit $u_n = \dfrac{(-1)^n}{n+1}$. Pour tout $n$,
+\[
+-\dfrac{1}{n+1} \leq u_n \leq \dfrac{1}{n+1},
+\]
+et les deux suites encadrantes tendent vers $0$. Par le théorème des gendarmes, $u_n \to 0$.
+\end{exemplebox}
+
+\begin{propbox}[5.1 -- Suite bornée $\times$ suite qui tend vers $0$]
+Si $\un$ est bornée et $\vn \to 0$, alors $(u_n v_n) \to 0$.
+\end{propbox}
+
+C'est le cas typique de $u_n = (-1)^n$ (bornée) et $v_n = \dfrac{1}{n}$ : le produit $\dfrac{(-1)^n}{n}$ tend vers $0$.
+
+% ============================================================
+\section{Monotonie et convergence}
+
+\begin{theoremebox}[6.1 -- Théorème de la limite monotone]
+\begin{itemize}
+  \item Toute suite \textbf{croissante et majorée} converge (vers sa borne supérieure).
+  \item Toute suite \textbf{décroissante et minorée} converge (vers sa borne inférieure).
+  \item Toute suite croissante non majorée tend vers $+\infty$.
+  \item Toute suite décroissante non minorée tend vers $-\infty$.
+\end{itemize}
+\end{theoremebox}
+
+Ce théorème est l'outil principal pour les suites définies par récurrence : on ne calcule pas la limite \og à la main \fg{}, on \textbf{prouve} qu'elle existe, puis on l'identifie.
+
+\begin{gestionbox}[Exemple 6.1 -- Marché saturé]
+Le chiffre d'affaires cumulé d'une entreprise sur un marché saturé peut être modélisé par une suite croissante et majorée (le marché a une taille limite) : ce théorème garantit alors l'existence d'une limite, correspondant à la part de marché maximale atteignable.
+\end{gestionbox}
+
+% ============================================================
+\section{Sous-suites (suites extraites)}
+
+\begin{definitionbox}[7.1 -- Suite extraite]
+Soit $\varphi : \N \to \N$ une application strictement croissante. La suite $(u_{\varphi(n)})_n$ est appelée \textbf{suite extraite} (ou sous-suite) de $\un$.
+\end{definitionbox}
+
+Les extraits les plus fréquents sont les termes \textbf{pairs} $(u_{2n})$ et les termes \textbf{impairs} $(u_{2n+1})$.
+
+\begin{theoremebox}[7.1]
+Si $\un$ converge vers $\ell$, alors toute suite extraite de $\un$ converge également vers $\ell$.
+\end{theoremebox}
+
+\begin{remarquebox}[Remarque 7.1 -- Critère de divergence]
+Ce théorème fournit un critère pratique de \textbf{divergence} : s'il existe deux suites extraites de $\un$ ayant des limites \textbf{différentes}, alors $\un$ diverge.
+\end{remarquebox}
+
+\begin{exemplebox}[7.1]
+Pour $u_n = (-1)^n$, la sous-suite des termes pairs $(u_{2n})$ vaut constamment $1$, tandis que la sous-suite des termes impairs $(u_{2n+1})$ vaut constamment $-1$. Les limites étant différentes, $\un$ diverge.
+\end{exemplebox}
+
+% ============================================================
+\section{Suites adjacentes}
+
+\begin{definitionbox}[8.1 -- Suites adjacentes]
+Deux suites $\un$ et $\vn$ sont dites \textbf{adjacentes} si :
+\begin{enumerate}
+  \item $\un$ est croissante ;
+  \item $\vn$ est décroissante ;
+  \item $\limn (v_n - u_n) = 0$.
+\end{enumerate}
+\end{definitionbox}
+
+\begin{theoremebox}[8.1 -- Théorème des suites adjacentes]
+Si $\un$ et $\vn$ sont adjacentes, alors elles convergent toutes les deux vers la \textbf{même} limite $\ell$, et l'on a, pour tout $n$ :
+\[
+u_n \leq \ell \leq v_n.
+\]
+\end{theoremebox}
+
+\begin{gestionbox}[Exemple 8.1 -- Encadrement d'une valeur inconnue]
+Les suites adjacentes sont naturellement utilisées pour encadrer une valeur inconnue (par exemple un taux d'actualisation ou une valeur d'équilibre) par une suite d'approximations par défaut et par excès de plus en plus précises.
+\end{gestionbox}
+
+% ============================================================
+\section{Suites récurrentes}
+
+\begin{definitionbox}[9.1]
+Une suite $\un$ est dite \textbf{récurrente} (d'ordre 1) si elle est définie par la donnée de $u_0$ et d'une relation $u_{n+1} = f(u_n)$, où $f$ est une fonction réelle.
+\end{definitionbox}
+
+\begin{propbox}[9.1 -- Points fixes et convergence]
+Si $\un$ définie par $u_{n+1}=f(u_n)$ converge vers $\ell$ et si $f$ est continue en $\ell$, alors $\ell$ est un \textbf{point fixe} de $f$ :
+\[
+f(\ell)=\ell.
+\]
+\end{propbox}
+
+\begin{methodebox}[9.1 -- Démarche d'étude d'une suite récurrente]
+Pour étudier une suite récurrente $u_{n+1}=f(u_n)$ :
+\begin{enumerate}
+  \item déterminer un \textbf{intervalle stable} par $f$ contenant $u_0$ (si $x\in I$ alors $f(x)\in I$) ;
+  \item étudier la \textbf{monotonie} de $\un$ (souvent via le signe de $f(x)-x$) ;
+  \item montrer que $\un$ est \textbf{bornée}, conclure à la convergence via le théorème de la limite monotone ;
+  \item résoudre $f(\ell)=\ell$ pour identifier la limite.
+\end{enumerate}
+\end{methodebox}
+
+\begin{exemplebox}[9.1]
+Soit $u_0 = 1$ et $u_{n+1} = \dfrac{u_n+2}{2}$. Les points fixes vérifient $\ell = \dfrac{\ell+2}{2}$, soit $\ell=2$.
+
+On montre que $\un$ est croissante et majorée par $2$ : en effet $u_1 = 1{,}5 > u_0$, et si $u_n \leq 2$ alors $u_{n+1} \leq 2$. Donc elle converge vers $2$.
+\end{exemplebox}
+
+% ============================================================
+\section{Suites particulières}
+
+\subsection{Suite arithmétique}
+
+\begin{definitionbox}[10.1]
+Une suite $\un$ est \textbf{arithmétique} de raison $r$ si :
+\[
+u_{n+1} = u_n + r \qquad \text{pour tout } n.
+\]
+\end{definitionbox}
+
+\begin{propbox}[10.1]
+Pour une suite arithmétique de premier terme $u_0$ et de raison $r$ :
+\[
+u_n = u_0 + n r,
+\qquad
+\sum_{k=0}^{n} u_k = (n+1)\,\dfrac{u_0 + u_n}{2}.
+\]
+\end{propbox}
+
+\begin{gestionbox}[Exemple 10.1 -- Amortissement linéaire]
+Une machine est achetée $C_0 = 60\,000\MAD$ et amortie linéairement de $r = 6\,000\MAD$ par an. La valeur comptable après $n$ années est
+\[
+V_n = 60\,000 - 6\,000\, n,
+\]
+suite arithmétique de raison $-6\,000$. La machine est totalement amortie lorsque $V_n = 0$, soit $n = 10$ ans.
+\end{gestionbox}
+
+\subsection{Suite géométrique}
+
+\begin{definitionbox}[10.2]
+Une suite $\un$ est \textbf{géométrique} de raison $q$ si :
+\[
+u_{n+1} = q\, u_n \qquad \text{pour tout } n.
+\]
+\end{definitionbox}
+
+\begin{propbox}[10.2]
+Pour une suite géométrique de premier terme $u_0$ et de raison $q$ :
+\[
+u_n = u_0\, q^n,
+\qquad
+\sum_{k=0}^{n} u_k = u_0\,\dfrac{1-q^{n+1}}{1-q}\quad (q\neq 1).
+\]
+De plus :
+\begin{itemize}
+  \item si $\lvert q\rvert < 1$, alors $u_n \to 0$ ;
+  \item si $q>1$ et $u_0>0$, alors $u_n \to +\infty$.
+\end{itemize}
+\end{propbox}
+
+\begin{gestionbox}[Exemple 10.2 -- Capitalisation à intérêts composés]
+Un capital $C_0 = 10\,000\MAD$ est placé à un taux annuel $t = 5\%$. Le capital acquis après $n$ années est
+\[
+C_n = C_0 (1+t)^n = 10\,000 \times (1{,}05)^n,
+\]
+suite géométrique de raison $q=1{,}05$. Après $10$ ans, $C_{10} \approx 16\,289\MAD$.
+\end{gestionbox}
+
+\begin{remarquebox}[Dépréciation d'un actif]
+Le même formalisme décrit une \textbf{dépréciation géométrique} : si un actif perd $t\%$ de sa valeur chaque année, $V_n = V_0 (1-t)^n$ est géométrique de raison $1-t\in\,]0,1[$, donc $V_n\to 0$.
+\end{remarquebox}
+
+\subsection{Suite arithmético-géométrique}
+
+\begin{definitionbox}[10.3]
+Une suite $\un$ est dite \textbf{arithmético-géométrique} si elle vérifie une relation de récurrence de la forme
+\[
+u_{n+1} = a\, u_n + b, \qquad a\neq 1,\ a\neq 0.
+\]
+\end{definitionbox}
+
+\begin{propbox}[10.3 -- Méthode de résolution]
+On cherche le point fixe $\ell$ de l'équation $\ell = a\ell + b$, soit
+\[
+\ell = \dfrac{b}{1-a}.
+\]
+On pose alors $v_n = u_n - \ell$ ; la suite $\vn$ est géométrique de raison $a$, d'où
+\[
+u_n = \ell + (u_0 - \ell)\, a^n.
+\]
+\end{propbox}
+
+\begin{gestionbox}[Exemple 10.3 -- Remboursement d'un emprunt]
+On considère un capital restant dû $D_n$ après le versement de l'annuité $n$, avec taux d'intérêt $t$ et annuité constante $A$ :
+\[
+D_{n+1} = (1+t)\, D_n - A.
+\]
+C'est une suite arithmético-géométrique de point fixe $\ell = \dfrac{A}{t}$, ce qui permet d'exprimer explicitement le capital restant dû à chaque échéance, et donc de bâtir le \textbf{tableau d'amortissement} de l'emprunt.
+\end{gestionbox}
+
+\begin{methodebox}[10.3 -- Formule de l'emprunt]
+Si $D_0$ est le capital emprunté,
+\[
+D_n = \dfrac{A}{t} + \left(D_0 - \dfrac{A}{t}\right)(1+t)^n.
+\]
+Le prêt est théoriquement éteint lorsque $D_n=0$, soit
+\[
+n = \dfrac{\ln\bigl(A / (A - t D_0)\bigr)}{\ln(1+t)},
+\]
+pourvu que $A > t D_0$ (annuité supérieure aux seuls intérêts).
+\end{methodebox}
+
+\subsection{Suites récurrentes d'ordre 2 et applications en finance}
+
+\begin{definitionbox}[10.4]
+Une suite $\un$ vérifie une \textbf{récurrence linéaire d'ordre 2} à coefficients constants si :
+\[
+u_{n+2} = a\, u_{n+1} + b\, u_n, \qquad (a,b)\in\R^2,\ b\neq 0.
+\]
+\end{definitionbox}
+
+\begin{propbox}[10.4 -- Résolution -- équation caractéristique]
+On associe à la relation l'équation caractéristique
+\[
+r^2 - a r - b = 0.
+\]
+\begin{itemize}
+  \item Si $\Delta > 0$ : deux racines réelles distinctes $r_1$, $r_2$, et $u_n = \alpha r_1^n + \beta r_2^n$.
+  \item Si $\Delta = 0$ : racine double $r_0$, et $u_n = (\alpha + \beta n)\, r_0^n$.
+  \item Si $\Delta < 0$ : racines complexes conjuguées $\rho e^{\pm i\theta}$, et
+  \[
+  u_n = \rho^n \bigl(\alpha \cos(n\theta) + \beta \sin(n\theta)\bigr).
+  \]
+\end{itemize}
+Les constantes $\alpha$, $\beta$ sont déterminées à l'aide des conditions initiales $u_0$ et $u_1$.
+\end{propbox}
+
+\begin{gestionbox}[Exemple 10.4 -- Modèle à deux périodes de mémoire]
+Un modèle simplifié de prévision de la demande $D_n$ suppose que la demande d'une période dépend des deux précédentes :
+\[
+D_{n+2} = 0{,}5\, D_{n+1} + 0{,}5\, D_n.
+\]
+L'équation caractéristique $r^2 - 0{,}5 r - 0{,}5 = 0$ admet pour racines $r_1=1$ et $r_2=-0{,}5$. On obtient
+\[
+D_n = \alpha + \beta (-0{,}5)^n,
+\]
+et puisque $\lvert r_2\rvert < 1$, la demande converge vers $\alpha$ à long terme : le modèle prédit une \textbf{stabilisation} de la demande.
+\end{gestionbox}
+
+\begin{remarquebox}[Remarque 10.1]
+Ce type de suite intervient également en actuariat et en évaluation d'actifs (par exemple dans certains modèles d'arbres binomiaux ou de valorisation où la valeur à une date dépend des deux dates suivantes), ce qui justifie son importance pour la finance de gestion.
+\end{remarquebox}
+
+% ============================================================
+\section{Exercices d'application du cours}
+
+Les cinq exercices ci-dessous figurent dans le support original. Leurs corrigés détaillés se trouvent dans le fichier \texttt{Chapitre1\_Suites\_reelles\_Corrections.pdf}.
+
+\begin{exobox}[11.1 -- Monotonie et convergence]
+Étudier la monotonie et la convergence de la suite $u_n = \dfrac{2n-1}{n+3}$.
+\end{exobox}
+
+\begin{exobox}[11.2 -- Emprunt à annuités constantes]
+Une entreprise emprunte $200\,000\MAD$ à un taux annuel de $4\%$, remboursé par annuités constantes $A = 24\,000\MAD$. En notant $D_n$ le capital restant dû après le $n$-ième remboursement, écrire la relation de récurrence vérifiée par $(D_n)$, puis exprimer $D_n$ en fonction de $n$.
+\end{exobox}
+
+\begin{exobox}[11.3 -- Suites adjacentes]
+Montrer que les suites
+\[
+u_n = \sum_{k=0}^{n} \dfrac{1}{k!}
+\qquad\text{et}\qquad
+v_n = u_n + \dfrac{1}{n\cdot n!}
+\]
+sont adjacentes.
+\end{exobox}
+
+\begin{exobox}[11.4 -- Suite récurrente]
+On considère la suite définie par $u_0=0$ et $u_{n+1}=\sqrt{2u_n+3}$.
+\begin{enumerate}
+  \item Montrer que pour tout $n$, $0\leq u_n \leq 3$.
+  \item Étudier le sens de variation de $\un$.
+  \item En déduire que $\un$ converge et calculer sa limite.
+\end{enumerate}
+\end{exobox}
+
+\begin{exobox}[11.5 -- Récurrence d'ordre 2]
+Un fonds obligataire verse un coupon $C_n$ vérifiant $C_{n+2}=C_{n+1}+C_n$ (modèle de croissance à mémoire longue), avec $C_0=100$ et $C_1=150$. Déterminer l'expression de $C_n$ en fonction de $n$ à l'aide de l'équation caractéristique, et commenter le comportement à long terme.
+\end{exobox}
+
+\vspace{0.8cm}
+\begin{center}
+{\color{mundigray}\rule{0.4\textwidth}{0.4pt}}\\[0.3cm]
+{\small\color{mundigray} Fin du chapitre 1 -- Les suites réelles}\\
+{\small\color{mundigray} Documents associés : TD 3h \quad$\bullet$\quad Feuille d'exercices \quad$\bullet$\quad Corrigés}
+\end{center}
+
+\end{document}

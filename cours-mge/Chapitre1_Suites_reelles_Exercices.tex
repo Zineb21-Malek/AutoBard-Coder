@@ -1,0 +1,180 @@
+\documentclass[11pt,a4paper]{article}
+\input{preambule-mge}
+
+\begin{document}
+
+\pagedegarde{Chapitre 1 -- Les suites réelles}{Feuille d'exercices d'entraînement}
+
+\section*{Présentation}
+
+Cette feuille complète le TD de 3 heures. Elle est destinée au travail personnel (révisions, préparation du contrôle). Les exercices sont classés par thème ; un exercice de synthèse clôt la feuille. Les corrigés détaillés figurent dans \texttt{Chapitre1\_Suites\_reelles\_Corrections.pdf}.
+
+\begin{objectifbox}[Indications de travail]
+\begin{itemize}
+  \item Exercices 1 à 4 : maîtriser le vocabulaire et les théorèmes de convergence.
+  \item Exercices 5 à 7 : suites particulières et finance (cœur du module MGE).
+  \item Exercice 8 : récurrence d'ordre 2.
+  \item Exercice 9 : problème de synthèse type contrôle.
+\end{itemize}
+Une copie rédigée de l'exercice 9 constitue un excellent entraînement à l'examen.
+\end{objectifbox}
+
+% ------------------------------------------------------------
+\section*{Exercice 1 -- Vocabulaire et premières études}
+
+Pour chacune des suites suivantes, préciser si elle est majorée, minorée, bornée, monotone, convergente. Calculer la limite le cas échéant.
+
+\begin{enumerate}
+  \item $a_n = \dfrac{n}{n+1}$
+  \item $b_n = n^2 - 5n$
+  \item $c_n = \left(\dfrac{1}{2}\right)^n$
+  \item $d_n = (-1)^n + \dfrac{1}{n+1}$
+  \item $e_n = \dfrac{2n-1}{n+3}$ \quad (exercice 11.1 du cours)
+\end{enumerate}
+
+% ------------------------------------------------------------
+\section*{Exercice 2 -- Limites et formes indéterminées}
+
+Déterminer les limites suivantes.
+
+\begin{enumerate}
+  \item $\displaystyle\limn \dfrac{n^2 - 3n + 1}{2n^2 + n}$
+  \item $\displaystyle\limn \dfrac{5n+3}{n^2 + 1}$
+  \item $\displaystyle\limn \bigl(\sqrt{n+1}-\sqrt{n}\bigr)$
+  \item $\displaystyle\limn n\bigl(\sqrt{1+\dfrac{1}{n}} - 1\bigr)$
+  \item $\displaystyle\limn \dfrac{4^n - 2^n}{4^n + 3^n}$
+\end{enumerate}
+
+% ------------------------------------------------------------
+\section*{Exercice 3 -- Encadrements et suites extraites}
+
+\begin{enumerate}
+  \item Soit $u_n = \dfrac{n + (-1)^n}{n+2}$. Encadrer $u_n$ et en déduire sa limite.
+  \item Soit $v_n = \cos(n\pi) + \dfrac{1}{2^n}$. Étudier $(v_{2n})$ et $(v_{2n+1})$. La suite $\vn$ converge-t-elle ?
+  \item On suppose $\un$ convergente vers $\ell$. Montrer que la suite des moyennes de Cesàro $c_n = \dfrac{u_0+\cdots+u_n}{n+1}$ converge aussi vers $\ell$ dans le cas particulier $u_n = \ell + \dfrac{(-1)^n}{n+1}$. (On pourra utiliser le théorème des gendarmes.)
+\end{enumerate}
+
+% ------------------------------------------------------------
+\section*{Exercice 4 -- Suites adjacentes et récurrence}
+
+\subsection*{A. Suites adjacentes}
+
+On pose $u_n = 2 - \dfrac{1}{2^n}$ et $v_n = 2 + \dfrac{1}{2^n}$.
+\begin{enumerate}
+  \item Montrer que $\un$ et $\vn$ sont adjacentes.
+  \item Déterminer leur limite commune $\ell$.
+  \item À partir de quel rang a-t-on $v_n - u_n \leq 10^{-3}$ ?
+\end{enumerate}
+
+\subsection*{B. Suite récurrente (exercice 11.4 du cours)}
+
+Soit $u_0 = 0$ et $u_{n+1} = \sqrt{2u_n + 3}$.
+\begin{enumerate}
+  \item Montrer que pour tout $n$, $0 \leq u_n \leq 3$.
+  \item Étudier le sens de variation de $\un$.
+  \item En déduire que $\un$ converge et calculer sa limite.
+\end{enumerate}
+
+\subsection*{C. Une autre récurrence}
+
+Soit $u_0 = 1$ et $u_{n+1} = \dfrac{u_n + 6}{2}$. Montrer que $\un$ est croissante et majorée par $6$, puis déterminer sa limite.
+
+% ------------------------------------------------------------
+\section*{Exercice 5 -- Suites arithmétiques et géométriques}
+
+\begin{enumerate}
+  \item Une entreprise constitue une provision : elle verse $12\,000\MAD$ la première année, puis $1\,500\MAD$ de plus chaque année. Combien aura-t-elle versé au total après $8$ ans ?
+  \item Un stock de $5\,000$ articles diminue de $12\%$ par an. Exprimer le stock $S_n$ après $n$ années. Au bout de combien d'années le stock sera-t-il inférieur à $1\,000$ articles ?
+  \item Un actif de $40\,000\MAD$ se déprécie de $15\%$ par an. Quelle est sa valeur après $6$ ans ? Cette dépréciation est-elle plus rapide que l'amortissement linéaire de $6\,000\MAD$ par an ?
+\end{enumerate}
+
+% ------------------------------------------------------------
+\section*{Exercice 6 -- Emprunt et tableau d'amortissement}
+
+Une PME emprunte $150\,000\MAD$ au taux annuel $t=5\%$, remboursé par une annuité constante $A = 19\,500\MAD$. On note $D_n$ le capital restant dû après $n$ versements ($D_0 = 150\,000$).
+
+\begin{enumerate}
+  \item Écrire la relation de récurrence vérifiée par $(D_n)$ et en donner le terme général.
+  \item Compléter le tableau d'amortissement des \textbf{trois premières} années, selon le modèle :
+
+  \medskip
+  {\footnotesize
+  \noindent
+  \begin{tabularx}{\linewidth}{c|>{\centering\arraybackslash}X>{\centering\arraybackslash}X>{\centering\arraybackslash}X>{\centering\arraybackslash}X}
+  \toprule
+  $n$ & Capital début & Intérêts $t D_{n-1}$ & Amort.\ du capital & Capital fin $D_n$ \\
+  \midrule
+  1 & $150\,000$ &  &  &  \\
+  2 &  &  &  &  \\
+  3 &  &  &  &  \\
+  \bottomrule
+  \end{tabularx}
+  }
+
+  \item Vérifier la cohérence avec la formule explicite de $D_3$.
+  \item Estimer la durée de l'emprunt (plus petit $n$ tel que $D_n\leq 0$).
+\end{enumerate}
+
+% ------------------------------------------------------------
+\section*{Exercice 7 -- Placement avec versements périodiques}
+
+Un épargnant place $8\,000\MAD$ le 1\up{er} janvier de l'année 0, puis verse chaque 1\up{er} janvier suivant une somme constante $V = 2\,000\MAD$. Le taux annuel est $t=3\%$. On note $E_n$ l'encours au 1\up{er} janvier de l'année $n$, \textbf{juste après} le versement de l'année $n$.
+
+\begin{enumerate}
+  \item Justifier que $E_0 = 8\,000$ et $E_{n+1} = 1{,}03\, E_n + 2\,000$.
+  \item Exprimer $E_n$ en fonction de $n$.
+  \item Calculer $E_{10}$.
+  \item Combien l'épargnant a-t-il versé au total en $10$ ans (versements seuls) ? Quelle est la part des intérêts dans $E_{10}$ ?
+\end{enumerate}
+
+% ------------------------------------------------------------
+\section*{Exercice 8 -- Récurrence d'ordre 2}
+
+Un fonds obligataire verse un coupon $C_n$ (en MAD) vérifiant
+\[
+C_{n+2} = C_{n+1} + C_n,
+\]
+avec $C_0 = 100$ et $C_1 = 150$ (exercice 11.5 du cours).
+
+\begin{enumerate}
+  \item Écrire l'équation caractéristique et déterminer ses racines $\varphi$ et $\psi$.
+  \item Déterminer $\alpha$ et $\beta$ tels que $C_n = \alpha \varphi^n + \beta \psi^n$.
+  \item Calculer $C_2$, $C_3$ et $C_4$ de deux façons (récurrence directe, puis formule).
+  \item Justifier que $C_n \to +\infty$ et commenter le réalisme du modèle à long terme.
+\end{enumerate}
+
+On donne $\varphi = \dfrac{1+\sqrt{5}}{2} \approx 1{,}618$ (nombre d'or) et $\psi = \dfrac{1-\sqrt{5}}{2} \approx -0{,}618$.
+
+% ------------------------------------------------------------
+\section*{Exercice 9 -- Problème de synthèse (type contrôle)}
+
+Une société de location de matériel gère un parc de camionnettes.
+
+\begin{enumerate}
+  \item \textbf{Investissement initial.} Elle achète $20$ véhicules à $180\,000\MAD$ l'unité. L'amortissement linéaire retenu est de $22\,500\MAD$ par véhicule et par an. Exprimer la valeur comptable $V_n$ d'un véhicule après $n$ années. Au bout de combien d'années un véhicule est-il totalement amorti ?
+  \item \textbf{Recettes.} Le chiffre d'affaires annuel $R_n$ (en milliers de MAD) lié à la location vérifie
+  \[
+  R_{n+1} = 0{,}85\, R_n + 40, \qquad R_0 = 200.
+  \]
+  \begin{enumerate}
+    \item Interpréter les coefficients $0{,}85$ et $40$.
+    \item Exprimer $R_n$ en fonction de $n$ et déterminer $\limn R_n$. Interpréter.
+  \end{enumerate}
+  \item \textbf{Trésorerie.} On approxime la trésorerie de fin d'année par $T_n = 50 + 2n + \dfrac{(-1)^n}{n+1}$ (en milliers de MAD).
+  \begin{enumerate}
+    \item Montrer que $T_n \to +\infty$.
+    \item La suite $(T_n)$ est-elle monotone ? (on pourra examiner $T_{n+1}-T_n$ ou des extraits).
+  \end{enumerate}
+  \item \textbf{Demande de location.} Un consultant propose le modèle
+  \[
+  D_{n+2} = 0{,}5\, D_{n+1} + 0{,}5\, D_n, \qquad D_0 = 80,\ D_1 = 90
+  \]
+  (nombre de jours de location, en centaines). Déterminer $D_n$ et sa limite.
+\end{enumerate}
+
+\vspace{0.6cm}
+\begin{center}
+{\small\color{mundigray} Fin de la feuille d'exercices}
+\end{center}
+
+\end{document}
