@@ -1,0 +1,400 @@
+\documentclass[11pt,a4paper]{article}
+\input{preambule-mge}
+
+\begin{document}
+
+\pagedegarde{Chapitre 1 -- Les suites réelles}{Corrigés détaillés\\[0.3em]\large TD 3h \textbullet\ Exercices d'entraînement \textbullet\ Applications du cours}
+
+\tableofcontents
+\thispagestyle{fancy}
+\clearpage
+
+% =====================================================================
+\section{Corrigé du TD de 3 heures}
+
+% ---------------------------------------------------------------------
+\subsection{Exercice 1 -- Monotonie, bornes et convergence}
+
+Soit $u_n = \dfrac{3n+1}{n+2}$.
+
+\begin{enumerate}
+  \item $u_0 = \dfrac{1}{2}$, \quad $u_1 = \dfrac{4}{3}$, \quad $u_2 = \dfrac{7}{4}$.
+
+  \item
+  \[
+  u_{n+1}-u_n
+  = \dfrac{3n+4}{n+3} - \dfrac{3n+1}{n+2}
+  = \dfrac{(3n+4)(n+2)-(3n+1)(n+3)}{(n+3)(n+2)}.
+  \]
+  Le numérateur vaut
+  \[
+  (3n^2+10n+8) - (3n^2+10n+3) = 5.
+  \]
+  Donc $u_{n+1}-u_n = \dfrac{5}{(n+2)(n+3)} > 0$ : $\un$ est \textbf{strictement croissante}.
+
+  \item $u_n - 3 = \dfrac{3n+1-3(n+2)}{n+2} = \dfrac{-5}{n+2} < 0$, donc $u_n < 3$ pour tout $n$. La suite est majorée par $3$. Comme elle est croissante, elle est minorée par $u_0=\dfrac{1}{2}$. Elle est donc \textbf{bornée}.
+
+  \item
+  \begin{enumerate}
+    \item $\un$ est croissante et majorée, donc convergente (théorème de la limite monotone).
+    \[
+    u_n = \dfrac{3+\dfrac{1}{n}}{1+\dfrac{2}{n}} \xrightarrow[n\to+\infty]{} 3.
+    \]
+    \item La limite $\ell$ vérifie $\ell\leq 3$. Si l'on avait $\ell<3$, le majorant $3$ ne serait pas \og optimal \fg{}, mais le calcul explicite montre $\ell=3$. On peut aussi écrire : comme $u_n$ croît vers $\ell$ et $u_n=3-\dfrac{5}{n+2}$, nécessairement $\ell=3$.
+  \end{enumerate}
+\end{enumerate}
+
+% ---------------------------------------------------------------------
+\subsection{Exercice 2 -- Calculs de limites}
+
+\begin{enumerate}
+  \item Forme $\dfrac{\infty}{\infty}$. On factorise par $n^3$ :
+  \[
+  \dfrac{4n^3-n+2}{2n^3+5n-1}
+  = \dfrac{4-\dfrac{1}{n^2}+\dfrac{2}{n^3}}{2+\dfrac{5}{n^2}-\dfrac{1}{n^3}}
+  \xrightarrow[n\to+\infty]{} \dfrac{4}{2} = 2.
+  \]
+
+  \item Forme $\infty-\infty$. On multiplie par la quantité conjuguée :
+  \begin{align*}
+  \sqrt{n^2+n}-n
+  &= \dfrac{(n^2+n)-n^2}{\sqrt{n^2+n}+n}
+  = \dfrac{n}{\sqrt{n^2+n}+n}
+  = \dfrac{1}{\sqrt{1+\dfrac{1}{n}}+1}
+  \xrightarrow[n\to+\infty]{} \dfrac{1}{2}.
+  \end{align*}
+
+  \item On factorise par le terme dominant $3^n$ :
+  \[
+  \dfrac{2^n+3^n}{3^n+1}
+  = \dfrac{\bigl(\tfrac{2}{3}\bigr)^n + 1}{1 + 3^{-n}}
+  \xrightarrow[n\to+\infty]{} \dfrac{0+1}{1+0} = 1,
+  \]
+  car $\lvert 2/3\rvert<1$ et $3^{-n}\to 0$.
+\end{enumerate}
+
+% ---------------------------------------------------------------------
+\subsection{Exercice 3 -- Gendarmes et suites extraites}
+
+\begin{enumerate}
+  \item Pour tout $n$, $-\dfrac{1}{n+1}\leq \dfrac{(-1)^n}{n+1}\leq \dfrac{1}{n+1}$. Les deux encadrantes tendent vers $0$, donc $\dfrac{(-1)^n}{n+1}\to 0$ (gendarmes). Par ailleurs $\dfrac{2n}{n+3}\to 2$. D'où $u_n\to 2$.
+
+  \item $v_{2n} = 1+\dfrac{1}{2n} \to 1$ et $v_{2n+1} = -\bigl(1+\dfrac{1}{2n+1}\bigr) \to -1$. Deux extraits de limites distinctes : $\vn$ \textbf{diverge}.
+
+  \item $\lvert\sin n\rvert\leq 1$ donc $-\dfrac{1}{n+1}\leq w_n \leq \dfrac{1}{n+1}$. Par le théorème des gendarmes, $w_n\to 0$.
+\end{enumerate}
+
+% ---------------------------------------------------------------------
+\subsection{Exercice 4 -- Suite récurrente}
+
+Soit $f(x)=\sqrt{3x+4}$ et $u_0=1$, $u_{n+1}=f(u_n)$.
+
+\begin{enumerate}
+  \item $f(\ell)=\ell$ donne $\ell^2=3\ell+4$, soit $\ell^2-3\ell-4=0$, $(\ell-4)(\ell+1)=0$. Les candidats sont $\ell=4$ et $\ell=-1$. Comme $u_n\geq 0$ pour tout $n$, seule $\ell=4$ est possible.
+
+  \item \textbf{Initialisation :} $u_0=1\in[1,4]$.
+
+  \textbf{Hérédité :} si $1\leq u_n\leq 4$, alors $7\leq 3u_n+4\leq 16$, donc $\sqrt{7}\leq u_{n+1}\leq 4$. Or $\sqrt{7}\geq 1$, d'où $1\leq u_{n+1}\leq 4$.
+
+  \item Sur $[1,4]$, $f(x)\geq x$ équivaut (les deux membres sont positifs) à $3x+4\geq x^2$, i.e.\ $x^2-3x-4\leq 0$, i.e.\ $(x-4)(x+1)\leq 0$, vrai sur $[-1,4]$ donc sur $[1,4]$. Ainsi $u_{n+1}=f(u_n)\geq u_n$ : $\un$ est croissante. (Elle est même strictement croissante car $u_0<4$.)
+
+  \item $\un$ est croissante et majorée par $4$, donc convergente. Sa limite $\ell$ vérifie $f(\ell)=\ell$ et $\ell\in[1,4]$, donc $\ell=4$.
+\end{enumerate}
+
+% ---------------------------------------------------------------------
+\subsection{Exercice 5 -- Applications en gestion}
+
+\subsubsection*{A. Amortissement linéaire}
+
+\begin{enumerate}
+  \item $V_{n+1}=V_n-8\,000$ : suite arithmétique de premier terme $V_0=80\,000$ et de raison $r=-8\,000$.
+  \item $V_n = 80\,000 - 8\,000\, n = 8\,000\,(10-n)$.
+  \item $V_n=0 \iff n=10$ : la machine est totalement amortie en \textbf{$10$ ans}.
+  \item Les amortissements cumulés après $5$ ans valent $5\times 8\,000 = 40\,000\MAD$. De façon équivalente, $V_5=40\,000\MAD$.
+\end{enumerate}
+
+\subsubsection*{B. Capitalisation}
+
+\begin{enumerate}
+  \item $C_n = 15\,000 \times (1{,}045)^n$.
+  \item $(1{,}045)^8 \approx 1{,}42210$, donc $C_8 \approx 15\,000 \times 1{,}42210 = 21\,331{,}5$, soit $\mathbf{21\,332\MAD}$ arrondi à l'unité. Valeur exacte : $15\,000\times (1{,}045)^8$.
+  \item $C_n = 2C_0 \iff (1{,}045)^n = 2 \iff n = \dfrac{\ln 2}{\ln 1{,}045} \approx 15{,}75$.
+
+  On vérifie : $(1{,}045)^{15}<2<(1{,}045)^{16}$. Le capital a doublé à l'issue de la \textbf{16\up{e} année}.
+\end{enumerate}
+
+\subsubsection*{C. Emprunt}
+
+\begin{enumerate}
+  \item Le capital dû en début d'année $n+1$ est $D_n$. Les intérêts de la période valent $0{,}04\, D_n$. Après versement de l'annuité $24\,000$,
+  \[
+  D_{n+1} = D_n + 0{,}04\, D_n - 24\,000 = 1{,}04\, D_n - 24\,000.
+  \]
+  \item Point fixe : $\ell = 1{,}04\,\ell - 24\,000 \iff \ell = \dfrac{24\,000}{0{,}04} = 600\,000$. D'où
+  \[
+  D_n = 600\,000 + (200\,000-600\,000)(1{,}04)^n = 600\,000 - 400\,000\,(1{,}04)^n.
+  \]
+  \item $(1{,}04)^5 = 1{,}2166529$, donc $D_5 = 600\,000 - 400\,000\times 1{,}2166529 \approx \mathbf{113\,339\MAD}$.
+  \item $D_n\leq 0 \iff (1{,}04)^n \geq 1{,}5 \iff n \geq \dfrac{\ln 1{,}5}{\ln 1{,}04}\approx 10{,}34$.
+
+  Contrôle : $D_{10}\approx 7\,902 > 0$ et $D_{11}\approx -15\,782 < 0$. Le prêt est éteint à la \textbf{11\up{e} échéance} (la dernière annuité est réduite au capital restant dû augmenté des intérêts de la dernière période).
+\end{enumerate}
+
+% ---------------------------------------------------------------------
+\subsection{Exercice 6 -- Complément}
+
+\subsubsection*{Option A -- Suites adjacentes}
+
+$u_{n+1}-u_n = \dfrac{1}{(n+1)(n+2)}>0$ : $\un$ croissante. $v_{n+1}-v_n = -\dfrac{1}{(n+1)(n+2)}<0$ : $\vn$ décroissante. De plus $v_n-u_n = \dfrac{2}{n+1}\to 0$. Les suites sont \textbf{adjacentes}, donc convergent vers la même limite $\ell$. Or $u_n\to 1$ et $v_n\to 1$, donc $\ell=1$.
+
+Pour $n\geq 199$, $v_n-u_n = \dfrac{2}{n+1}\leq 10^{-2}$, et
+\[
+u_{199} = 0{,}995 \leq 1 \leq 1{,}005 = v_{199}.
+\]
+
+\subsubsection*{Option B -- Demande à mémoire}
+
+Équation caractéristique : $r^2-0{,}6r-0{,}4=0$. Discriminant $\Delta=0{,}36+1{,}6=1{,}96$, racines
+\[
+r_1=1, \qquad r_2=-0{,}4.
+\]
+Donc $D_n = \alpha + \beta (-0{,}4)^n$. Les conditions initiales donnent $\alpha+\beta=100$ et $\alpha-0{,}4\beta=120$, d'où $\beta=-\dfrac{100}{7}$ et $\alpha=\dfrac{800}{7}$. Ainsi
+\[
+D_n = \dfrac{800}{7} - \dfrac{100}{7}\,(-0{,}4)^n.
+\]
+Comme $\lvert -0{,}4\rvert<1$, $\limn D_n = \dfrac{800}{7}\approx 114{,}3$ (milliers d'unités) : la demande \textbf{se stabilise} autour de cette valeur.
+
+\clearpage
+% =====================================================================
+\section{Corrigé de la feuille d'exercices}
+
+% ---------------------------------------------------------------------
+\subsection{Exercice 1 -- Vocabulaire}
+
+\begin{center}
+\renewcommand{\arraystretch}{1.2}
+\begin{tabular}{@{}lcccc@{}}
+\toprule
+Suite & Bornée ? & Monotone ? & Convergente ? & Limite \\
+\midrule
+$a_n=\dfrac{n}{n+1}$ & oui ($0\leq a_n<1$) & croissante & oui & $1$ \\
+$b_n=n^2-5n$ & non (non majorée) & non (globale) & non & $+\infty$ \\
+$c_n=\bigl(\tfrac12\bigr)^n$ & oui ($0<c_n\leq 1$) & décroissante & oui & $0$ \\
+$d_n=(-1)^n+\dfrac{1}{n+1}$ & oui & non & non & --- \\
+$e_n=\dfrac{2n-1}{n+3}$ & oui & croissante & oui & $2$ \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\textit{Compléments.} $b_n$ est minorée par $-6$ (minimum atteint en $n=2$ et $n=3$) mais $b_n\to+\infty$. Pour $d_n$, les extraits pair et impair tendent vers $1$ et $-1$. Pour $e_n$ :
+\[
+e_{n+1}-e_n = \dfrac{7}{(n+3)(n+4)}>0, \qquad e_n-2=\dfrac{-7}{n+3}<0,
+\]
+d'où la croissance et le majorant $2$, et $\limn e_n=2$.
+
+% ---------------------------------------------------------------------
+\subsection{Exercice 2 -- Limites}
+
+\begin{enumerate}
+  \item $\dfrac{1-\dfrac{3}{n}+\dfrac{1}{n^2}}{2+\dfrac{1}{n}}\to \dfrac{1}{2}$.
+  \item Degré du dénominateur strictement supérieur : la limite vaut $0$.
+  \item $\sqrt{n+1}-\sqrt{n} = \dfrac{1}{\sqrt{n+1}+\sqrt{n}}\to 0$.
+  \item
+  \[
+  n\Bigl(\sqrt{1+\dfrac{1}{n}}-1\Bigr)
+  = \dfrac{n\cdot\dfrac{1}{n}}{\sqrt{1+\dfrac{1}{n}}+1}
+  = \dfrac{1}{\sqrt{1+\dfrac{1}{n}}+1}\to \dfrac12.
+  \]
+  \item On factorise par $4^n$ :
+  \[
+  \dfrac{1-(1/2)^n}{1+(3/4)^n}\to 1.
+  \]
+\end{enumerate}
+
+% ---------------------------------------------------------------------
+\subsection{Exercice 3 -- Encadrements et extraits}
+
+\begin{enumerate}
+  \item $n-1\leq n+(-1)^n\leq n+1$, donc $\dfrac{n-1}{n+2}\leq u_n\leq \dfrac{n+1}{n+2}$. Les deux encadrantes tendent vers $1$, d'où $u_n\to 1$.
+
+  \item $\cos(n\pi)=(-1)^n$, donc $v_{2n}=1+4^{-n}\to 1$ et $v_{2n+1}=-1+2^{-(2n+1)}\to -1$. La suite $\vn$ diverge.
+
+  \item $c_n = \ell + \dfrac{1}{n+1}\sum_{k=0}^n \dfrac{(-1)^k}{k+1}$. La somme alternée est bornée (en groupant les termes, sa valeur absolue reste $\leq 1$). Donc $\lvert c_n-\ell\rvert \leq \dfrac{1}{n+1}\to 0$, et $c_n\to\ell$.
+\end{enumerate}
+
+% ---------------------------------------------------------------------
+\subsection{Exercice 4 -- Adjacentes et récurrences}
+
+\subsubsection*{A.}
+$u_{n+1}-u_n = \dfrac{1}{2^{n+1}}>0$, $v_{n+1}-v_n = -\dfrac{1}{2^{n+1}}<0$, et $v_n-u_n = 2^{1-n}\to 0$. Suites adjacentes, limite commune $\ell=2$.
+
+$2^{1-n}\leq 10^{-3}\iff 2^{n-1}\geq 1000$. Or $2^{9}=512<1000\leq 1024=2^{10}$, donc $n-1\geq 10$, i.e.\ $n\geq 11$.
+
+\subsubsection*{B. (cours 11.4)}
+$f(x)=\sqrt{2x+3}$. Si $0\leq x\leq 3$, alors $3\leq 2x+3\leq 9$, donc $0\leq f(x)\leq 3$. Par récurrence, $0\leq u_n\leq 3$.
+
+Sur $[0,3]$, $f(x)\geq x \iff 2x+3\geq x^2 \iff (x-3)(x+1)\leq 0$, vrai. Donc $\un$ est croissante (et $u_1=\sqrt{3}>0=u_0$).
+
+Croissante et majorée par $3$, elle converge vers $\ell$ vérifiant $\ell=\sqrt{2\ell+3}$, $\ell^2-2\ell-3=0$, $(\ell-3)(\ell+1)=0$. Comme $\ell\geq 0$, $\ell=3$.
+
+\subsubsection*{C.}
+Le point fixe est $\ell=6$. On a $u_1=\dfrac72>1$ et, si $u_n\leq 6$, alors $u_{n+1}\leq 6$. De plus $u_{n+1}-u_n = \dfrac{6-u_n}{2}\geq 0$ dès que $u_n\leq 6$. Donc $\un$ est croissante et majorée par $6$, elle converge vers $6$.
+
+% ---------------------------------------------------------------------
+\subsection{Exercice 5 -- Arithmétiques et géométriques}
+
+\begin{enumerate}
+  \item Suite arithmétique de premier terme $12\,000$ et de raison $1\,500$. Le $8$\up{e} versement vaut $12\,000+7\times 1\,500=22\,500$. Le total est
+  \[
+  8\times\dfrac{12\,000+22\,500}{2} = 138\,000\MAD.
+  \]
+
+  \item $S_n = 5\,000\times (0{,}88)^n$. On cherche $S_n<1\,000$, i.e.\ $(0{,}88)^n < 0{,}2$, soit $n > \dfrac{\ln 0{,}2}{\ln 0{,}88}\approx 12{,}59$. Contrôle : $S_{12}\approx 1\,075>1\,000$ et $S_{13}\approx 946<1\,000$. Réponse : \textbf{$13$ ans}.
+
+  \item Valeur géométrique après $6$ ans : $40\,000\times (0{,}85)^6 \approx 15\,086\MAD$. Valeur linéaire : $40\,000-6\times 6\,000=4\,000\MAD$. L'amortissement linéaire érode plus vite la valeur dans cet exemple (il annule l'actif dès $n\approx 6{,}67$ ans, alors que le modèle géométrique laisse un reliquat d'environ $15\,000\MAD$).
+\end{enumerate}
+
+% ---------------------------------------------------------------------
+\subsection{Exercice 6 -- Tableau d'amortissement}
+
+\begin{enumerate}
+  \item $D_{n+1}=1{,}05\, D_n - 19\,500$, point fixe $\ell=\dfrac{19\,500}{0{,}05}=390\,000$, d'où
+  \[
+  D_n = 390\,000 - 240\,000\,(1{,}05)^n.
+  \]
+
+  \item
+  \begin{center}
+  \renewcommand{\arraystretch}{1.2}
+  \begin{tabular}{c|cccc}
+  \toprule
+  Année & Capital début & Intérêts & Amortissement & Capital fin \\
+  \midrule
+  1 & $150\,000$ & $7\,500$ & $12\,000$ & $138\,000$ \\
+  2 & $138\,000$ & $6\,900$ & $12\,600$ & $125\,400$ \\
+  3 & $125\,400$ & $6\,270$ & $13\,230$ & $112\,170$ \\
+  \bottomrule
+  \end{tabular}
+  \end{center}
+
+  \item $D_3 = 390\,000 - 240\,000\times (1{,}05)^3 = 390\,000 - 240\,000\times 1{,}157625 = 112\,170$. Cohérent.
+
+  \item $D_n\leq 0 \iff (1{,}05)^n \geq \dfrac{390}{240}=1{,}625 \iff n\geq \dfrac{\ln 1{,}625}{\ln 1{,}05}\approx 9{,}95$. On a $D_9>0$ et $D_{10}<0$ : l'emprunt est soldé à la \textbf{10\up{e} année}.
+\end{enumerate}
+
+% ---------------------------------------------------------------------
+\subsection{Exercice 7 -- Placement avec versements}
+
+\begin{enumerate}
+  \item $E_0$ est le premier versement. Ensuite, l'encours fructifie au taux $3\%$ pendant un an, puis on ajoute $V=2\,000$ : $E_{n+1}=1{,}03 E_n+2\,000$.
+
+  \item Point fixe $\ell=\dfrac{2\,000}{1-1{,}03}=-\dfrac{200\,000}{3}$. D'où
+  \[
+  E_n = -\dfrac{200\,000}{3} + \dfrac{224\,000}{3}\,(1{,}03)^n = \dfrac{8\,000}{3}\bigl(28\,(1{,}03)^n-25\bigr).
+  \]
+
+  \item $(1{,}03)^{10}\approx 1{,}343916$, donc $E_{10}\approx \mathbf{33\,679\MAD}$.
+
+  \item Au 1\up{er} janvier de l'année $10$, après versement, il y a eu les versements des années $0$ à $10$, soit $8\,000+10\times 2\,000=28\,000\MAD$ versés. La part des intérêts dans $E_{10}$ est $33\,679-28\,000\approx \mathbf{5\,679\MAD}$.
+\end{enumerate}
+
+% ---------------------------------------------------------------------
+\subsection{Exercice 8 -- Récurrence d'ordre 2 (cours 11.5)}
+
+\begin{enumerate}
+  \item $r^2-r-1=0$, racines $\varphi=\dfrac{1+\sqrt{5}}{2}$ et $\psi=\dfrac{1-\sqrt{5}}{2}$.
+  \item $C_n=\alpha\varphi^n+\beta\psi^n$ avec $\alpha+\beta=100$ et $\alpha\varphi+\beta\psi=150$. On obtient
+  \[
+  \alpha = 50+20\sqrt{5}, \qquad \beta = 50-20\sqrt{5}.
+  \]
+  \item Par la récurrence : $C_2=250$, $C_3=400$, $C_4=650$. La formule explicite redonne les mêmes valeurs (vérification numérique : $\varphi^2=\varphi+1$, etc.).
+  \item $\varphi>1$ et $\alpha>0$, tandis que $\lvert\psi\rvert<1$, donc $C_n\sim \alpha\varphi^n \to +\infty$. Le modèle (de type Fibonacci) décrit une croissance exponentielle des coupons, irréaliste sans saturation ni contrainte de marché : il n'est pertinent que sur un horizon court.
+\end{enumerate}
+
+% ---------------------------------------------------------------------
+\subsection{Exercice 9 -- Synthèse}
+
+\begin{enumerate}
+  \item $V_n = 180\,000 - 22\,500\, n$. Totalement amorti lorsque $n=8$ ans ($180\,000/22\,500=8$).
+
+  \item
+  \begin{enumerate}
+    \item Le coefficient $0{,}85$ traduit une \textbf{rétention} de $85\%$ du CA de l'année précédente (perte de $15\%$ : départs de clients, pression tarifaire, etc.). Le terme $+40$ (milliers de MAD) représente le CA \textbf{nouveau} généré chaque année.
+    \item Point fixe $\ell=\dfrac{40}{1-0{,}85}=\dfrac{800}{3}$. Donc
+    \[
+    R_n = \dfrac{800}{3} - \dfrac{200}{3}\,(0{,}85)^n.
+    \]
+    Comme $\lvert 0{,}85\rvert<1$, $R_n\to \dfrac{800}{3}\approx 266{,}7$ milliers de MAD : le CA annuel \textbf{se stabilise} autour de $267\,000\MAD$.
+  \end{enumerate}
+
+  \item
+  \begin{enumerate}
+    \item $50+2n\to+\infty$ et le terme $\dfrac{(-1)^n}{n+1}$ est borné, donc $T_n\to+\infty$.
+    \item $T_{n+1}-T_n = 2 + (-1)^{n+1}\Bigl(\dfrac{1}{n+2}+\dfrac{1}{n+1}\Bigr)$. Comme $\dfrac{1}{n+1}+\dfrac{1}{n+2}\leq \dfrac32<2$, on a $T_{n+1}-T_n>0$ : $(T_n)$ est \textbf{strictement croissante} malgré l'oscillation (la tendance linéaire l'emporte).
+  \end{enumerate}
+
+  \item Équation $r^2-0{,}5r-0{,}5=0$, racines $1$ et $-1/2$. D'où $D_n=\alpha+\beta\bigl(-\tfrac12\bigr)^n$. Avec $D_0=80$ et $D_1=90$ : $\alpha=\dfrac{260}{3}$, $\beta=-\dfrac{20}{3}$. Donc
+  \[
+  D_n = \dfrac{260}{3} - \dfrac{20}{3}\Bigl(-\dfrac12\Bigr)^n \xrightarrow[n\to+\infty]{} \dfrac{260}{3}\approx 86{,}7.
+  \]
+\end{enumerate}
+
+\clearpage
+% =====================================================================
+\section{Corrigé des exercices d'application du cours}
+
+Ces cinq exercices figurent à la fin du support. Plusieurs recoupent le TD ou la feuille : on donne ici une rédaction autonome, de niveau \og copie d'examen \fg{}.
+
+\subsection{Exercice 11.1}
+
+$u_n=\dfrac{2n-1}{n+3}$.
+
+\[
+u_{n+1}-u_n = \dfrac{(2n+1)(n+3)-(2n-1)(n+4)}{(n+4)(n+3)} = \dfrac{7}{(n+3)(n+4)}>0 :
+\]
+la suite est strictement croissante. De plus $u_n-2=\dfrac{-7}{n+3}<0$, donc $u_n<2$. Croissante et majorée, elle converge. Or
+\[
+u_n = \dfrac{2-\dfrac{1}{n}}{1+\dfrac{3}{n}}\to 2.
+\]
+
+\subsection{Exercice 11.2}
+
+$D_{n+1}=1{,}04\, D_n-24\,000$, $D_0=200\,000$. C'est une suite arithmético-géométrique de point fixe $\ell=\dfrac{24\,000}{0{,}04}=600\,000$, d'où
+\[
+D_n = 600\,000 - 400\,000\,(1{,}04)^n.
+\]
+(Voir le détail des calculs à l'exercice 5.C du TD.)
+
+\subsection{Exercice 11.3}
+
+$u_n=\sum_{k=0}^n \dfrac{1}{k!}$ et $v_n=u_n+\dfrac{1}{n\cdot n!}$ (pour $n\geq 1$).
+
+\begin{itemize}
+  \item $u_{n+1}-u_n=\dfrac{1}{(n+1)!}>0$ : $\un$ est croissante.
+  \item Pour la décroissance de $\vn$ :
+  \begin{align*}
+  v_n-v_{n+1}
+  &= \dfrac{1}{n\cdot n!} - \dfrac{1}{(n+1)!} - \dfrac{1}{(n+1)\cdot(n+1)!} \\
+  &= \dfrac{1}{n!}\Biggl(\dfrac{1}{n}-\dfrac{1}{n+1}-\dfrac{1}{(n+1)^2}\Biggr)
+  = \dfrac{1}{n!\cdot n\cdot (n+1)^2}>0.
+  \end{align*}
+  Donc $\vn$ est décroissante.
+  \item $v_n-u_n=\dfrac{1}{n\cdot n!}\to 0$.
+\end{itemize}
+Les suites sont adjacentes. Elles convergent vers la même limite, qui n'est autre que $e=\sum_{k=0}^{+\infty}\dfrac{1}{k!}$. De plus, pour tout $n\geq 1$, $u_n \leq e \leq v_n$.
+
+\subsection{Exercice 11.4}
+
+Voir l'exercice 4.B de la feuille (récurrence $u_{n+1}=\sqrt{2u_n+3}$, limite $3$).
+
+\subsection{Exercice 11.5}
+
+Voir l'exercice 8 de la feuille : $C_n=(50+20\sqrt{5})\,\varphi^n+(50-20\sqrt{5})\,\psi^n$, avec une croissance exponentielle à long terme.
+
+\vspace{0.8cm}
+\begin{center}
+{\color{mundigray}\rule{0.4\textwidth}{0.4pt}}\\[0.3cm]
+{\small\color{mundigray} Fin des corrigés -- Chapitre 1 : Les suites réelles}
+\end{center}
+
+\end{document}

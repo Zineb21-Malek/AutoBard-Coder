@@ -1,0 +1,174 @@
+\documentclass[11pt,a4paper]{article}
+\input{preambule-mge}
+
+\begin{document}
+
+\pagedegarde{Chapitre 1 -- Les suites réelles}{Travaux dirigés -- Séance de 3 heures}
+
+\section*{Consignes}
+
+\begin{itemize}
+  \item Durée : \textbf{3 heures}. Calculatrice scientifique autorisée. Justifier chaque réponse.
+  \item Les exercices sont conçus pour être traités \textbf{dans l'ordre}. L'exercice 6 est un complément si le temps le permet.
+  \item Les applications de gestion (exercice 5) constituent le cœur de la séance : y consacrer le temps indiqué.
+\end{itemize}
+
+\begin{planbox}[Déroulement indicatif]
+\renewcommand{\arraystretch}{1.15}
+\begin{tabularx}{\textwidth}{@{}c c X@{}}
+\toprule
+\textbf{Durée} & \textbf{Exercice} & \textbf{Compétence visée} \\
+\midrule
+25 min & 1 & Monotonie, bornes, théorème de la limite monotone. \\
+20 min & 2 & Calculs de limites, formes indéterminées. \\
+25 min & 3 & Gendarmes, suites extraites, critère de divergence. \\
+30 min & 4 & Suite récurrente d'ordre 1 (démarche complète). \\
+45 min & 5 & Arithmétique, géométrique, arithmético-géométrique en gestion. \\
+25 min & 6 & Suites adjacentes \emph{ou} récurrence d'ordre 2. \\
+10 min & --- & Mise en commun / synthèse. \\
+\bottomrule
+\end{tabularx}
+\end{planbox}
+
+% ------------------------------------------------------------
+\section*{Exercice 1 -- Monotonie, bornes et convergence \hfill {\normalsize\normalfont (25 min -- 4 points)}}
+
+On considère la suite $\un$ définie par
+\[
+u_n = \dfrac{3n+1}{n+2}.
+\]
+
+\begin{enumerate}
+  \item Calculer $u_0$, $u_1$ et $u_2$.
+  \item Calculer $u_{n+1}-u_n$ et en déduire le sens de variation de $\un$.
+  \item Montrer que, pour tout $n\in\N$, $u_n < 3$. La suite est-elle minorée ?
+  \item En déduire que $\un$ converge, puis calculer sa limite de deux façons :
+  \begin{enumerate}
+    \item en utilisant le théorème des opérations sur les limites ;
+    \item en utilisant le théorème de la limite monotone (on identifiera la limite comme un majorant \og le plus petit possible \fg{}).
+  \end{enumerate}
+\end{enumerate}
+
+% ------------------------------------------------------------
+\section*{Exercice 2 -- Calculs de limites \hfill {\normalsize\normalfont (20 min -- 3 points)}}
+
+Déterminer les limites suivantes (en justifiant, notamment en cas de forme indéterminée) :
+
+\begin{enumerate}
+  \item $\displaystyle\limn \dfrac{4n^3 - n + 2}{2n^3 + 5n - 1}$
+  \item $\displaystyle\limn \bigl(\sqrt{n^2 + n} - n\bigr)$
+  \item $\displaystyle\limn \dfrac{2^n + 3^n}{3^n + 1}$
+\end{enumerate}
+
+\begin{methodebox}[Rappels utiles]
+\begin{itemize}
+  \item Pour un quotient de polynômes : factoriser par le terme de plus haut degré.
+  \item Pour une expression du type $\sqrt{a_n}-b_n$ : multiplier par la \textbf{quantité conjuguée}.
+  \item Pour un quotient d'exponentielles : factoriser par le terme \textbf{dominant} (ici $3^n$).
+\end{itemize}
+\end{methodebox}
+
+% ------------------------------------------------------------
+\section*{Exercice 3 -- Gendarmes et suites extraites \hfill {\normalsize\normalfont (25 min -- 3,5 points)}}
+
+\begin{enumerate}
+  \item Soit $u_n = \dfrac{(-1)^n}{n+1} + \dfrac{2n}{n+3}$.
+  \begin{enumerate}
+    \item Encadrer $\dfrac{(-1)^n}{n+1}$ par deux suites convergeant vers $0$.
+    \item En déduire $\limn u_n$.
+  \end{enumerate}
+
+  \item On pose $v_n = (-1)^n \left(1+\dfrac{1}{n}\right)$ pour $n\geq 1$.
+  \begin{enumerate}
+    \item Étudier les suites extraites $(v_{2n})$ et $(v_{2n+1})$.
+    \item Conclure quant à la convergence de $\vn$.
+  \end{enumerate}
+
+  \item Soit $w_n = \dfrac{\sin n}{n+1}$. Montrer que $w_n \to 0$ (on rappelle que $\lvert\sin n\rvert \leq 1$).
+\end{enumerate}
+
+% ------------------------------------------------------------
+\section*{Exercice 4 -- Suite récurrente \hfill {\normalsize\normalfont (30 min -- 4 points)}}
+
+On considère la suite définie par $u_0 = 1$ et
+\[
+u_{n+1} = \sqrt{3u_n + 4}.
+\]
+On note $f$ la fonction $f(x)=\sqrt{3x+4}$, définie sur $\bigl[-\tfrac{4}{3},+\infty\bigr[$.
+
+\begin{enumerate}
+  \item Résoudre $f(\ell)=\ell$. Quelles sont les valeurs \emph{candidates} à être limite de $\un$ ?
+  \item Montrer par récurrence que, pour tout $n\in\N$, $1 \leq u_n \leq 4$.
+  \item Étudier le signe de $f(x)-x$ sur $[1,4]$ et en déduire que $\un$ est croissante.
+  \item Conclure : $\un$ converge, et préciser sa limite.
+\end{enumerate}
+
+% ------------------------------------------------------------
+\section*{Exercice 5 -- Suites particulières et applications en gestion \hfill {\normalsize\normalfont (45 min -- 5 points)}}
+
+Cet exercice est le cœur de la séance. Les trois parties sont indépendantes.
+
+\subsection*{A. Amortissement linéaire (suite arithmétique)}
+
+Une machine-outil est achetée $80\,000\MAD$ et amortie linéairement de $8\,000\MAD$ par an. On note $V_n$ sa valeur comptable après $n$ années.
+
+\begin{enumerate}
+  \item Justifier que $(V_n)$ est une suite arithmétique. Préciser $V_0$ et la raison.
+  \item Exprimer $V_n$ en fonction de $n$.
+  \item Au bout de combien d'années la machine est-elle totalement amortie ?
+  \item Calculer la valeur comptable cumulée des amortissements après $5$ ans.
+\end{enumerate}
+
+\subsection*{B. Capitalisation (suite géométrique)}
+
+Un capital $C_0 = 15\,000\MAD$ est placé à intérêts composés au taux annuel $t=4{,}5\%$. On note $C_n$ le capital acquis après $n$ années.
+
+\begin{enumerate}
+  \item Exprimer $C_n$ en fonction de $n$.
+  \item Calculer $C_8$ (on donnera la valeur exacte, puis une valeur arrondie à l'unité).
+  \item Au bout de combien d'années le capital aura-t-il \textbf{doublé} ? (on pourra utiliser $\ln$).
+\end{enumerate}
+
+\subsection*{C. Emprunt à annuités constantes (suite arithmético-géométrique)}
+
+Une entreprise emprunte $D_0 = 200\,000\MAD$ au taux annuel $t=4\%$, remboursé par une annuité constante $A=24\,000\MAD$. On note $D_n$ le capital restant dû \textbf{après} le $n$-ième versement.
+
+\begin{enumerate}
+  \item Justifier la relation $D_{n+1} = 1{,}04\, D_n - 24\,000$.
+  \item Déterminer le point fixe $\ell$ de cette récurrence, puis exprimer $D_n$ en fonction de $n$.
+  \item Calculer $D_5$ (arrondi à l'unité).
+  \item Déterminer le plus petit entier $n$ tel que $D_n \leq 0$. Interpréter.
+\end{enumerate}
+
+% ------------------------------------------------------------
+\section*{Exercice 6 -- Complément \hfill {\normalsize\normalfont (25 min -- 0,5 point de bonus)}}
+
+Traiter \textbf{l'une} des deux questions, au choix.
+
+\subsection*{Option A -- Suites adjacentes}
+
+On pose, pour $n\geq 0$,
+\[
+u_n = \dfrac{n}{n+1}, \qquad v_n = \dfrac{n+2}{n+1}.
+\]
+Montrer que $\un$ et $\vn$ sont adjacentes. En déduire qu'elles convergent vers une même limite $\ell$, que l'on déterminera. Encadrer $\ell$ à $10^{-2}$ près à l'aide d'un rang bien choisi.
+
+\subsection*{Option B -- Demande à mémoire de deux périodes}
+
+La demande $D_n$ d'un produit vérifie
+\[
+D_{n+2} = 0{,}6\, D_{n+1} + 0{,}4\, D_n,
+\]
+avec $D_0 = 100$ et $D_1 = 120$ (en milliers d'unités).
+\begin{enumerate}
+  \item Écrire l'équation caractéristique et déterminer ses racines.
+  \item En déduire l'expression de $D_n$ en fonction de $n$.
+  \item Déterminer $\limn D_n$ et interpréter économiquement.
+\end{enumerate}
+
+\vspace{0.6cm}
+\begin{center}
+{\small\color{mundigray} Fin du TD -- Les corrigés détaillés sont dans \texttt{Chapitre1\_Suites\_reelles\_Corrections.pdf}}
+\end{center}
+
+\end{document}
