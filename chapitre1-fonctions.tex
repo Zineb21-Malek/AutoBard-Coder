@@ -1,0 +1,2005 @@
+\documentclass[10pt,aspectratio=169]{beamer}
+
+%=======================================================
+% Chapitre I — Fonctions d'une variable réelle
+% Mathématiques appliquées à la gestion
+% Pr. Rajae Malek — Business School, Université Mundiapolis
+% 3 séances de 1 h 30 (MGE 1, S1, 2026--2027)
+%
+% Fichier unique, autonome : rien d'autre à télécharger.
+% Compilation :
+%     pdflatex chapitre1-fonctions.tex
+%     pdflatex chapitre1-fonctions.tex
+% Logos optionnels dans le même dossier : munidia.png, honoris.jpg
+%=======================================================
+
+% PACKAGES
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[french]{babel}
+
+\usepackage{graphicx}
+\usepackage{xcolor}
+\usepackage{amsmath,amssymb}
+\usepackage{array}
+\usepackage{multirow}
+\usepackage{makecell}
+\usepackage{colortbl}
+\usepackage{xspace}
+\usepackage{fontawesome5}
+\usepackage{wasysym}
+\usepackage{diagbox}
+\usepackage{systeme}
+\usepackage{booktabs}
+
+\usepackage{tikz}
+\usetikzlibrary{
+    calc,
+    shapes,
+    arrows.meta,
+    positioning,
+    shadows,
+    patterns,
+    plotmarks,
+    decorations.pathreplacing
+}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+\usepgfplotslibrary{fillbetween}
+
+\usepackage{tcolorbox}
+\tcbuselibrary{skins,breakable,theorems}
+
+\usepackage{adjustbox}
+\usepackage{mdframed}
+
+%=======================================================
+% THEME METROPOLIS
+%=======================================================
+
+\usetheme[
+    progressbar=frametitle,
+    subsectionpage=progressbar,
+    block=fill
+]{metropolis}
+\pgfplotsset{compat=1.18}
+
+%=======================================================
+% COLORS
+%=======================================================
+
+\definecolor{Amber}{rgb}{1.0,0.75,0.0}
+\definecolor{babyblue}{rgb}{0.74,0.83,0.9}
+\definecolor{armygreen}{rgb}{0.29,0.33,0.13}
+\definecolor{arylideyellow}{rgb}{0.91,0.84,0.42}
+\definecolor{bananamania}{rgb}{0.98,0.91,0.71}
+\definecolor{darkmagenta}{rgb}{0.55,0.0,0.55}
+\definecolor{cerulean}{rgb}{0.0,0.48,0.65}
+\definecolor{darkmidnightblue}{rgb}{0.0,0.2,0.4}
+\definecolor{darkolivegreen}{rgb}{0.33,0.42,0.18}
+\definecolor{darkorchid}{rgb}{0.6,0.2,0.8}
+\definecolor{maroon}{cmyk}{0,0.87,0.48,0.32}
+\definecolor{Gray}{gray}{0.85}
+\definecolor{LightCyan}{rgb}{0.88,1,1}
+\definecolor{babyblueeyes}{rgb}{0.7,0.79,0.95}
+\definecolor{bluegray}{rgb}{0.4,0.6,0.9}
+\definecolor{bluegraym}{rgb}{0.4,0.6,0.99}
+\definecolor{mygreen}{cmyk}{0.82,0.11,1,0.25}
+\definecolor{falured}{rgb}{0.5,0.09,0.09}
+
+\definecolor{Mustard}{RGB}{218,165,32}
+\definecolor{DarkBlue}{RGB}{30,55,90}
+\definecolor{LightBlue}{RGB}{225,240,250}
+\definecolor{LightGreen}{RGB}{225,245,230}
+\definecolor{LightOrange}{RGB}{255,240,215}
+
+%=======================================================
+% BEAMER SETTINGS
+%=======================================================
+
+\setbeamercolor{background canvas}{bg=white, fg=black}
+\setbeamercolor{frametitle}{fg=white, bg=blue!15!gray}
+\setbeamercolor{structure}{fg=mygreen}
+\setbeamercolor{sidebar}{fg=teal, bg=Amber}
+\setbeamertemplate{blocks}[rounded][shadow=false]
+\setbeamercolor*{block title example}{fg=gray, bg=blue!10}
+\setbeamercolor*{block body example}{fg=black, bg=blue!5}
+
+\renewcommand{\familydefault}{\sfdefault}
+
+\setbeamertemplate{section in toc}[sections numbered]
+\setbeamertemplate{subsection in toc}[subsections numbered]
+
+%=======================================================
+% FRAME TITLE
+%=======================================================
+
+\makeatletter
+\setlength{\metropolis@frametitle@padding}{1.8ex}
+\setbeamertemplate{frametitle}{%
+    \nointerlineskip%
+    \begin{beamercolorbox}[
+        wd=\paperwidth,
+        sep=0pt,
+        leftskip=\metropolis@frametitle@padding,
+        rightskip=\metropolis@frametitle@padding
+    ]{frametitle}%
+        \metropolis@frametitlestrut@start%
+        \insertframetitle%
+        \nolinebreak%
+        \metropolis@frametitlestrut@end%
+    \end{beamercolorbox}%
+}
+\makeatother
+
+%=======================================================
+% SECTION PAGE
+%=======================================================
+
+\makeatletter
+\setbeamertemplate{section page}{%
+    \centering
+    \begin{minipage}{24em}
+        \raggedright
+        \usebeamercolor[fg]{section title}
+        \usebeamerfont{section title}
+        \thesection~\insertsectionhead\\[-1ex]
+        \usebeamertemplate*{progress bar in section page}
+        \par
+        \ifx\insertsubsectionhead\@empty
+        \else
+            \usebeamercolor[fg]{subsection title}
+            \usebeamerfont{subsection title}
+            \insertsubsectionhead
+        \fi
+    \end{minipage}
+    \par
+    \vspace{\baselineskip}
+}
+\makeatother
+
+%=======================================================
+% FOOTLINE
+%=======================================================
+
+\setbeamertemplate{footline}{%
+    \leavevmode%
+    \hbox{%
+        \begin{beamercolorbox}[
+            wd=.333333\paperwidth, ht=2.25ex, dp=1ex, center
+        ]{author in head/foot}%
+            \usebeamerfont{author in head/foot}
+            \insertshortauthor
+        \end{beamercolorbox}%
+        \begin{beamercolorbox}[
+            wd=.666667\paperwidth, ht=2.25ex, dp=1ex, right
+        ]{author in head/foot}%
+            \insertshorttitle\quad\textbar\quad
+            \insertframenumber{} \hspace*{1em}
+        \end{beamercolorbox}%
+    }%
+}
+
+%=======================================================
+% THEOREMS
+%=======================================================
+
+\newtheorem{theo}{Théorème}
+\newtheorem{coro}{Corollaire}
+\newtheorem{defi}{Définition}
+\newtheorem{prop}{Proposition}
+
+\newtcbtheorem[number within=section]{mytheo}{Théorème}%
+{colback=green!5, colframe=green!35!black, fonttitle=\bfseries}{th}
+
+\newcounter{dummy}
+\numberwithin{dummy}{section}
+
+\newtheorem{mycor}[dummy]{Corollaire}
+\newtheorem{mylem}[dummy]{Lemme}
+\newtheorem{myprop}[dummy]{Proposition}
+\newtheorem{mydef}[dummy]{Définition}
+
+\newtcbtheorem{myobj}{Objectifs}%
+{colback=magenta!5, colframe=magenta!35!black, fonttitle=\bfseries}{obj}
+
+% Boîtes pédagogiques
+\newtcolorbox{boxgestion}[1][\faBriefcase\ En gestion]{
+    colback=LightOrange,
+    colframe=Mustard,
+    fonttitle=\bfseries,
+    boxrule=0.8pt,
+    arc=2pt,
+    left=4pt, right=4pt, top=3pt, bottom=3pt,
+    title={#1}
+}
+
+\newtcolorbox{boxmethode}[1][\faCogs\ Méthode]{
+    colback=LightBlue,
+    colframe=cerulean,
+    fonttitle=\bfseries,
+    boxrule=0.8pt,
+    arc=2pt,
+    left=4pt, right=4pt, top=3pt, bottom=3pt,
+    title={#1}
+}
+
+\newtcolorbox{boxattention}[1][\faExclamationTriangle\ Attention]{
+    colback=red!6,
+    colframe=falured,
+    fonttitle=\bfseries,
+    boxrule=0.8pt,
+    arc=2pt,
+    left=4pt, right=4pt, top=3pt, bottom=3pt,
+    title={#1}
+}
+
+\newtcolorbox{boxsynthese}[1][\faLightbulb\ À retenir]{
+    colback=LightGreen,
+    colframe=darkolivegreen,
+    fonttitle=\bfseries,
+    boxrule=0.8pt,
+    arc=2pt,
+    left=4pt, right=4pt, top=3pt, bottom=3pt,
+    title={#1}
+}
+
+%=======================================================
+% CUSTOM COMMANDS
+%=======================================================
+
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\Q}{\mathbb{Q}}
+\newcommand{\prof}{\textbf{Preuve.}\:}
+\newcommand{\Hom}{\mathrm{Hom}}
+\newcommand{\im}[1]{\mathrm{im}\,#1}
+
+\newcommand{\defref}{{\bf\color{blue}Définition }}
+\newcommand{\thmref}{{\bf\color{blue}Théorème }}
+\newcommand{\corref}{{\bf\color{blue}Corollaire }}
+\newcommand{\lemref}{{\bf\color{blue}Lemme }}
+
+\newcommand{\figref}{{\bf\color{blue}Fig.}~\ref}
+\newcommand{\tabref}{{\bf\color{blue}Table}~\ref}
+\newcommand{\secref}{{\color{blue}Section}~\ref}
+
+% Fonctions économiques
+\newcommand{\CT}{C}
+\newcommand{\CV}{C_v}
+\newcommand{\CF}{C_f}
+\newcommand{\Rec}{R}
+\newcommand{\Prof}{\pi}
+
+%=======================================================
+% HYPERREF
+%=======================================================
+
+\hypersetup{
+    colorlinks=true,
+    linktoc=all,
+    linkbordercolor=falured,
+    citecolor=falured
+}
+
+%=======================================================
+% LOGOS (optionnels)
+%=======================================================
+
+\newcommand{\logosgarde}{%
+    \begin{tikzpicture}[remember picture, overlay]
+        \IfFileExists{logos/mundiapolis.png}{%
+            \node[anchor=north west]
+            at ($(current page.north west)+(0.6cm,-0.6cm)$)
+            {\includegraphics[height=1.5cm]{logos/mundiapolis.png}};
+        }{%
+            \IfFileExists{munidia.png}{%
+                \node[anchor=north west]
+                at ($(current page.north west)+(0.6cm,-0.6cm)$)
+                {\includegraphics[height=1.5cm]{munidia.png}};
+            }{}
+        }
+        \IfFileExists{logos/honoris.jpg}{%
+            \node[anchor=north east]
+            at ($(current page.north east)+(-0.6cm,-0.6cm)$)
+            {\includegraphics[height=1.5cm]{logos/honoris.jpg}};
+        }{%
+            \IfFileExists{honoris.jpg}{%
+                \node[anchor=north east]
+                at ($(current page.north east)+(-0.6cm,-0.6cm)$)
+                {\includegraphics[height=1.5cm]{honoris.jpg}};
+            }{}
+        }
+    \end{tikzpicture}%
+}
+
+\addtobeamertemplate{title page}{\logosgarde}{}
+
+% Style des axes TikZ
+\tikzset{
+    axe/.style={->, >=Stealth, thick, gray!70},
+    courbe/.style={line width=1.2pt, cerulean},
+    courbeb/.style={line width=1.2pt, falured},
+    courvec/.style={line width=1.2pt, mygreen},
+    pt/.style={circle, fill=DarkBlue, inner sep=1.4pt}
+}
+
+
+%=======================================================
+% INFORMATIONS DU COURS
+%=======================================================
+
+\title[Chapitre I --- Fonctions]{Mathématiques appliquées à la gestion}
+
+\subtitle{
+Chapitre I --- Fonctions d'une variable réelle\\[0.35em]
+Trois séances de 1\,h\,30
+}
+
+\author[Pr.\ Rajae Malek]{Pr.\ Rajae Malek}
+
+\institute[]{
+    Business School, Université Mundiapolis\\
+    Honoris Universities
+}
+
+\date{Année universitaire 2026--2027}
+
+\begin{document}
+
+\maketitle
+\usebackgroundtemplate{}
+
+\begin{frame}{Plan du chapitre I}
+    \tableofcontents
+\end{frame}
+
+%=======================================================
+\part{Séance 1 --- Rappels et fonctions usuelles}
+%=======================================================
+
+\begin{frame}[plain]
+\centering
+\vspace{1.6cm}
+{\Large Séance 1/3 \quad\textemdash\quad 1\,h\,30}\\[0.8em]
+{\usebeamerfont{title} Rappels algébriques\\[0.2em] et fonctions usuelles}\\[1.2em]
+{\large Diagnostic \textbullet\ algèbre express \textbullet\ affines, polynômes, $1/x$, $|x|$}\\[0.4em]
+{\large Courbes de coût et de demande}
+\end{frame}
+
+%=======================================================
+%=======================================================
+
+\begin{frame}{Objectifs de la séance}
+\begin{myobj}{de la séance}{s1}
+À l'issue de 1\,h\,30, l'étudiant doit pouvoir :
+\end{myobj}
+\vspace{-0.4em}
+\begin{enumerate}
+    \item Manipuler les identités remarquables, factoriser, et résoudre une équation ou une inéquation du 1\textsuperscript{er} ou du 2\textsuperscript{nd} degré.
+    \item Reconnaître une fonction usuelle (affine, polynôme, puissance, valeur absolue), donner son \emph{domaine} et son \emph{sens de variation}.
+    \item Lire et tracer une courbe de \textbf{coût} ou de \textbf{demande}.
+\end{enumerate}
+
+\vspace{0.4em}
+\begin{boxgestion}[Fil rouge de la séance]
+Une entreprise fabrique un bien. On notera $q$ la quantité produite.
+\[
+\CT(q)=2000+20q,\qquad
+p(q)=80-0{,}4q,\qquad
+\Rec(q)=q\cdot p(q).
+\]
+Ces trois fonctions reviendront tout au long du chapitre.
+\end{boxgestion}
+\end{frame}
+
+\begin{frame}{Déroulement (1\,h\,30)}
+\renewcommand{\arraystretch}{1.35}
+\begin{center}
+\begin{tabular}{@{}clp{7.6cm}@{}}
+\toprule
+\textbf{Durée} & \textbf{Bloc} & \textbf{Contenu} \\
+\midrule
+8 min  & Diagnostic & 5 questions chrono (sans calculatrice) \\
+22 min & Algèbre express & Identités, factorisation, équations, inéquations \\
+40 min & Fonctions usuelles & Définition, domaine, graphes, variations \\
+15 min & Application gestion & Coût, demande, recette : lecture et tracé \\
+5 min  & Synthèse & Ce qu'il faut retenir + travail personnel \\
+\bottomrule
+\end{tabular}
+\end{center}
+\vspace{0.5em}
+\begin{boxattention}[Rythme]
+Le diagnostic n'est \textbf{pas noté} : il sert à adapter le rythme.
+Les exercices longs sont renvoyés au TD (fiche~1).
+\end{boxattention}
+\end{frame}
+
+
+%=======================================================
+\section{Diagnostic de rentrée}
+%=======================================================
+
+\begin{frame}{Cinq questions chrono (8 minutes)}
+{\small Sans calculatrice. Réponses à la fin de la séance (ou en TD).}
+
+\vspace{0.3em}
+\begin{enumerate}\setlength{\itemsep}{0.55em}
+    \item Développer et réduire $(2x-3)^2$.
+    \item Factoriser $x^2-5x+6$, puis résoudre $x^2-5x+6=0$.
+    \item Résoudre l'inéquation $3x-7\leqslant 2x+1$.
+    \item Pour quels réels $x$ l'expression $\dfrac{x+1}{x-2}$ a-t-elle un sens ?
+    \item La fonction $f(x)=80-0{,}4x$ (prix unitaire, en DH, d'une quantité $x$) est-elle croissante ou décroissante ? Interpréter.
+\end{enumerate}
+\end{frame}
+
+%=======================================================
+\section{Remise à niveau algébrique}
+%=======================================================
+
+\begin{frame}{Identités remarquables --- à connaître par cœur}
+\begin{center}
+\renewcommand{\arraystretch}{1.55}
+\begin{tabular}{c|c}
+\toprule
+\textbf{Identité} & \textbf{Version « produit »} \\
+\midrule
+$(a+b)^2=a^2+2ab+b^2$ & $(a+b)(a+b)$ \\
+$(a-b)^2=a^2-2ab+b^2$ & $(a-b)(a-b)$ \\
+$a^2-b^2=(a-b)(a+b)$ & différence de carrés \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\vspace{0.6em}
+\begin{columns}[T]
+\begin{column}{0.48\textwidth}
+\begin{exampleblock}{Exemple}
+$(2x-3)^2=4x^2-12x+9$.
+\end{exampleblock}
+\end{column}
+\begin{column}{0.48\textwidth}
+\begin{boxmethode}[Réflexe]
+Avant de résoudre une équation, \textbf{développer} ou \textbf{factoriser} selon ce que l'on cherche : une somme (développement) ou des racines (factorisation).
+\end{boxmethode}
+\end{column}
+\end{columns}
+\end{frame}
+
+\begin{frame}{Factoriser pour résoudre}
+\begin{block}{Idée}
+Un produit $A\cdot B$ est nul si et seulement si $A=0$ ou $B=0$.
+D'où l'intérêt de factoriser avant de résoudre $f(x)=0$.
+\end{block}
+
+\vspace{0.3em}
+\begin{exampleblock}{Exemple guidé}
+\[
+x^2-5x+6=(x-2)(x-3),
+\qquad\text{car } 2+3=5\text{ et }2\cdot 3=6.
+\]
+Donc $x^2-5x+6=0 \iff x=2$ ou $x=3$.
+\end{exampleblock}
+
+\vspace{0.2em}
+\begin{boxgestion}[Lien avec la gestion]
+Plus tard, le \emph{profit} s'annule aux \textbf{seuils de rentabilité} :
+on résoudra $\Prof(q)=0$, souvent une équation du second degré.
+\end{boxgestion}
+\end{frame}
+
+\begin{frame}{Équation du premier degré}
+\begin{block}{Forme}
+$ax+b=0$ avec $a\neq 0$. Unique solution : $x=-\dfrac{b}{a}$.
+\end{block}
+
+\begin{exampleblock}{En gestion : seuil de rentabilité \emph{linéaire}}
+Coût : $\CT(q)=2000+20q$. Recette : $\Rec(q)=50q$ (prix fixe $50$ DH).
+\[
+\Rec(q)=\CT(q) \iff 50q=2000+20q \iff 30q=2000 \iff q=\frac{200}{3}\approx 66{,}7.
+\]
+Il faut produire \textbf{au moins 67 unités} pour ne pas perdre d'argent.
+\end{exampleblock}
+\end{frame}
+
+\begin{frame}{Équation du second degré}
+\begin{block}{Forme canonique}
+$ax^2+bx+c=0$, $a\neq 0$. Discriminant $\Delta=b^2-4ac$.
+\end{block}
+
+\vspace{-0.2em}
+\renewcommand{\arraystretch}{1.35}
+\begin{center}
+\begin{tabular}{@{}clc@{}}
+\toprule
+\textbf{Signe de $\Delta$} & \textbf{Nombre de solutions} & \textbf{Formules} \\
+\midrule
+$\Delta>0$ & deux solutions réelles &
+$\displaystyle x=\dfrac{-b\pm\sqrt{\Delta}}{2a}$ \\
+$\Delta=0$ & une solution (double) &
+$\displaystyle x=\dfrac{-b}{2a}$ \\
+$\Delta<0$ & aucune solution réelle & --- \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\vspace{0.5em}
+\begin{boxattention}[Erreur fréquente]
+Le discriminant se calcule \emph{avant} de « jeter » les formules.
+Si $\Delta<0$, on s'arrête : pas de racine réelle.
+\end{boxattention}
+\end{frame}
+
+\begin{frame}{Inéquations --- tableau de signes}
+\begin{boxmethode}[Méthode en 4 étapes]
+\begin{enumerate}
+    \item Tout passer du même côté (second membre $0$).
+    \item Factoriser si besoin.
+    \item Tableau de signes (une ligne par facteur).
+    \item Lire l'ensemble solution, l'écrire avec des intervalles.
+\end{enumerate}
+\end{boxmethode}
+
+\begin{exampleblock}{Exemple}
+$3x-7\leqslant 2x+1 \iff x\leqslant 8$. Ensemble solution : $]{-}\infty;8]$.
+\end{exampleblock}
+
+\vspace{0.15em}
+\begin{columns}[T]
+\begin{column}{0.52\textwidth}
+{\small Pour un produit $(x-2)(x-3)\geqslant 0$ :}
+\vspace{0.2em}
+{\scriptsize
+\renewcommand{\arraystretch}{1.2}
+\begin{tabular}{|c|cccccc|}
+\hline
+$x$ & $-\infty$ && $2$ && $3$ & $+\infty$ \\
+\hline
+$x-2$ & $-$ & $-$ & $0$ & $+$ & $+$ & $+$ \\
+$x-3$ & $-$ & $-$ & $-$ & $-$ & $0$ & $+$ \\
+\hline
+produit & $+$ & $+$ & $0$ & $-$ & $0$ & $+$ \\
+\hline
+\end{tabular}
+}
+\end{column}
+\begin{column}{0.46\textwidth}
+\vspace{0.3em}
+Solution : $x\in\,]{-}\infty;2]\cup[3;+\infty[$.
+\end{column}
+\end{columns}
+\end{frame}
+
+\begin{frame}{Mini-entraînement (2 minutes)}
+\begin{alertblock}{À faire seul, puis correction orale}
+\begin{enumerate}
+    \item Résoudre $x^2-9=0$.
+    \item Résoudre $(2x+1)(x-4)<0$.
+\end{enumerate}
+\end{alertblock}
+
+\vspace{0.4em}
+\pause
+\begin{block}{Corrigé express}
+\begin{enumerate}
+    \item $x^2-9=(x-3)(x+3)=0 \iff x=3$ ou $x=-3$.
+    \item Racines $-1/2$ et $4$. Le produit est négatif \textbf{entre} les racines :
+    $x\in \left]-\dfrac{1}{2};4\right[$.
+\end{enumerate}
+\end{block}
+\end{frame}
+
+%=======================================================
+\section{Fonctions usuelles}
+%=======================================================
+
+\begin{frame}{Qu'est-ce qu'une fonction ?}
+\begin{mydef}[Fonction]
+Une \textbf{fonction} $f$ d'une variable réelle associe à chaque réel $x$ d'un ensemble $D_f\subset\R$ \emph{au plus un} réel noté $f(x)$.
+\[
+f : D_f \longrightarrow \R, \qquad x \longmapsto f(x).
+\]
+$D_f$ est le \textbf{domaine de définition} : l'ensemble des $x$ pour lesquels $f(x)$ a un sens.
+\end{mydef}
+
+\vspace{0.3em}
+\begin{columns}[T]
+\begin{column}{0.48\textwidth}
+\begin{boxsynthese}[Vocabulaire]
+\begin{itemize}
+    \item $x$ : variable (souvent une quantité $q$)
+    \item $f(x)$ : image de $x$
+    \item courbe : ensemble des points $(x,f(x))$
+\end{itemize}
+\end{boxsynthese}
+\end{column}
+\begin{column}{0.48\textwidth}
+\begin{boxgestion}[Traduction]
+\begin{itemize}
+    \item $q \mapsto \CT(q)$ : coût total
+    \item $q \mapsto p(q)$ : prix unitaire
+    \item $q \mapsto \Rec(q)$ : recette
+    \item $q \mapsto \Prof(q)$ : profit
+\end{itemize}
+\end{boxgestion}
+\end{column}
+\end{columns}
+\end{frame}
+
+\begin{frame}{Opérations sur les fonctions}
+Si $f$ et $g$ sont définies sur un même ensemble,
+\[
+(f+g)(x)=f(x)+g(x),\quad
+(fg)(x)=f(x)g(x),\quad
+(\lambda f)(x)=\lambda f(x).
+\]
+Le \textbf{quotient} $\dfrac{f}{g}$ n'est défini que si $g(x)\neq 0$.
+La \textbf{composée} $(g\circ f)(x)=g\bigl(f(x)\bigr)$ dès que $f(x)$ est dans le domaine de $g$.
+
+\vspace{0.5em}
+\begin{boxgestion}[Construction d'un modèle]
+\[
+\Rec(q)=q\cdot p(q),\qquad
+\Prof(q)=\Rec(q)-\CT(q).
+\]
+Le profit est une \emph{différence} de fonctions ; la recette est un \emph{produit}.
+\end{boxgestion}
+\end{frame}
+
+\begin{frame}{Trouver le domaine de définition}
+\begin{boxmethode}[Les 4 interdits à surveiller]
+\begin{enumerate}
+    \item Dénominateur nul : $\dfrac{1}{x-a}$ exige $x\neq a$.
+    \item Racine carrée d'un négatif : $\sqrt{u(x)}$ exige $u(x)\geqslant 0$.
+    \item Logarithme d'un nombre $\leqslant 0$ : $\ln u(x)$ exige $u(x)>0$ (séance~2).
+    \item Intersection : $D_{f+g}=D_f\cap D_g$.
+\end{enumerate}
+\end{boxmethode}
+
+\vspace{0.3em}
+\begin{exampleblock}{Exemples}
+\[
+f(x)=\frac{x+1}{x-2}\ \Rightarrow\ D_f=\R\setminus\{2\}=\ ]{-}\infty;2[\,\cup\,]2;+\infty[.
+\]
+\[
+g(x)=\sqrt{4-x}\ \Rightarrow\ 4-x\geqslant 0 \iff x\leqslant 4,\quad D_g=]{-}\infty;4].
+\]
+\end{exampleblock}
+\end{frame}
+
+\begin{frame}{Fonction affine $f(x)=ax+b$}
+\begin{columns}[T]
+\begin{column}{0.50\textwidth}
+\begin{itemize}
+    \item Droite de pente $a$, ordonnée à l'origine $b$.
+    \item Croissante si $a>0$, décroissante si $a<0$, constante si $a=0$.
+    \item $f(0)=b$ ; s'annule en $x=-b/a$ (si $a\neq 0$).
+\end{itemize}
+\vspace{0.4em}
+\begin{boxgestion}[Coût affine]
+$\CT(q)=\underbrace{2000}_{C_f}+\underbrace{20}_{\text{coût unitaire}}q$.
+\begin{itemize}
+    \item $2000$ : coûts \textbf{fixes}
+    \item $20$ : coût \textbf{variable unitaire}
+\end{itemize}
+\end{boxgestion}
+\end{column}
+\begin{column}{0.48\textwidth}
+\centering
+\begin{tikzpicture}[scale=0.85]
+\begin{axis}[
+    axis lines=middle,
+    xlabel={$q$},
+    ylabel={$\CT(q)$},
+    xmin=-5, xmax=115,
+    ymin=-400, ymax=4600,
+    xtick={0,50,100},
+    ytick={0,2000,4000},
+    clip=false,
+    width=7.2cm, height=5.4cm,
+    every axis plot/.append style={thick}
+]
+\addplot[cerulean, domain=0:100, samples=2] {2000+20*x};
+\node[pt] at (axis cs:0,2000) {};
+\node[anchor=west, font=\scriptsize] at (axis cs:4,1650) {$C_f=2000$};
+\node[font=\scriptsize, cerulean] at (axis cs:58,3900) {$\CT(q)=2000+20q$};
+\end{axis}
+\end{tikzpicture}
+\end{column}
+\end{columns}
+\end{frame}
+
+\begin{frame}{Fonction polynôme --- le cas du second degré}
+\begin{block}{Parabole}
+$f(x)=ax^2+bx+c$, $a\neq 0$.
+\begin{itemize}
+    \item $a>0$ : « sourire » (convexe) ; $a<0$ : « grimace » (concave).
+    \item Sommet d'abscisse $x_S=-\dfrac{b}{2a}$.
+\end{itemize}
+\end{block}
+
+\begin{columns}[T]
+\begin{column}{0.50\textwidth}
+\begin{boxgestion}[Recette]
+Prix $p(q)=80-0{,}4q$ (demande affine).
+\[
+\Rec(q)=q(80-0{,}4q)=80q-0{,}4q^2.
+\]
+Parabole tournée vers le bas : recette maximale en
+$q_S=\dfrac{80}{0{,}8}=100$.
+\end{boxgestion}
+\end{column}
+\begin{column}{0.48\textwidth}
+\centering
+\begin{tikzpicture}[scale=0.8]
+\begin{axis}[
+    axis lines=middle,
+    xlabel={$q$},
+    ylabel={$\Rec(q)$},
+    xmin=-5, xmax=210,
+    ymin=-500, ymax=8500,
+    xtick={0,100,200},
+    ytick={0,4000,8000},
+    width=7cm, height=5.2cm,
+    clip=false
+]
+\addplot[falured, thick, domain=0:200, samples=80] {80*x-0.4*x^2};
+\node[pt] at (axis cs:100,4000) {};
+\node[font=\scriptsize, anchor=south] at (axis cs:100,4200) {sommet $(100;4000)$};
+\end{axis}
+\end{tikzpicture}
+\end{column}
+\end{columns}
+\end{frame}
+
+\begin{frame}{Fonctions puissance et inverse}
+\begin{columns}[T]
+\begin{column}{0.49\textwidth}
+\centering
+\textbf{Carré et racine}\\[0.3em]
+\begin{tikzpicture}[scale=0.72]
+\begin{axis}[
+    axis lines=middle,
+    xlabel={$x$}, ylabel={$y$},
+    xmin=-2.4, xmax=2.4,
+    ymin=-0.4, ymax=4.4,
+    width=6.4cm, height=5cm,
+    legend style={font=\scriptsize, at={(0.05,0.95)}, anchor=north west}
+]
+\addplot[cerulean, thick, domain=-2:2, samples=60] {x^2};
+\addplot[falured, thick, domain=0:2, samples=40] {sqrt(x)};
+\legend{$x^2$, $\sqrt{x}$}
+\end{axis}
+\end{tikzpicture}
+{\scriptsize $x^2$ : $D=\R$. \quad $\sqrt{x}$ : $D=[0;+\infty[$.}
+\end{column}
+\begin{column}{0.49\textwidth}
+\centering
+\textbf{Inverse $1/x$}\\[0.3em]
+\begin{tikzpicture}[scale=0.72]
+\begin{axis}[
+    axis lines=middle,
+    xlabel={$x$}, ylabel={$y$},
+    xmin=-4.2, xmax=4.2,
+    ymin=-4.2, ymax=4.2,
+    width=6.4cm, height=5cm
+]
+\addplot[mygreen, thick, domain=0.25:4, samples=50] {1/x};
+\addplot[mygreen, thick, domain=-4:-0.25, samples=50] {1/x};
+\end{axis}
+\end{tikzpicture}
+{\scriptsize $D=\R\setminus\{0\}$. Asymptotes : axes.}
+\end{column}
+\end{columns}
+
+\vspace{0.3em}
+\begin{boxgestion}[Coût moyen]
+Le \textbf{coût moyen} $\displaystyle \overline{C}(q)=\frac{\CT(q)}{q}=\frac{2000}{q}+20$
+combine une constante et un terme en $1/q$ : il décroît quand $q$ augmente
+(\emph{économies d'échelle}).
+\end{boxgestion}
+\end{frame}
+
+\begin{frame}{Valeur absolue $f(x)=|x|$}
+\begin{columns}[T]
+\begin{column}{0.50\textwidth}
+\[
+|x|=\begin{cases}
+x & \text{si }x\geqslant 0,\\
+-x & \text{si }x<0.
+\end{cases}
+\]
+\begin{itemize}
+    \item Toujours positive : $|x|\geqslant 0$.
+    \item Pair : $|-x|=|x|$.
+    \item Décroissante sur $]{-}\infty;0]$, croissante sur $[0;+\infty[$.
+\end{itemize}
+\vspace{0.3em}
+\begin{boxgestion}[Écart à une cible]
+$|q-100|$ mesure l'écart (en unités) à une production cible de $100$.
+Utile pour un \emph{coût de désajustement}.
+\end{boxgestion}
+\end{column}
+\begin{column}{0.48\textwidth}
+\centering
+\begin{tikzpicture}[scale=0.85]
+\begin{axis}[
+    axis lines=middle,
+    xlabel={$x$}, ylabel={$|x|$},
+    xmin=-3.2, xmax=3.2,
+    ymin=-0.4, ymax=3.4,
+    width=6.8cm, height=5.6cm
+]
+\addplot[cerulean, thick, domain=-3:3, samples=2] {abs(x)};
+\end{axis}
+\end{tikzpicture}
+\end{column}
+\end{columns}
+\end{frame}
+
+\begin{frame}{Sens de variation --- sans dérivée pour l'instant}
+\begin{mydef}[Monotonie]
+Soit $f$ définie sur un intervalle $I$.
+\begin{itemize}
+    \item $f$ est \textbf{croissante} sur $I$ si $x\leqslant y \Rightarrow f(x)\leqslant f(y)$.
+    \item $f$ est \textbf{décroissante} sur $I$ si $x\leqslant y \Rightarrow f(x)\geqslant f(y)$.
+\end{itemize}
+On ajoute « strictement » lorsque l'inégalité sur les images est stricte.
+\end{mydef}
+
+\vspace{0.2em}
+\renewcommand{\arraystretch}{1.3}
+{\small
+\begin{center}
+\begin{tabular}{@{}llll@{}}
+\toprule
+\textbf{Fonction} & \textbf{Domaine} & \textbf{Variations} & \textbf{En gestion} \\
+\midrule
+$ax+b$, $a>0$ & $\R$ & $\nearrow$ & coût, recette à prix fixe \\
+$ax+b$, $a<0$ & $\R$ & $\searrow$ & courbe de demande \\
+$x^2$ & $\R$ & $\searrow$ puis $\nearrow$ & recette, profit \\
+$\sqrt{x}$ & $[0;+\infty[$ & $\nearrow$ & rendements décroissants visuels \\
+$1/x$ & $]0;+\infty[$ & $\searrow$ & coût moyen \\
+$|x|$ & $\R$ & $\searrow$ puis $\nearrow$ & écart à une cible \\
+\bottomrule
+\end{tabular}
+\end{center}
+}
+\end{frame}
+
+\begin{frame}{Lire un graphe}
+\centering
+\begin{tikzpicture}[scale=0.9]
+\begin{axis}[
+    axis lines=middle,
+    xlabel={$q$ (quantité)},
+    ylabel={valeur},
+    xmin=-5, xmax=130,
+    ymin=-800, ymax=5200,
+    xtick={0,50,100},
+    ytick={0,2000,4000},
+    width=11.5cm, height=5.6cm,
+    legend style={font=\scriptsize, at={(0.98,0.98)}, anchor=north east},
+    clip=false
+]
+\addplot[cerulean, thick, domain=0:120, samples=2] {2000+20*x};
+\addplot[falured, thick, domain=0:120, samples=80] {80*x-0.4*x^2};
+\addplot[mygreen, thick, domain=0:120, samples=80] {(80*x-0.4*x^2)-(2000+20*x)};
+\legend{$\CT(q)$, $\Rec(q)$, $\Prof(q)$}
+\addplot[gray, dashed] coordinates {(100,0) (100,4000)};
+\end{axis}
+\end{tikzpicture}
+
+\vspace{0.2em}
+{\small
+Les courbes de $\Rec$ et $\CT$ se coupent aux \textbf{seuils de rentabilité}
+(là où $\Prof=0$). Entre les deux, le profit est positif.
+}
+\end{frame}
+
+%=======================================================
+\section{Application à la gestion}
+%=======================================================
+
+\begin{frame}{Étude guidée --- coût, demande, recette}
+\begin{block}{Données}
+$\CT(q)=2000+20q$, \quad $p(q)=80-0{,}4q$ \quad ($q\geqslant 0$, $p(q)\geqslant 0$).
+\end{block}
+
+\begin{enumerate}\setlength{\itemsep}{0.45em}
+    \item Domaine économique de $p$ : $80-0{,}4q\geqslant 0 \iff q\leqslant 200$.
+    Donc $q\in[0;200]$.
+    \item Recette : $\Rec(q)=80q-0{,}4q^2$. Maximum en $q=100$, $\Rec(100)=4000$ DH.
+    \item Profit : $\Prof(q)=\Rec(q)-\CT(q)=-0{,}4q^2+60q-2000$.
+    \item $\Prof(q)=0 \iff 0{,}4q^2-60q+2000=0 \iff q^2-150q+5000=0$.
+    $\Delta=2500$, $q=50$ ou $q=100$.
+\end{enumerate}
+
+\vspace{0.2em}
+\begin{boxsynthese}[Lecture économique]
+On est rentable pour $q\in[50;100]$. Hors de cet intervalle, $\Prof\leqslant 0$.
+(La recette maximale n'est pas forcément le profit maximal : ici les deux
+coïncident au bord $q=100$, nous y reviendrons au chapitre III.)
+\end{boxsynthese}
+\end{frame}
+
+\begin{frame}{Exercice de séance (5 minutes)}
+\begin{alertblock}{À traiter par binôme}
+Un artisan a des coûts fixes de $1\,200$ DH et un coût variable unitaire de $15$ DH.
+Il vend chaque pièce $35$ DH.
+\begin{enumerate}
+    \item Écrire $\CT(q)$ et $\Rec(q)$.
+    \item Tracer les deux droites (repère : $1$ carreau $=10$ unités en $q$, $200$ DH en $y$).
+    \item Déterminer le seuil de rentabilité.
+    \item Quel profit pour $q=80$ ?
+\end{enumerate}
+\end{alertblock}
+
+\pause
+\vspace{0.3em}
+\begin{block}{Corrigé}
+$\CT(q)=1200+15q$, $\Rec(q)=35q$.
+$35q=1200+15q \iff q=60$.
+$\Prof(80)=35\cdot 80-(1200+15\cdot 80)=2800-2400=400$ DH.
+\end{block}
+\end{frame}
+
+%=======================================================
+\section{Synthèse et travail personnel}
+%=======================================================
+
+\begin{frame}{Fiche de synthèse --- séance 1}
+\begin{boxsynthese}[Le minimum vital]
+\begin{itemize}
+    \item Identités $(a\pm b)^2$, $a^2-b^2$ ; factoriser pour résoudre $f(x)=0$.
+    \item $\Delta=b^2-4ac$ gouverne le nombre de racines d'un trinôme.
+    \item Inéquation $\to$ tableau de signes $\to$ réunion d'intervalles.
+    \item Domaine : chasser dénominateur nul, racine négative, $\ln$ non positif.
+    \item Affine $=$ droite ; trinôme $=$ parabole ; $1/x$ $=$ hyperbole.
+    \item En gestion : $\CT$ affine, demande affine, $\Rec$ et $\Prof$ souvent du 2\textsuperscript{nd} degré.
+\end{itemize}
+\end{boxsynthese}
+
+\vspace{0.3em}
+\begin{boxattention}[Pièges]
+\begin{itemize}
+    \item Oublier de changer le sens d'une inégalité en multipliant par un négatif.
+    \item Confondre recette maximale et profit maximal.
+    \item Écrire $D_f=\R$ pour $1/x$ ou $\sqrt{x}$.
+\end{itemize}
+\end{boxattention}
+\end{frame}
+
+\begin{frame}{Corrigé du diagnostic}
+\begin{enumerate}\setlength{\itemsep}{0.45em}
+    \item $(2x-3)^2=4x^2-12x+9$.
+    \item $x^2-5x+6=(x-2)(x-3)=0 \iff x=2$ ou $x=3$.
+    \item $3x-7\leqslant 2x+1 \iff x\leqslant 8$.
+    \item $x\neq 2$, donc $D=\R\setminus\{2\}$.
+    \item Coefficient $-0{,}4<0$ : la fonction est \textbf{décroissante}.
+    Plus on produit, plus le prix unitaire baisse (loi de la demande).
+\end{enumerate}
+\end{frame}
+
+\begin{frame}{Pour la prochaine fois}
+\begin{block}{Travail personnel (fiche TD~1)}
+\begin{itemize}
+    \item \textbf{Niveau base} : exercices 1 à 4 (algèbre + domaines + affines).
+    \item \textbf{Niveau approfondi} : exercices 5 et 6 (profit du second degré).
+    \item Relire la fiche de synthèse.
+\end{itemize}
+\end{block}
+
+\vspace{0.5em}
+\begin{boxgestion}[Séance 2 --- exponentielle et logarithme]
+Croissance d'un capital, actualisation, taux.
+On aura besoin de $a^n$ et de l'idée de « temps pour doubler un capital ».
+\end{boxgestion}
+
+\vspace{0.4em}
+\centering
+{\large À la séance 2 : $e^x$ et $\ln x$, les deux fonctions de la finance.}
+\end{frame}
+
+
+%=======================================================
+\part{Séance 2 --- Exponentielle et logarithme}
+%=======================================================
+
+\begin{frame}[plain]
+\centering
+\vspace{1.6cm}
+{\Large Séance 2/3 \quad\textemdash\quad 1\,h\,30}\\[0.8em]
+{\usebeamerfont{title} Exponentielle et logarithme}\\[1.2em]
+{\large Propriétés \textbullet\ graphes \textbullet\ capitalisation \textbullet\ actualisation}
+\end{frame}
+
+\begin{frame}{Objectifs de la séance}
+\begin{myobj}{de la séance}{s2}
+À l'issue de 1\,h\,30, l'étudiant doit pouvoir :
+\end{myobj}
+\vspace{-0.4em}
+\begin{enumerate}
+    \item Connaître le graphe et les propriétés algébriques de $\exp$ et de $\ln$.
+    \item Passer d'une écriture exponentielle à une écriture logarithmique, et réciproquement.
+    \item Modéliser une \textbf{capitalisation} $C_n=C_0(1+i)^n$ et une \textbf{actualisation}
+    $VA=\dfrac{VF}{(1+i)^n}$, y compris sous forme $e^{rt}$.
+\end{enumerate}
+
+\vspace{0.35em}
+\begin{boxgestion}[Fil rouge]
+Un capital de $10\,000$ DH est placé à $6\,\%$ l'an.
+Combien vaut-il dans $10$ ans ? Au bout de combien d'années a-t-on \emph{doublé} ?
+\end{boxgestion}
+\end{frame}
+
+\begin{frame}{Déroulement (1\,h\,30)}
+\renewcommand{\arraystretch}{1.35}
+\begin{center}
+\begin{tabular}{@{}clp{7.8cm}@{}}
+\toprule
+\textbf{Durée} & \textbf{Bloc} & \textbf{Contenu} \\
+\midrule
+5 min  & Rappel & Fonctions de la séance 1, besoin de $\exp$ et $\ln$ \\
+30 min & Exponentielle & Définition, graphe, propriétés, croissance \\
+25 min & Logarithme & Définition comme réciproque, propriétés, graphe \\
+25 min & Finance & Capitalisation, actualisation, temps de doublement \\
+5 min  & Synthèse & Formules à retenir + TD~2 \\
+\bottomrule
+\end{tabular}
+\end{center}
+\end{frame}
+
+
+\section{Rappel et motivation}
+
+\begin{frame}{Pourquoi $\exp$ et $\ln$ en école de commerce ?}
+\begin{columns}[T]
+\begin{column}{0.52\textwidth}
+\begin{block}{Intérêts composés}
+Un capital $C_0$ placé au taux $i$ pendant $n$ années :
+\[
+C_n=C_0(1+i)^n.
+\]
+C'est une \textbf{suite géométrique} (chapitre II)
+\emph{et} une fonction exponentielle de $n$.
+\end{block}
+\begin{boxgestion}[Question typique]
+« Dans combien d'années un capital double-t-il à $5\,\%$ ? »
+On devra résoudre $(1{,}05)^n=2$, donc prendre le $\ln$.
+\end{boxgestion}
+\end{column}
+\begin{column}{0.46\textwidth}
+\centering
+\begin{tikzpicture}[scale=0.78]
+\begin{axis}[
+    axis lines=middle,
+    xlabel={$n$ (années)},
+    ylabel={$C_n$},
+    xmin=-0.5, xmax=22,
+    ymin=-500, ymax=33000,
+    xtick={0,10,20},
+    ytick={0,10000,20000,30000},
+    width=6.6cm, height=5.4cm,
+    clip=false
+]
+\addplot[cerulean, thick, domain=0:21, samples=40] {10000*(1.06)^x};
+\addplot[falured, dashed] coordinates {(0,20000) (21,20000)};
+\node[font=\scriptsize, falured, anchor=south west] at (axis cs:0.4,20500) {doublement};
+\end{axis}
+\end{tikzpicture}
+\end{column}
+\end{columns}
+\end{frame}
+
+\section{La fonction exponentielle}
+
+\begin{frame}{Définition et graphe de $x\mapsto e^x$}
+\begin{mydef}[Exponentielle]
+La fonction \textbf{exponentielle} $\exp: \R\to ]0;+\infty[$, notée $x\mapsto e^x$,
+est l'unique fonction dérivable vérifiant $\exp'=\exp$ et $\exp(0)=1$.
+On retient surtout : $e^0=1$, $e^x>0$ pour tout $x$, et $e\approx 2{,}718$.
+\end{mydef}
+
+\begin{columns}[T]
+\begin{column}{0.46\textwidth}
+\begin{itemize}
+    \item Domaine : $\R$. Image : $]0;+\infty[$.
+    \item Strictement croissante.
+    \item $\displaystyle\lim_{x\to+\infty}e^x=+\infty$,
+          $\displaystyle\lim_{x\to-\infty}e^x=0$.
+    \item Asymptote horizontale $y=0$ à gauche.
+    \item Passe par $(0;1)$ et $(1;e)$.
+\end{itemize}
+\end{column}
+\begin{column}{0.52\textwidth}
+\centering
+\begin{tikzpicture}[scale=0.8]
+\begin{axis}[
+    axis lines=middle,
+    xlabel={$x$}, ylabel={$e^x$},
+    xmin=-3.2, xmax=2.6,
+    ymin=-0.4, ymax=8.2,
+    width=7cm, height=5.4cm,
+    clip=false
+]
+\addplot[cerulean, thick, domain=-3:2.1, samples=80] {exp(x)};
+\node[pt] at (axis cs:0,1) {};
+\node[font=\scriptsize, anchor=west] at (axis cs:0.15,1.35) {$(0;1)$};
+\addplot[gray, dashed] coordinates {(-3,0) (2.4,0)};
+\end{axis}
+\end{tikzpicture}
+\end{column}
+\end{columns}
+\end{frame}
+
+\begin{frame}{Propriétés algébriques de l'exponentielle}
+\begin{block}{Règles de calcul --- à savoir parfaitement}
+Pour tous réels $a$, $b$ et tout entier $n$ :
+\[
+e^{a+b}=e^a\,e^b,\qquad
+e^{a-b}=\frac{e^a}{e^b},\qquad
+e^{na}=(e^a)^n,\qquad
+(e^a)^b=e^{ab}.
+\]
+En particulier $e^{-a}=\dfrac{1}{e^a}$ et $e^a\neq 0$.
+\end{block}
+
+\vspace{0.3em}
+\begin{columns}[T]
+\begin{column}{0.48\textwidth}
+\begin{exampleblock}{Exemples}
+$e^{2\ln 3}=(e^{\ln 3})^2=3^2=9$,\\[0.3em]
+$e^{x}e^{2-x}=e^{2}$ (constant).
+\end{exampleblock}
+\end{column}
+\begin{column}{0.48\textwidth}
+\begin{boxattention}[Erreur classique]
+$e^a+e^b \neq e^{a+b}$.
+On \textbf{n'additionne pas} les exposants sauf dans un \emph{produit}.
+\end{boxattention}
+\end{column}
+\end{columns}
+\end{frame}
+
+\begin{frame}{Exponentielle de base $a$}
+\begin{mydef}[Base $a$]
+Pour $a>0$, $a\neq 1$, on pose $a^x=e^{x\ln a}$.
+Cas utiles en gestion : $a=1+i$ (facteur de capitalisation).
+\end{mydef}
+
+\vspace{0.2em}
+\renewcommand{\arraystretch}{1.3}
+\begin{center}
+\begin{tabular}{@{}lcc@{}}
+\toprule
+ & $a>1$ (ex.\ $1{,}06$) & $0<a<1$ (ex.\ $0{,}95$) \\
+\midrule
+Variations de $x\mapsto a^x$ & croissante & décroissante \\
+$\lim_{x\to+\infty}$ & $+\infty$ & $0$ \\
+$\lim_{x\to-\infty}$ & $0$ & $+\infty$ \\
+Interprétation & croissance / capitalisation & décroissance / dépréciation \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\vspace{0.45em}
+\begin{boxmethode}[Lien continu / discret]
+\[
+C(t)=C_0(1+i)^t = C_0\, e^{t\ln(1+i)}.
+\]
+On pose souvent $r=\ln(1+i)$ : taux instantané équivalent.
+\end{boxmethode}
+\end{frame}
+
+\begin{frame}{Mini-entraînement exponentielle}
+\begin{alertblock}{Calculer et simplifier}
+\begin{enumerate}
+    \item $e^{3\ln 2}$.
+    \item $\dfrac{e^{2x+1}}{e^{x-1}}$.
+    \item Résoudre $e^{2x}=e^{x+3}$ (utiliser la stricte croissance : $e^A=e^B\iff A=B$).
+\end{enumerate}
+\end{alertblock}
+
+\pause
+\begin{block}{Corrigé}
+\begin{enumerate}
+    \item $e^{3\ln 2}=(e^{\ln 2})^3=2^3=8$.
+    \item $e^{(2x+1)-(x-1)}=e^{x+2}$.
+    \item $2x=x+3 \iff x=3$.
+\end{enumerate}
+\end{block}
+\end{frame}
+
+\section{La fonction logarithme népérien}
+
+\begin{frame}{Le logarithme, réciproque de l'exponentielle}
+\begin{mydef}[Logarithme népérien]
+La fonction \textbf{logarithme népérien} $\ln:]0;+\infty[\to\R$
+est la \textbf{réciproque} de $\exp$ :
+\[
+y=\ln x \iff x=e^y,\qquad x>0.
+\]
+En particulier $\ln(e^x)=x$ et $e^{\ln x}=x$ (pour $x>0$).
+\end{mydef}
+
+\begin{columns}[T]
+\begin{column}{0.48\textwidth}
+\begin{itemize}
+    \item $\ln 1=0$, $\ln e=1$.
+    \item Strictement croissante sur $]0;+\infty[$.
+    \item $\displaystyle\lim_{x\to 0^+}\ln x=-\infty$,
+          $\displaystyle\lim_{x\to+\infty}\ln x=+\infty$.
+    \item Asymptote verticale $x=0$.
+\end{itemize}
+\end{column}
+\begin{column}{0.50\textwidth}
+\centering
+\begin{tikzpicture}[scale=0.78]
+\begin{axis}[
+    axis lines=middle,
+    xlabel={$x$}, ylabel={},
+    xmin=-2.4, xmax=4.4,
+    ymin=-2.4, ymax=4.4,
+    width=6.8cm, height=5.4cm,
+    clip=false,
+    legend style={font=\scriptsize, at={(0.97,0.22)}, anchor=south east}
+]
+\addplot[gray, dashed, domain=-2:4] {x};
+\addplot[cerulean, thick, domain=-2:1.4, samples=80] {exp(x)};
+\addplot[falured, thick, domain=0.08:4.2, samples=80] {ln(x)};
+\legend{$y=x$, $e^x$, $\ln x$}
+\end{axis}
+\end{tikzpicture}
+{\scriptsize Courbes symétriques par rapport à $y=x$.}
+\end{column}
+\end{columns}
+\end{frame}
+
+\begin{frame}{Propriétés algébriques du logarithme}
+\begin{block}{Règles --- miroir de celles de $\exp$}
+Pour $a>0$, $b>0$ et $n\in\R$ :
+\[
+\ln(ab)=\ln a+\ln b,\qquad
+\ln\Bigl(\frac{a}{b}\Bigr)=\ln a-\ln b,\qquad
+\ln(a^n)=n\ln a.
+\]
+Conséquence : $\ln(1/a)=-\ln a$.
+\end{block}
+
+\vspace{0.25em}
+\begin{columns}[T]
+\begin{column}{0.48\textwidth}
+\begin{exampleblock}{Simplifier}
+$\ln 12-\ln 3=\ln(12/3)=\ln 4=2\ln 2$.
+\end{exampleblock}
+\end{column}
+\begin{column}{0.48\textwidth}
+\begin{boxattention}[Trois interdits]
+\begin{itemize}
+    \item $\ln(a+b)\neq \ln a+\ln b$
+    \item $\ln$ seulement défini sur $]0;+\infty[$
+    \item $\ln(ab)=\ln a+\ln b$ exige $a>0$ \emph{et} $b>0$
+\end{itemize}
+\end{boxattention}
+\end{column}
+\end{columns}
+\end{frame}
+
+\begin{frame}{Résoudre une équation avec $\ln$ ou $\exp$}
+\begin{boxmethode}[Deux équivalences fondamentales]
+\[
+e^A=e^B \iff A=B,
+\qquad
+\ln A=\ln B \iff A=B \quad (A>0,\; B>0).
+\]
+Pour « extraire » un exposant : $a^x=b \iff x=\dfrac{\ln b}{\ln a}$
+($a>0$, $a\neq 1$, $b>0$).
+\end{boxmethode}
+
+\begin{exampleblock}{Exemple}
+$(1{,}06)^n=2 \iff n\ln(1{,}06)=\ln 2 \iff n=\dfrac{\ln 2}{\ln 1{,}06}\approx 11{,}9$.
+Un capital placé à $6\,\%$ \textbf{double en un peu moins de 12 ans}.
+\end{exampleblock}
+\end{frame}
+
+\begin{frame}{Logarithme décimal (aperçu)}
+En gestion, on rencontre parfois $\log_{10}$ (échelles, graphiques log).
+\[
+\log_{10} x=\frac{\ln x}{\ln 10},\qquad \log_{10}(10^k)=k.
+\]
+Nous travaillerons presque toujours avec $\ln$ : c'est le logarithme
+adapté à $e^{rt}$ et aux taux continus.
+
+\vspace{0.6em}
+\begin{boxsynthese}[Changement de base]
+Pour $a>0$, $a\neq 1$ et $x>0$,
+$\displaystyle \log_a x=\frac{\ln x}{\ln a}$.
+Une seule touche $\ln$ suffit sur la calculatrice.
+\end{boxsynthese}
+\end{frame}
+
+\section{Applications financières}
+
+\begin{frame}{Capitalisation --- intérêts composés}
+\begin{mydef}[Capitalisation]
+Un capital $C_0$ placé pendant $n$ périodes au taux $i$ par période devient
+\[
+C_n=C_0(1+i)^n.
+\]
+$1+i$ est le \textbf{facteur de capitalisation}.
+\end{mydef}
+
+\begin{exampleblock}{Numérique}
+$C_0=10\,000$ DH, $i=6\,\%$, $n=10$ :
+\[
+C_{10}=10000\times(1{,}06)^{10}\approx 17\,908\text{ DH}.
+\]
+\end{exampleblock}
+
+\begin{boxgestion}[Taux continu]
+Si les intérêts sont composés « en continu » au taux instantané $r$,
+\[
+C(t)=C_0\,e^{rt}.
+\]
+À $r=5{,}8\,\%$ environ, on retrouve $(1{,}06)^t$ car $\ln(1{,}06)\approx 0{,}058$.
+\end{boxgestion}
+\end{frame}
+
+\begin{frame}{Actualisation --- valeur actuelle}
+\begin{mydef}[Actualisation]
+La \textbf{valeur actuelle} d'un flux $VF$ perçu dans $n$ périodes, au taux $i$, est
+\[
+VA=\frac{VF}{(1+i)^n}=VF\cdot(1+i)^{-n}.
+\]
+Actualiser, c'est \emph{capitaliser à l'envers}.
+\end{mydef}
+
+\begin{columns}[T]
+\begin{column}{0.52\textwidth}
+\begin{exampleblock}{Choix d'investissement}
+On propose $15\,000$ DH dans $5$ ans.
+Taux d'actualisation $8\,\%$.
+\[
+VA=\frac{15000}{(1{,}08)^5}\approx 10\,209\text{ DH}.
+\]
+Si le projet coûte $11\,000$ DH aujourd'hui, il n'est \textbf{pas} rentable
+à ce taux.
+\end{exampleblock}
+\end{column}
+\begin{column}{0.46\textwidth}
+\begin{boxmethode}[Calculatrice]
+\begin{enumerate}
+    \item Calculer $(1+i)^n$.
+    \item Diviser $VF$ par ce nombre.
+    \item Ou : $VF \times e^{-n\ln(1+i)}$.
+\end{enumerate}
+\end{boxmethode}
+\end{column}
+\end{columns}
+\end{frame}
+
+\begin{frame}{Taux de variation et croissance}
+\begin{block}{Taux d'accroissement (rappel, avant la dérivée)}
+Entre $x$ et $x+h$ :
+\[
+\tau(h)=\frac{f(x+h)-f(x)}{h}.
+\]
+Pour $f(t)=C_0 e^{rt}$, ce taux tend vers $r\, C_0 e^{rt}$ quand $h\to 0$
+(chapitre III : c'est la \textbf{dérivée}, ou variation marginale).
+\end{block}
+
+\vspace{0.3em}
+\begin{boxgestion}[Taux de croissance moyen]
+Si un chiffre d'affaires passe de $CA_0$ à $CA_n$ en $n$ années,
+le taux annuel moyen $i$ vérifie
+\[
+CA_0(1+i)^n=CA_n \iff i=\Bigl(\frac{CA_n}{CA_0}\Bigr)^{1/n}-1.
+\]
+Exemple : $80\to 120$ en $4$ ans $\Rightarrow i=(1{,}5)^{1/4}-1\approx 10{,}7\,\%$.
+\end{boxgestion}
+\end{frame}
+
+\begin{frame}{Temps de doublement --- règle pratique}
+\begin{block}{Formule exacte}
+$C_0(1+i)^n=2C_0 \iff n=\dfrac{\ln 2}{\ln(1+i)}$.
+\end{block}
+
+\renewcommand{\arraystretch}{1.25}
+\begin{center}
+{\small
+\begin{tabular}{@{}cccc@{}}
+\toprule
+Taux $i$ & $5\,\%$ & $7\,\%$ & $10\,\%$ \\
+\midrule
+$n=\ln 2/\ln(1+i)$ & $\approx 14{,}2$ ans & $\approx 10{,}2$ ans & $\approx 7{,}3$ ans \\
+Règle des $72$ : $72/(100i)$ & $14{,}4$ & $10{,}3$ & $7{,}2$ \\
+\bottomrule
+\end{tabular}
+}
+\end{center}
+
+\vspace{0.35em}
+\begin{boxsynthese}[Règle des 72]
+En finance de marché, on retient : \emph{nombre d'années pour doubler} $\approx 72/$ (taux en $\%$).
+C'est une approximation ; à l'examen on exigera la formule avec $\ln$.
+\end{boxsynthese}
+\end{frame}
+
+\begin{frame}{Exercice de séance (6 minutes)}
+\begin{alertblock}{Placement}
+Un épargnant dépose $8\,000$ DH à $4{,}5\,\%$ l'an.
+\begin{enumerate}
+    \item Capital au bout de $6$ ans ?
+    \item Au bout de combien d'années le capital dépasse-t-il $12\,000$ DH ?
+    \item Quelle valeur actuelle aujourd'hui d'une somme de $12\,000$ DH versée dans $6$ ans,
+    au même taux ?
+\end{enumerate}
+\end{alertblock}
+
+\pause
+{\small
+\begin{block}{Corrigé}
+\begin{enumerate}
+    \item $8000\times(1{,}045)^6\approx 10\,415$ DH.
+    \item $(1{,}045)^n=12000/8000=1{,}5 \iff n=\ln(1{,}5)/\ln(1{,}045)\approx 9{,}2$ ans
+    (donc $10$ ans révolus pour dépasser).
+    \item $VA=12000/(1{,}045)^6\approx 9{,}218$ DH.
+\end{enumerate}
+\end{block}
+}
+\end{frame}
+
+\section{Synthèse}
+
+\begin{frame}{Fiche de synthèse --- séance 2}
+\begin{boxsynthese}[Formules à coller au-dessus du bureau]
+\[
+e^{a+b}=e^ae^b,\quad
+\ln(ab)=\ln a+\ln b,\quad
+y=\ln x \iff x=e^y,
+\]
+\[
+C_n=C_0(1+i)^n,\quad
+VA=\frac{VF}{(1+i)^n},\quad
+n=\frac{\ln(VF/C_0)}{\ln(1+i)}.
+\]
+\end{boxsynthese}
+
+\vspace{0.25em}
+\renewcommand{\arraystretch}{1.2}
+{\small
+\begin{center}
+\begin{tabular}{@{}llll@{}}
+\toprule
+ & \textbf{Domaine} & \textbf{Image} & \textbf{Limites} \\
+\midrule
+$e^x$ & $\R$ & $]0;+\infty[$ & $0$ en $-\infty$, $+\infty$ en $+\infty$ \\
+$\ln x$ & $]0;+\infty[$ & $\R$ & $-\infty$ en $0^+$, $+\infty$ en $+\infty$ \\
+\bottomrule
+\end{tabular}
+\end{center}
+}
+
+\vspace{0.3em}
+\begin{boxattention}[Pièges]
+$\ln(a+b)\neq\ln a+\ln b$ ;\quad $e^a+e^b\neq e^{a+b}$ ;\quad $\ln x$ interdit si $x\leqslant 0$.
+\end{boxattention}
+\end{frame}
+
+\begin{frame}{Pour la prochaine fois}
+\begin{block}{Travail personnel (fiche TD~2)}
+\begin{itemize}
+    \item \textbf{Niveau base} : propriétés de $\exp$ et $\ln$, capitalisation simple.
+    \item \textbf{Niveau approfondi} : taux moyen, actualisation, temps de doublement.
+\end{itemize}
+\end{block}
+
+\vspace{0.45em}
+\begin{boxgestion}[Séance 3 --- limites et continuité]
+On calculera des limites (y compris quelques formes indéterminées)
+et on justifiera \emph{l'existence d'un seuil de rentabilité}
+grâce au théorème des valeurs intermédiaires --- sans démonstration formelle.
+\end{boxgestion}
+\end{frame}
+
+
+%=======================================================
+\part{Séance 3 --- Limites et continuité}
+%=======================================================
+
+\begin{frame}[plain]
+\centering
+\vspace{1.6cm}
+{\Large Séance 3/3 \quad\textemdash\quad 1\,h\,30}\\[0.8em]
+{\usebeamerfont{title} Limites et continuité}\\[1.2em]
+{\large Formes indéterminées \textbullet\ continuité \textbullet\ TVI}\\[0.4em]
+{\large Seuil de rentabilité}
+\end{frame}
+
+\begin{frame}{Objectifs de la séance}
+\begin{myobj}{de la séance}{s3}
+À l'issue de 1\,h\,30, l'étudiant doit pouvoir :
+\end{myobj}
+\vspace{-0.4em}
+\begin{enumerate}
+    \item Calculer une limite usuelle (en un réel, en $\pm\infty$) et lever une forme indéterminée \emph{simple} par factorisation.
+    \item Reconnaître qu'une fonction est continue (approche intuitive, graphe « sans lever le crayon »).
+    \item Justifier l'\textbf{existence d'un seuil de rentabilité} à l'aide du théorème des valeurs intermédiaires (sans démonstration).
+\end{enumerate}
+
+\vspace{0.3em}
+\begin{boxgestion}[Étude de cas du jour]
+$\CT(q)=2\,000+15q$, prix de vente $p=35$ DH.
+Le profit $\Prof(q)=20q-2000$ passe-t-il de négatif à positif ?
+Peut-on affirmer qu'il existe un seuil, même sans le calculer ?
+\end{boxgestion}
+\end{frame}
+
+\begin{frame}{Déroulement (1\,h\,30)}
+\renewcommand{\arraystretch}{1.35}
+\begin{center}
+\begin{tabular}{@{}clp{7.8cm}@{}}
+\toprule
+\textbf{Durée} & \textbf{Bloc} & \textbf{Contenu} \\
+\midrule
+5 min  & Rappel & $\exp$, $\ln$, fil rouge coût / recette \\
+35 min & Limites & Idée, opérations, formes indéterminées simples \\
+20 min & Continuité & Définition intuitive, fonctions usuelles \\
+25 min & TVI + cas & Existence d'un seuil de rentabilité \\
+5 min  & Synthèse & Bilan du chapitre I + préparation suites \\
+\bottomrule
+\end{tabular}
+\end{center}
+\end{frame}
+
+
+\section{Limites --- l'essentiel}
+
+\begin{frame}{Idée de la limite (sans $\varepsilon$)}
+\begin{mydef}[Limite]
+On dit que $\displaystyle\lim_{x\to a} f(x)=\ell$ lorsque $f(x)$ se rapproche
+aussi près que l'on veut de $\ell$ dès que $x$ se rapproche de $a$
+(avec $x\neq a$, $x$ dans le domaine).
+\end{mydef}
+
+\vspace{0.2em}
+\begin{columns}[T]
+\begin{column}{0.50\textwidth}
+On définit de même :
+\begin{itemize}
+    \item limite à droite $x\to a^+$, à gauche $x\to a^-$ ;
+    \item limite en $+\infty$ ou $-\infty$ ;
+    \item limite infinie : $f(x)\to+\infty$ (la courbe « s'envole »).
+\end{itemize}
+\vspace{0.3em}
+\begin{boxattention}[Point clé]
+La valeur $f(a)$ \textbf{n'intervient pas} dans la limite en $a$.
+La fonction peut même ne pas être définie en $a$.
+\end{boxattention}
+\end{column}
+\begin{column}{0.48\textwidth}
+\centering
+\begin{tikzpicture}[scale=0.78]
+\begin{axis}[
+    axis lines=middle,
+    xlabel={$x$}, ylabel={$f(x)$},
+    xmin=-0.4, xmax=3.4,
+    ymin=-0.4, ymax=3.4,
+    width=6.4cm, height=5.2cm,
+    clip=false
+]
+\addplot[cerulean, thick, domain=0.15:3.2, samples=60] {(x^2-1)/(x-1)};
+\node[circle, draw=falured, fill=white, inner sep=1.5pt] at (axis cs:1,2) {};
+\node[font=\scriptsize, anchor=west] at (axis cs:1.15,2.25) {trou : $x=1$};
+\node[font=\scriptsize] at (axis cs:2.4,1.1) {$f(x)=x+1$};
+\end{axis}
+\end{tikzpicture}
+{\scriptsize $\dfrac{x^2-1}{x-1}\xrightarrow[x\to 1]{} 2$, alors que $f(1)$ n'existe pas.}
+\end{column}
+\end{columns}
+\end{frame}
+
+\begin{frame}{Limites usuelles à connaître}
+\renewcommand{\arraystretch}{1.25}
+{\small
+\begin{center}
+\begin{tabular}{@{}lll@{}}
+\toprule
+\textbf{Fonction} & \textbf{En $+\infty$} & \textbf{En un point} \\
+\midrule
+constante $c$ & $c$ & $c$ \\
+$x^n$ ($n\geqslant 1$) & $+\infty$ & $a^n$ \\
+$1/x$ & $0$ & $+\infty$ en $0^+$, $-\infty$ en $0^-$ \\
+$e^x$ & $+\infty$ & $e^a$ \\
+$\ln x$ & $+\infty$ & $\ln a$ si $a>0$ ; $-\infty$ en $0^+$ \\
+$\sqrt{x}$ & $+\infty$ & $\sqrt{a}$ si $a\geqslant 0$ \\
+\bottomrule
+\end{tabular}
+\end{center}
+}
+
+\vspace{0.4em}
+\begin{boxsynthese}[Polynôme à l'infini]
+Le terme de plus haut degré l'emporte :
+\[
+\lim_{x\to+\infty}(2x^3-100x^2+7)=+\infty,
+\qquad
+\lim_{x\to+\infty}\frac{3x^2-1}{x^2+4}=3.
+\]
+\end{boxsynthese}
+\end{frame}
+
+\begin{frame}{Opérations sur les limites}
+\begin{block}{Théorème (algèbre des limites)}
+Si $f(x)\to\ell$ et $g(x)\to m$ (limites finies), alors
+\[
+f+g\to \ell+m,\quad
+fg\to \ell m,\quad
+\lambda f\to \lambda\ell.
+\]
+Si $m\neq 0$, $\dfrac{f}{g}\to\dfrac{\ell}{m}$.
+Les inégalités passent à la limite : $f\leqslant g \Rightarrow \ell\leqslant m$.
+\end{block}
+
+\vspace{0.35em}
+\begin{boxattention}[Formes indéterminées --- on s'arrête]
+Les écritures suivantes \textbf{n'ont pas de résultat automatique} :
+\[
+\frac{0}{0},\quad \frac{\infty}{\infty},\quad \infty-\infty,\quad 0\times\infty.
+\]
+Il faut \emph{transformer} l'expression (factoriser, simplifier, diviser par $x^n$).
+On ne traitera \textbf{pas} $1^\infty$ ni les DL (hors programme).
+\end{boxattention}
+\end{frame}
+
+\begin{frame}{Lever une FI du type $0/0$ par factorisation}
+\begin{exampleblock}{Exemple type}
+\[
+\lim_{x\to 2}\frac{x^2-4}{x-2}.
+\]
+Pour $x\neq 2$, $\dfrac{x^2-4}{x-2}=\dfrac{(x-2)(x+2)}{x-2}=x+2$.
+Donc la limite vaut $2+2=4$.
+\end{exampleblock}
+
+\vspace{0.3em}
+\begin{boxmethode}[Recette]
+\begin{enumerate}
+    \item Remplacer $x$ par $a$ : si on obtient un réel, c'est fini.
+    \item Si $0/0$ : factoriser numérateur et dénominateur (identités, $\Delta$).
+    \item Simplifier pour $x\neq a$, puis remplacer.
+\end{enumerate}
+\end{boxmethode}
+\end{frame}
+
+\begin{frame}{Lever une FI du type $\infty/\infty$ à l'infini}
+\begin{exampleblock}{Diviser par le terme dominant}
+\[
+\lim_{x\to+\infty}\frac{2x^2-3x}{x^2+1}
+=\lim_{x\to+\infty}\frac{2-\dfrac{3}{x}}{1+\dfrac{1}{x^2}}
+=\frac{2-0}{1+0}=2.
+\]
+\end{exampleblock}
+
+\vspace{0.25em}
+\begin{boxgestion}[Coût moyen à long terme]
+$\displaystyle \overline{C}(q)=\frac{2000+20q}{q}=\frac{2000}{q}+20
+\xrightarrow[q\to+\infty]{} 20$.
+Quand la production devient très grande, le coût moyen se rapproche du
+\textbf{coût variable unitaire} : les coûts fixes sont « dilués ».
+\end{boxgestion}
+\end{frame}
+
+\begin{frame}{Comparaison et gendarmes (aperçu)}
+\begin{block}{Théorème des gendarmes (version fonctions)}
+Si $f(x)\leqslant g(x)\leqslant h(x)$ au voisinage de $a$ et si
+$f(x)\to\ell$, $h(x)\to\ell$, alors $g(x)\to\ell$.
+\end{block}
+
+\vspace{0.3em}
+Utile surtout pour encadrer une quantité économique mal connue
+entre deux scénarios (pessimiste / optimiste) qui convergent vers la même valeur.
+
+\vspace{0.5em}
+\begin{exampleblock}{Encadrement}
+Si $19\leqslant \overline{C}(q)\leqslant 20+\dfrac{2000}{q}$ pour $q>0$,
+alors $\overline{C}(q)\to 20$ n'est pas encore prouvé par le seul encadrement
+(le minorant est constant), mais $\limsup$ est $\leqslant 20$.
+En pratique, on calculera directement $\overline{C}(q)=20+2000/q$.
+\end{exampleblock}
+\end{frame}
+
+\begin{frame}{Mini-entraînement limites}
+\begin{alertblock}{Calculer}
+\begin{enumerate}
+    \item $\displaystyle\lim_{x\to 3}\frac{x^2-9}{x-3}$
+    \item $\displaystyle\lim_{q\to+\infty}\frac{5q+100}{q}$
+    \item $\displaystyle\lim_{x\to+\infty}e^{-x}$
+    \item $\displaystyle\lim_{x\to 0^+}\ln x$
+\end{enumerate}
+\end{alertblock}
+
+\pause
+\begin{block}{Corrigé}
+$6$ ;\quad $5$ ;\quad $0$ ;\quad $-\infty$.
+\end{block}
+\end{frame}
+
+\section{Continuité --- approche intuitive}
+
+\begin{frame}{Continuité : on ne lève pas le crayon}
+\begin{mydef}[Continuité]
+$f$ est \textbf{continue en} $a\in D_f$ lorsque
+$\displaystyle\lim_{x\to a} f(x)=f(a)$.
+Elle est continue sur un intervalle si elle l'est en tout point de cet intervalle.
+\end{mydef}
+
+\begin{columns}[T]
+\begin{column}{0.50\textwidth}
+\textbf{Oui, continues} (sur leur domaine) :
+polynômes, $e^x$, $\ln x$, $\sqrt{x}$,
+fonctions rationnelles hors pôles,
+somme / produit / composée de continues.
+
+\vspace{0.4em}
+\textbf{Non continue} en $0$ :
+$f(x)=1/x$ (explose) ;
+un saut (tarif postal, impôt par tranches mal lissé).
+\end{column}
+\begin{column}{0.48\textwidth}
+\centering
+\begin{tikzpicture}[scale=0.75]
+\begin{axis}[
+    axis lines=middle,
+    xlabel={$q$}, ylabel={prix},
+    xmin=-0.4, xmax=5.4,
+    ymin=-0.4, ymax=5.4,
+    width=6.4cm, height=5cm,
+    clip=false,
+    xtick={0,1,2,3,4,5},
+    ytick={1,2,3,4}
+]
+% fonction en escalier (sauts)
+\addplot[cerulean, very thick] coordinates {(0,1) (1,1)};
+\addplot[cerulean, very thick] coordinates {(1,2) (2,2)};
+\addplot[cerulean, very thick] coordinates {(2,3) (3,3)};
+\addplot[cerulean, very thick] coordinates {(3,4) (4,4)};
+\node[circle, draw=cerulean, fill=white, inner sep=1.3pt] at (axis cs:1,1) {};
+\node[circle, fill=cerulean, inner sep=1.3pt] at (axis cs:1,2) {};
+\node[circle, draw=cerulean, fill=white, inner sep=1.3pt] at (axis cs:2,2) {};
+\node[circle, fill=cerulean, inner sep=1.3pt] at (axis cs:2,3) {};
+\node[font=\scriptsize] at (axis cs:3.5,1.2) {tarifs par palier};
+\end{axis}
+\end{tikzpicture}
+\end{column}
+\end{columns}
+\end{frame}
+
+\begin{frame}{Continuité à droite, à gauche}
+On a souvent besoin des limites \emph{latérales} :
+\[
+f\text{ continue en }a \iff
+\lim_{x\to a^-}f(x)=\lim_{x\to a^+}f(x)=f(a).
+\]
+
+\vspace{0.3em}
+\begin{exampleblock}{Valeur absolue}
+$|x|$ est continue en $0$ : les deux côtés donnent $0$, et $|0|=0$.
+En revanche elle ne sera \textbf{pas dérivable} en $0$ (chapitre III) :
+continuité $\nRightarrow$ dérivabilité.
+\end{exampleblock}
+
+\vspace{0.3em}
+\begin{boxgestion}[Fonctions économiques « raisonnables »]
+Coût, recette, demande usuelle : on les suppose continues
+(un petit changement de quantité n'entraîne pas un saut de coût).
+Les barèmes fiscaux ou tarifaires peuvent, eux, présenter des \textbf{sauts}.
+\end{boxgestion}
+\end{frame}
+
+\section{Théorème des valeurs intermédiaires}
+
+\begin{frame}{TVI --- énoncé sans démonstration}
+\begin{mytheo}{des valeurs intermédiaires}{tvi}
+Soit $f:[a,b]\to\R$ \textbf{continue}. Pour tout réel $y$ compris entre $f(a)$ et $f(b)$,
+il existe au moins un $c\in[a,b]$ tel que $f(c)=y$.
+\end{mytheo}
+
+\vspace{0.2em}
+\begin{columns}[T]
+\begin{column}{0.52\textwidth}
+\begin{coro}[Changement de signe]
+Si $f$ est continue sur $[a,b]$ et $f(a)f(b)<0$,
+alors l'équation $f(x)=0$ admet \textbf{au moins une} solution dans $]a,b[$.
+\end{coro}
+\vspace{0.2em}
+\begin{boxattention}[Ce que le TVI ne dit pas]
+Il affirme l'\textbf{existence}, pas l'unicité, et ne calcule pas $c$.
+L'unicité s'obtient en ajoutant la \emph{monotonie stricte}.
+\end{boxattention}
+\end{column}
+\begin{column}{0.46\textwidth}
+\centering
+\begin{tikzpicture}[scale=0.78]
+\begin{axis}[
+    axis lines=middle,
+    xlabel={$x$}, ylabel={$f(x)$},
+    xmin=-0.3, xmax=3.4,
+    ymin=-2.2, ymax=3.2,
+    width=6.2cm, height=5.2cm,
+    clip=false
+]
+\addplot[cerulean, thick, domain=0:3.1, samples=80] {x^3/3-x};
+\addplot[falured, dashed] coordinates {(0,0) (3.2,0)};
+\node[font=\scriptsize] at (axis cs:2.4,1.6) {$f$ continue};
+\node[font=\scriptsize, falured] at (axis cs:2.3,-0.55) {au moins un zéro};
+\end{axis}
+\end{tikzpicture}
+\end{column}
+\end{columns}
+\end{frame}
+
+\begin{frame}{Étude de cas --- existence d'un seuil de rentabilité}
+\begin{block}{Modèle}
+$\CT(q)=2000+15q$, \quad $\Rec(q)=35q$ \quad ($q\geqslant 0$).
+Profit : $\Prof(q)=\Rec(q)-\CT(q)=20q-2000$.
+\end{block}
+
+\begin{enumerate}\setlength{\itemsep}{0.4em}
+    \item $\Prof$ est affine, donc \textbf{continue} sur $[0;+\infty[$.
+    \item $\Prof(0)=-2000<0$ (on perd les coûts fixes).
+    \item $\Prof(200)=2000>0$ (on gagne de l'argent).
+    \item TVI : il existe $q^*\in]0;200[$ tel que $\Prof(q^*)=0$.
+\end{enumerate}
+
+\vspace{0.25em}
+\begin{boxsynthese}[Interprétation]
+Même \emph{sans calculer} $q^*$, on \textbf{sait} qu'un seuil de rentabilité existe :
+on passe d'une perte à un gain de façon continue.
+Ici on peut même le calculer : $q^*=100$.
+\end{boxsynthese}
+\end{frame}
+
+\begin{frame}{Le cas non linéaire --- TVI toujours utile}
+\begin{exampleblock}{Recette parabolique}
+$\Rec(q)=80q-0{,}4q^2$, $\CT(q)=2000+20q$.
+\[
+\Prof(q)=-0{,}4q^2+60q-2000.
+\]
+$\Prof(0)=-2000<0$, $\Prof(80)=1200>0$ : le TVI garantit un seuil dans $]0;80[$.
+$\Prof(150)=-500<0$ : un \textbf{second} seuil existe dans $]80;150[$
+(on ressort de la zone de profit).
+\end{exampleblock}
+
+\centering
+\begin{tikzpicture}[scale=0.72]
+\begin{axis}[
+    axis lines=middle,
+    xlabel={$q$},
+    ylabel={$\Prof(q)$},
+    xmin=-5, xmax=165,
+    ymin=-2300, ymax=1600,
+    xtick={0,50,80,100,150},
+    ytick={-2000,0,1000},
+    width=12cm, height=4.4cm,
+    clip=false
+]
+\addplot[mygreen, thick, domain=0:155, samples=100] {-0.4*x^2+60*x-2000};
+\addplot[gray, dashed] coordinates {(0,0) (155,0)};
+\node[pt] at (axis cs:50,0) {};
+\node[pt] at (axis cs:100,0) {};
+\node[font=\scriptsize, anchor=south] at (axis cs:50,80) {$q=50$};
+\node[font=\scriptsize, anchor=south] at (axis cs:100,80) {$q=100$};
+\end{axis}
+\end{tikzpicture}
+\end{frame}
+
+\begin{frame}{Méthode de dichotomie (aperçu numérique)}
+\begin{boxmethode}[Quand on ne sait pas résoudre $\Prof(q)=0$]
+Si $\Prof(a)<0<\Prof(b)$, on prend le milieu $m=(a+b)/2$.
+On conserve le sous-intervalle où le signe change.
+Après $n$ étapes, la largeur est $(b-a)/2^n$.
+\end{boxmethode}
+
+{\small
+Exemple : $\Prof(q)=q^3-4q-1$ (fictif). $\Prof(1)=-4<0$, $\Prof(2)=3>0$.
+\begin{center}
+\begin{tabular}{@{}cccc@{}}
+\toprule
+Étape & Intervalle & Milieu & Signe \\
+\midrule
+0 & $[1;2]$ & $1{,}5$ & $\Prof(1{,}5)<0$ $\to$ $[1{,}5;2]$ \\
+1 & $[1{,}5;2]$ & $1{,}75$ & on continue... \\
+\bottomrule
+\end{tabular}
+\end{center}
+}
+\vspace{0.2em}
+Utile en gestion dès que le modèle n'est plus un trinôme (barèmes, coûts par palier lissés).
+\end{frame}
+
+\begin{frame}{Exercice de séance --- cas à rédiger}
+\begin{alertblock}{À rédiger comme en contrôle (6 minutes)}
+Une entreprise a $\CT(q)=2400+40q$ et vend au prix $p(q)=120-0{,}5q$ (DH).
+\begin{enumerate}
+    \item Exprimer $\Prof(q)$ et préciser son domaine économique ($p(q)\geqslant 0$, $q\geqslant 0$).
+    \item Calculer $\Prof(0)$ et $\Prof(100)$. Conclure sur l'existence d'un seuil
+    à l'aide du TVI.
+    \item Calculer exactement les seuils (équation du second degré).
+\end{enumerate}
+\end{alertblock}
+
+\pause
+{\scriptsize
+$\Rec(q)=120q-0{,}5q^2$, $\Prof(q)=-0{,}5q^2+80q-2400$, $q\in[0;240]$.
+$\Prof(0)=-2400<0$, $\Prof(100)=600>0$ : au moins un seuil dans $]0;100[$.
+$q^2-160q+4800=0$, $\Delta=6400$, $q=40$ ou $q=120$. Zone de profit : $[40;120]$.
+}
+\end{frame}
+
+\section{Bilan du chapitre I}
+
+\begin{frame}{Fiche de synthèse --- séance 3}
+\begin{boxsynthese}[Limites et continuité]
+\begin{itemize}
+    \item Limite en $a$ : ce que $f$ \emph{approche}, pas nécessairement $f(a)$.
+    \item FI $0/0$ : factoriser. FI $\infty/\infty$ : diviser par $x^n$ dominant.
+    \item Continue $=$ limite égale à la valeur. Usuelles : continues sur leur domaine.
+    \item TVI : continue $+$ changement de signe $\Rightarrow$ existence d'un zéro.
+\end{itemize}
+\end{boxsynthese}
+
+\vspace{0.3em}
+\begin{boxgestion}[Phrase type à l'examen]
+« $\Prof$ est continue sur $[0;q_{\max}]$ comme polynôme,
+$\Prof(0)<0$ et $\Prof(q_1)>0$, donc d'après le TVI il existe un seuil de rentabilité
+$q^*\in]0;q_1[$ tel que $\Prof(q^*)=0$. »
+\end{boxgestion}
+\end{frame}
+
+\begin{frame}{Carte mentale du chapitre I}
+\centering
+\begin{tikzpicture}[
+    scale=0.92,
+    every node/.style={align=center, font=\small},
+    bloc/.style={draw=DarkBlue, rounded corners, fill=LightBlue,
+                 inner sep=5pt, text width=3.7cm},
+    fleche/.style={->, >=Stealth, thick, cerulean}
+]
+\node[bloc, fill=LightOrange] (a) at (0,2.2) {Algèbre\\[-0.2em]{\scriptsize factoriser, $\Delta$, signes}};
+\node[bloc] (b) at (5.2,2.2) {Fonctions usuelles\\[-0.2em]{\scriptsize affine, $x^2$, $1/x$, $|x|$}};
+\node[bloc, fill=LightGreen] (c) at (0,0) {$\exp$ et $\ln$\\[-0.2em]{\scriptsize capitalisation}};
+\node[bloc, fill=bananamania] (d) at (5.2,0) {Limites + TVI\\[-0.2em]{\scriptsize seuil de rentabilité}};
+\draw[fleche] (a) -- (b);
+\draw[fleche] (b) -- (c);
+\draw[fleche] (c) -- (d);
+\draw[fleche] (b) -- (d);
+\end{tikzpicture}
+
+\vspace{0.5em}
+{\small Prochaine étape (chapitre II) : les \textbf{suites}, pour formaliser
+intérêts composés, amortissement et prévision période par période.}
+\end{frame}
+
+\begin{frame}{Pour la suite du module}
+\begin{block}{Travail personnel (fiche TD~3)}
+\begin{itemize}
+    \item Limites : exercices 1--3 (mécanisme).
+    \item Continuité + TVI : exercices 4--5.
+    \item Cas de gestion complet : exercice 6 (annale type CC).
+\end{itemize}
+\end{block}
+
+\vspace{0.4em}
+\begin{boxattention}[Contrôle continu --- séance 7]
+Le CC (40\,\%) porte sur les \textbf{fonctions} et les \textbf{suites}.
+Le chapitre I doit être solide avant d'enchaîner sur les suites.
+\end{boxattention}
+
+\vspace{0.3em}
+\centering
+{\large Chapitre II, séance 4 : suites réelles --- généralités.}
+\end{frame}
+
+\end{document}
