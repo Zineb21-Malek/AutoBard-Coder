@@ -1,0 +1,107 @@
+\appendix
+\section{Matching radial moments and the heat exterior}
+\label{app:moments}
+
+The leading swirl $E(X,\eta)$ has, by \ref{P3}, the far-field
+\[
+E(X,\eta)=c_\infty X^{-1/2-h}\bigl(1+O(X^{-1})\bigr),
+\qquad X\to\infty.
+\]
+In physical variables, on $z=0$, this is
+\[
+u^{(0)}_\theta(r,0,t)
+=q^{-A} c_\infty \Bigl(\frac{r^2}{2q}\Bigr)^{-1/2-h}\bigl(1+O(q/r^2)\bigr)
+=c_\infty' r^{-1-2h} q^{h}\bigl(1+O(q/r^2)\bigr).
+\]
+As $q\downarrow 0$ at fixed $r>0$ this tends to $0$. The heat exterior $\Gamma(r,t)$ is chosen so that its radial moments
+\[
+M_n(t):=\int_0^\infty \Gamma(r,t)\, r^{n}\, r\,dr
+\]
+match the corresponding moments of $u^{(0)}_\theta$ through the annulus, for $n=0,1,\dots,N$ with $N$ large. Because $\Gamma$ solves the radial heat equation of Proposition~\ref{prop:heat}, each $M_n$ solves a closed ODE. Prescribing the jet $\{M_n(t)\}_{n\le N}$ at each $t$ is a finite-dimensional interpolation problem, solved by a linear combination of Gaussians in $r^2$ with time-dependent coefficients. Sending $N\to\infty$ in a Borel-summable way produces a remainder decaying faster than every power of $q$ in the matching region, which is absorbed into $\mathcal E_{\infty}$.
+
+The same construction works with a slight $z$-dependence in a buffer layer, at the cost of additional heat kernels in the axial variable; because axial diffusion is smaller by $q^{2h}$, this buffer is cheap.
+
+\section{Analytic profiles near the axis}
+\label{app:axis}
+
+\subsection{Even-odd structure}
+
+A Cartesian-smooth axisymmetric field with swirl admits a power series in $r^2$ near the axis:
+\[
+u_z=\sum_{m\ge 0} a_m(z,t) r^{2m},
+\qquad
+\frac{u_\theta}{r}=\sum_{m\ge 0} b_m(z,t) r^{2m},
+\qquad
+\frac{u_r}{r}=\sum_{m\ge 0} c_m(z,t) r^{2m}.
+\]
+In similarity variables this is a power series in $X$. Substituting into the leading operator $\mathcal P$ of Lemma~\ref{lem:rescaled-op} yields a recursive system for the coefficient functions of $\eta$. The first coefficients are constrained by \ref{P4}: $U(0,0)\neq 0$ means $a_0\neq 0$ at $z=0$, $\tau$ small.
+
+\subsection{Shooting}
+
+On a rectangle $[0,X_*]\times[-\eta_c,\eta_c]$ we consider the Banach space $\mathcal B$ of pairs $(E,U)$ whose axis jets satisfy the Cartesian smoothness conditions, with norm
+\[
+\|(E,U)\|_{\mathcal B}
+=\sup_{0\le k\le k_0}\Bigl(
+\|X^{-1/2}E\|_{C^k}+\|U\|_{C^k}
+\Bigr).
+\]
+The map that sends a pair to the solution of the linearised leading balance with that pair as Dirichlet data at $X=X_*$ (where we impose the beginning of the far-field \ref{P3}) is a contraction for $h$ small and $k_0$ large, because the operator $\mathcal P$ is a regular perturbation of a radial {S}tokes operator with a lower-order swirl coupling of size $h$. We omit the expansion of the contraction constants in this draft and record the conclusion as Proposition~\ref{prop:profiles}. The far-field $E\sim c_\infty X^{-1/2-h}$ is the unique decaying solution of the constant-coefficient system obtained by linearising $\mathcal P$ at $X=\infty$ with $U=V_0=0$; matching at $X_*$ fixes $c_\infty>0$.
+
+\subsection{Axial bias}
+
+The reflection $z\mapsto -z$, $\eta\mapsto -\eta$, $U\mapsto -U$ is a symmetry of the leading equations. We break it by imposing $U(0,0)=\beta$ for a small $\beta\neq 0$. For $\beta=0$ the plane $\eta=0$ is simultaneously a nodal plane of $U$ and a plane of weak rotational amplification. For $\beta\neq 0$ these loci separate by $O(\beta)$, which is the content of \ref{P4} and \ref{P6} near $z=0$. Continuity in $\beta$ preserves \ref{P1}--\ref{P3} and \ref{P5}.
+
+\section{The admissible stress cone}
+\label{app:cone}
+
+Let $e_r,e_\theta,e_z$ be the cylindrical frame. A pulse polarisation $\Psi$ that is divergence-free to WKB order, with local wavevector in the $(r,z)$-plane, has vanishing $\theta$-mean. Its quadratic mean is a symmetric tensor of the form
+\[
+S(\Psi)
+=\overline{\Psi\otimes\Psi}
+=\alpha\, e_r\otimes e_r
++\beta\, (e_r\otimes e_\theta+e_\theta\otimes e_r)
++\gamma\, (e_r\otimes e_z+e_z\otimes e_r)
++\cdots,
+\]
+where the coefficients $(\beta,\gamma)$ are the radial fluxes of azimuthal and axial momentum. As the polarisation and the wavevector vary in the open set permitted by \ref{P6}, the pair $(\beta,\gamma)$ covers an open cone $\mathcal K_0\subset\R^2$. We write $\mathcal K$ for the cone of symmetric tensors whose $(r\theta,rz)$ flux pair lies in $\mathcal K_0$ and whose remaining components are determined by the WKB polarisation (they are not independent).
+
+\begin{lemma}[Two families span the cone]
+\label{lem:cone}
+There exist two polarisations $\Psi_+,\Psi_-$ such that the corresponding flux pairs $(\beta_+,\gamma_+)$ and $(\beta_-,\gamma_-)$ are linearly independent. Consequently every interior point of $\mathcal K_0$ is a unique positive combination $\iota_+(\beta_+,\gamma_+)+\iota_-(\beta_-,\gamma_-)$ with $\iota_\pm>0$.
+\end{lemma}
+
+\begin{proof}
+This is two-by-two linear algebra, once two independent flux ratios have been exhibited. Family $+1$ is chosen with a dominant $r\theta$ flux (a ``swirl pulse''); family $-1$ with a dominant $rz$ flux (an ``axial pulse''). Independence is arranged by \ref{P6}, which provides both rotational and axial shear as energy sources, and therefore both polarisations as unstable modes of the geometric-optics problem.
+\end{proof}
+
+The {B}ogovskii lift used in Proposition~\ref{prop:Tann} produces a stress in a neighbourhood of $u_B\otimes u_B$ restricted to the annulus. For $q$ small this neighbourhood lies in the interior of $\mathcal K$, because $u_B\otimes u_B$ itself has a definite $(r\theta,rz)$ signature on the support of $\chi_{\ann}$, by the signs of $E$ and of the axial bias.
+
+\section{Index of exponents}
+\label{app:exponents}
+
+For the reader's convenience we collect the exponents at viscosity $1$, with $\tau=1-t$ and $0<h<1/100$.
+
+\begin{center}
+\begin{tabular}{@{}lll@{}}
+\toprule
+Quantity & Symbol & Order \\
+\midrule
+Radial core width & $\ell_r$ & $\tau^{1/2}$ \\
+Axial core height & $\ell_z$ & $\tau^{1/2-h}$ \\
+Concentration scale & $q$ & $\tau$ on the core \\
+Similarity radius & $X$ & $r^2/(2q)$ \\
+Azimuthal / axial speed & $|u_\theta|,\,|u_z|$ & $\tau^{-1/2-h}$ \\
+Radial speed & $|u_r|$ & $\tau^{-1/2}$ \\
+Pressure & $|p|$ & $\tau^{-1-2h}$ \\
+Core energy & $\|u\|_{L^2(\mathcal C_\tau)}^2$ & $\tau^{1/2-3h}$ \\
+Angular {R}eynolds number & $\Ree_\theta$ & $\tau^{-h}$ \\
+Radial {R}eynolds number & $\Ree_r$ & $O(1)$ \\
+Axial / radial diffusion & $\ell_r^2/\ell_z^2$ & $\tau^{2h}$ \\
+Annular residual & $|\Rmom{u_B}{p_B}|$ & $\tau^{-3/2-h}$ \\
+Annular stress & $|T_{\ann}|$ & $\tau^{-1-2h}$ \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\noindent
+The blowup ring used throughout is $z=0$, $r=\sqrt{2X_*\tau}$, on which $u_\theta=E(X_*,0)\tau^{-1/2-h}$.

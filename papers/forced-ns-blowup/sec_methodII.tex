@@ -1,0 +1,161 @@
+\section{Method~II: certified similarity dynamics}
+\label{sec:methodII}
+
+Method~I manufactures the missing annular force internally, by the mean stress of oscillations. Method~II does the opposite: it treats the same inner core as an approximate self-similar solution, and \emph{defines} the force to be the residual after a compactly supported correction. The analytic task is then to prove that this residual, which is allowed to be nonzero, extends smoothly through $t=1$. No high-frequency cascade is required.
+
+This is closer in spirit to~\cite{chenhou2022,anandkumar2026} than to~\cite{cmz2023}, and closer to~\cite{abc2022} than Method~I is, with the decisive difference that the force must lie in $\Ccinf$ rather than in $L^1_t L^2_x$.
+
+\subsection{Similarity form of the axisymmetric equations}
+\label{sec:sim-NS}
+
+Write $s:=-\log\tau$, so $s\to+\infty$ as $t\uparrow 1$, and use $(X,\eta,s)$ as independent variables, with $q=q(\eta,\tau)$ as in~\eqref{eq:sim}. Set
+\begin{equation}
+\label{eq:self-field}
+\begin{aligned}
+u_\theta(x,t)&=q^{-A} E(X,\eta,s),\\
+u_z(x,t)&=q^{-A} U(X,\eta,s),\\
+r u_r(x,t)&=V(X,\eta,s),\\
+p(x,t)&=q^{-2A}\Pi(X,\eta,s).
+\end{aligned}
+\end{equation}
+If the profiles are independent of $s$, one recovers Construction~\ref{con:leading}. In general they may depend slowly on $s$.
+
+\begin{lemma}[Rescaled momentum operator]
+\label{lem:rescaled-op}
+There is a (nonlinear) differential operator $\mathcal P=\mathcal P(E,U,V,\Pi)$ in the variables $(X,\eta)$, with coefficients depending on $h$ but not on $q$, and there is a remainder operator $\mathcal R_q$ containing the factor $q^{2h}$ together with $\partial_s$, such that
+\begin{equation}
+\label{eq:rescaled-op}
+q^{A+1}\,\Rmom{u}{p}
+=\mathcal P(E,U,V,\Pi)
++\mathcal R_q(E,U,V,\Pi)
+\end{equation}
+pointwise in the region $|\eta|\le\eta_c$, $X\le X_b$, $q\le 1$. The operator $\mathcal P$ is the leading inner balance of \ref{P5}; $\mathcal R_q$ is smooth in the profiles and their derivatives, and $\mathcal R_q\to 0$ as $q\downarrow 0$ whenever the profiles remain bounded in $C^k$ for $k$ large.
+\end{lemma}
+
+\begin{proof}
+Each term in $\Rmom{u}{p}$ scales as follows on the core, where $q\asymp\tau$. Time differentiation of a factor $q^{-A}$ produces $q^{-A-1}$ because $\partial_t q\asymp 1$. Spatial gradients scale as $q^{-1/2}$ in the radial direction and as $q^{-D}$ in the axial direction. With $|u_\theta|,|u_z|\sim q^{-A}$ one therefore has
+\[
+(u_z\partial_z)u\sim q^{-A}\cdot q^{-D}\cdot q^{-A}=q^{-2A-D}.
+\]
+The identity $2A+D=A+1$ holds by~\eqref{eq:h}, so this term is of order $q^{-A-1}$. Radial advection satisfies
+\[
+(u_r\partial_r)u\sim q^{-1/2}\cdot q^{-1/2}\cdot q^{-A}=q^{-A-1}.
+\]
+Radial diffusion is $\Delta_r u\sim q^{-1}q^{-A}=q^{-A-1}$. Axial diffusion is $q^{-2D}q^{-A}=q^{-A-1+2h}$, which supplies the factor $q^{2h}$ in $\mathcal R_q$. Pressure gradients scale as $q^{-2A}\cdot q^{-1/2}=q^{-A-1}$. Collecting the order $q^{-A-1}$ terms gives $\mathcal P$; everything else is $\mathcal R_q$. If the profiles depend on $s=-\log\tau$, then $\partial_t$ also hits them through $\partial_s E\cdot\partial_t s$ with $\partial_t s=\tau^{-1}\asymp q^{-1}$, which is again of order $q^{-A-1}$ after multiplication by $q^{-A}$. In this draft we seek $s$-independent profiles and place $\partial_s$ in $\mathcal R_q$.
+\end{proof}
+
+\subsection{Approximate self-similar field}
+\label{sec:approx-ss}
+
+\begin{construction}[Approximate self-similar vortex]
+\label{con:ss}
+Let $(E,U)$ be the profiles of Proposition~\ref{prop:profiles}, with $V=V_0$ and $\Pi$ as in~\eqref{eq:Pi}. Define $u_{\self},p_{\self}$ by~\eqref{eq:self-field} with $s$-independent profiles, cut off smoothly for $|\eta|>\eta_c$ and for $X>X_b$ so as to match the heat exterior of Proposition~\ref{prop:heat}. Call the resulting globally defined field $(u_{\app},p_{\app})$.
+\end{construction}
+
+\begin{lemma}[Residual of the approximate field]
+\label{lem:app-residual}
+In similarity coordinates,
+\begin{equation}
+\label{eq:app-res}
+q^{A+1}\Rmom{u_{\app}}{p_{\app}}
+=
+\begin{cases}
+O(q^{2h}) & \text{on the core},\\
+O(1) & \text{on the annulus},\\
+0 & \text{on the heat exterior, away from the cutoff}.
+\end{cases}
+\end{equation}
+Equivalently, $\Rmom{u_{\app}}{p_{\app}}=O(q^{-A-1+2h})$ in the core and $O(q^{-A-1})$ in the annulus. The annular piece is again of the form $-\divv T_{\ann}$ up to a super-smooth error, by the same {B}ogovskii argument as in Proposition~\ref{prop:Tann}.
+\end{lemma}
+
+\begin{proof}
+On the core, $\mathcal P=0$ by \ref{P5} and Lemma~\ref{lem:rescaled-op} leaves $\mathcal R_q=O(q^{2h})$. On the annulus the inner balance is not imposed, so $\mathcal P$ is a fixed smooth function of $(X,\eta)$, hence $O(1)$ after multiplication by $q^{A+1}$. The exterior is Proposition~\ref{prop:heat}.
+\end{proof}
+
+The obstruction to taking $f:=\Rmom{u_{\app}}{p_{\app}}$ as a {C}lay force is concentrated in the annulus: $q^{-A-1}=\tau^{-3/2-h}$ diverges, and derivatives thereof diverge more strongly. In Method~I this divergence is cancelled by $\divv\overline{w\otimes w}$. In Method~II it is cancelled by a \emph{corrector supported in a $\tau$-independent ball}, whose own residual is allowed to be large so long as the \emph{sum} extends smoothly. The corrector cannot be supported in the core, or it would destroy the blowup; it can be supported in a region that, in physical variables, shrinks more slowly than the core, or even in a fixed annulus $r\asymp 1$, provided one uses the heat exterior as a buffer.
+
+A more rigid---and, for certification, more convenient---choice is to keep the corrector inside a slightly enlarged similarity neighbourhood of the annulus and to check smoothness of the residual by weighted estimates that convert negative powers of $q$ into functions of $(x,t)$ known to extend smoothly. That conversion is not automatic: $q^{-N}$ does \emph{not} extend smoothly through the origin. One needs cancellation.
+
+\subsection{Smoothness through the singular time}
+
+\begin{lemma}[Criterion for a smooth extension]
+\label{lem:smooth-ext}
+Let $F$ be smooth on $\R^3\times[0,1)$. Suppose that in a neighbourhood of the origin, in similarity coordinates, one has an expansion
+\begin{equation}
+\label{eq:F-exp}
+F(x,t)=\sum_{n=0}^{N} q^{\mu_n} F_n(X,\eta)
++r_N(x,t),
+\end{equation}
+with $\mu_n>0$, with each $F_n$ smooth and compactly supported in $(X,\eta)\in[0,\infty)\times[-1+\delta,1-\delta]$, and with $r_N$ and all its derivatives up to order $k$ bounded by $C_k q^{M}$ for $M$ arbitrarily large with $N$. Then $F$ extends to a $C^k$ function on $\R^3\times[0,1]$ by setting $F(0,1)=0$ (and likewise for derivatives that the expansion identifies). If the expansion holds for all $N$ and $F$ vanishes for $|x|\ge R$, the extension lies in $\Ccinf(\R^3\times[0,1])$.
+\end{lemma}
+
+\begin{proof}
+On any region $|x|\ge\varepsilon>0$ one has $q$ bounded below as $\tau\downarrow 0$, so $F$ is already smooth up to $t=1$ there. Near the origin, $q^{\mu}$ with $\mu>0$ tends to $0$, and each derivative $\partial_x^\alpha\partial_t^k$ costs at most a factor $q^{-C_{\alpha,k}}$. Choosing $N$ so that $\mu_n-C_{\alpha,k}>0$ for all terms retained, and $M$ large for the remainder, every derivative tends to $0$ at the origin. This is the classical {W}hitney condition for a $C^k$ extension by $0$ at a point.
+\end{proof}
+
+The point of Method~II is therefore to arrange that $\Rmom{u_{\app}+u_{\rem}}{p_{\app}+p_{\rem}}$ admits an expansion~\eqref{eq:F-exp} with \emph{positive} exponents $\mu_n$.
+
+\subsection{The remainder equation}
+
+Write $u=u_{\app}+u_{\rem}$, $p=p_{\app}+p_{\rem}$, with $\nabla\cdot u_{\rem}=0$. Lemma~\ref{lem:increment} gives
+\begin{equation}
+\label{eq:rem-eq}
+\Rmom{u}{p}
+=\Rmom{u_{\app}}{p_{\app}}
++L_{u_{\app}}(u_{\rem},p_{\rem})
++\divv(u_{\rem}\otimes u_{\rem}).
+\end{equation}
+We seek $u_{\rem}$ of size $o(q^{-A})$ in the core, so as not to destroy blowup, and of size sufficient in the annulus to cancel the $O(q^{-A-1})$ residual there. A naive {B}ogovskii lift of $T_{\ann}$ to a velocity of size $|T_{\ann}|^{1/2}$ has the wrong scaling: it would be as large as $u_{\app}$ itself. The correct linear object is a solution of the linearised parabolic problem
+\[
+L_{u_{\app}}(u_{\rem}^{(0)},p_{\rem}^{(0)})
+=-\Rmom{u_{\app}}{p_{\app}}+O(q^{-A-1+2h}),
+\]
+with $\nabla\cdot u_{\rem}^{(0)}=0$. In similarity variables this becomes $\partial_s+\mathcal A$ acting on $s$-dependent profiles, where $\mathcal A$ is elliptic in $(X,\eta)$ with a spectral gap off a finite-dimensional kernel.
+
+\begin{assumption}[Profile control]
+\label{ass:profile-control}
+There exists a divergence-free remainder $u_{\rem}$, with pressure $p_{\rem}$, such that:
+\begin{enumerate}[label=\textup{(B\arabic*)}]
+\item \label{B1} \emph{Size in the core.} $\|u_{\rem}\|_{L^\infty(\mathcal C_\tau)}=O(\tau^{-A+h})=o\bigl(\tau^{-A}\bigr)$.
+\item \label{B2} \emph{Cancellation.} The sum $\Rmom{u_{\app}+u_{\rem}}{p_{\app}+p_{\rem}}$ admits an expansion~\eqref{eq:F-exp} with $\mu_n>0$ for all $n$, in a neighbourhood of the origin, and vanishes for $|x|\ge R$.
+\item \label{B3} \emph{Regularity.} $u_{\app}+u_{\rem}$ is smooth on $\R^3\times[0,1)$ and equals $u_{\app}$ to leading order on the blowup ring of~\eqref{eq:blowup-ring}.
+\item \label{B4} \emph{Optional certificate.} On the compact similarity rectangle $[0,X_b]\times[-\eta_c,\eta_c]$, the identities $\mathcal P(E,U,V_0,\Pi)=0$ and the bounds \ref{P1}--\ref{P6} are certified either by a fully analytic argument (Appendix~\ref{app:axis}) or by interval arithmetic in the sense of~\cite{anandkumar2026,chenhou2022}, with analytic tails at $X=0$ and $X=\infty$.
+\end{enumerate}
+\end{assumption}
+
+\begin{remark}
+\label{rem:assII-status}
+Condition \ref{B4} is already proved, unconditionally, in Appendix~\ref{app:axis} at the level of existence of profiles; interval arithmetic is not required for the leading profiles, and is recorded only as a strengthening. Conditions \ref{B1}--\ref{B3} are the genuine remaining analysis of Method~II: a linear degenerate parabolic problem in the annulus with a spectral-gap statement, followed by a {W}hitney extension. This is substantially shorter than the pulse iteration of Assumption~\ref{ass:pulses}, which is the reason for including Method~II in the same paper.
+\end{remark}
+
+\subsection{Computer-assisted protocol}
+\label{sec:CAP}
+
+We record the protocol that a later version of this draft will execute, so that the logical status of \ref{B4} is unambiguous.
+
+\begin{construction}[Interval protocol]
+\label{con:interval}
+\begin{enumerate}[leftmargin=1.2em]
+\item Restrict $(E,U)$ to a finite {C}hebyshev grid on the compact rectangle $[X_{\min},X_{\max}]\times[-\eta_c,\eta_c]$ with $X_{\min}>0$, and represent them as {C}hebyshev interpolants with interval coefficients.
+\item Bound $\mathcal P(E,U,V_0,\Pi)$ in the interval sense, obtaining $\|\mathcal P\|\le \varepsilon_{\mathrm{grid}}$.
+\item Control the tails $X<X_{\min}$ by the analytic axis expansion of Appendix~\ref{app:axis}, and the tails $X>X_{\max}$ by the heat-exterior expansion of Appendix~\ref{app:moments}.
+\item Choose $h$ and the rectangle so that $\varepsilon_{\mathrm{grid}}$ is smaller than the spectral gap of $\mathcal L_{\app}$, whence a {N}ewton corrector converges in a {B}all of radius $O(\varepsilon_{\mathrm{grid}})$ in a suitable {H}{\"o}lder space.
+\end{enumerate}
+\end{construction}
+
+No numerical claim is made in the present draft. Existence of profiles is analytic (Proposition~\ref{prop:profiles}); the protocol is a verification layer.
+
+\subsection{Conclusion of Method~II}
+
+\begin{proposition}[Pre-localised Method~II field]
+\label{prop:prelocal-II}
+Grant Assumption~\ref{ass:profile-control}. Set $u^{\mathrm{II},\#}:=u_{\app}+u_{\rem}$. Then $u^{\mathrm{II},\#}$ is smooth and divergence-free on $\R^3\times[0,1)$, blows up in $L^\infty$ by~\eqref{eq:blowup-ring} and \ref{B1}, has bounded energy by the same volume computation as in Proposition~\ref{prop:scales}, and has a residual that extends to a function in $\Ccinf(\R^3\times(0,1];\R^3)$ by Lemma~\ref{lem:smooth-ext} and \ref{B2}.
+\end{proposition}
+
+\begin{proof}[Proof of Theorem~\ref{thm:methodII}]
+Apply the spatial cutoff and rest turn-on of Lemmas~\ref{lem:cutoff-space}--\ref{lem:turnon}, which did not use any oscillatory structure, to $u^{\mathrm{II},\#}$. Then apply Lemmas~\ref{lem:residual-criterion}, \ref{lem:energy}, \ref{lem:rescale}, and Corollary~\ref{cor:torus}.
+\end{proof}
+
+\begin{remark}[Why the force is still essential]
+If one attempts to take $u_{\rem}$ so as to cancel the residual \emph{completely}, one is solving the unforced {N}avier--{S}tokes equations in the annulus, with boundary data prescribed by the core and the exterior. That problem is over-determined at the level of smoothness through $t=1$: the annular residual of a self-similar viscous vortex with the present exponents does not vanish. Method~II uses the {C}lay-permitted force as the obstruction class. Removing the force would require a different inner exponent, or a different topology of the vortex, and is exactly alternative (A).
+\end{remark}
