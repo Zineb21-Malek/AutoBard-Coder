@@ -1,0 +1,125 @@
+\section{Introduction}
+\label{sec:intro}
+
+The incompressible {N}avier--{S}tokes equations on $\R^3$ read
+\begin{equation}
+\label{eq:NS}
+\partial_t u+(u\cdot\nabla)u-\nu\Delta u+\nabla p=f,
+\qquad
+\nabla\cdot u=0,
+\end{equation}
+with kinematic viscosity $\nu>0$, velocity $u(x,t)\in\R^3$, pressure $p(x,t)\in\R$, and an external force $f(x,t)\in\R^3$. They are the continuum expression of {N}ewton's second law for a homogeneous {N}ewtonian fluid of constant density, which we normalise to one. The nonlinear term $(u\cdot\nabla)u$ records that fluid parcels carry their own velocity; the {L}aplacian records viscous smoothing of shear; the pressure is a {L}agrange multiplier enforcing incompressibility.
+
+Whether a smooth solution of~\eqref{eq:NS} can lose regularity in finite time is one of the central questions of mathematical hydrodynamics. {L}eray~\cite{leray1934} constructed global weak solutions of finite energy. Smoothness of solutions issuing from smooth data was left open, and was placed among the {C}lay {M}illennium {P}rize problems by {F}efferman~\cite{fefferman2000}. The official statement offers four alternatives. Alternatives (A) and (B) assert global smoothness for the \emph{unforced} Cauchy problem on $\R^3$ and on the torus $\T^3=\R^3/\Z^3$ respectively. Alternatives (C) and (D) assert the existence of some smooth, rapidly decaying (or periodic) initial datum and force for which no global smooth solution of uniformly bounded kinetic energy exists. A proof of either (C) or (D) therefore settles the prize problem as it was posed. It does \emph{not} decide the unforced regularity question.
+
+On 8 September 2026, {O}pen{AI} announced an analytical construction, with a {L}ean formalisation, of finite-time $L^\infty$ blowup for~\eqref{eq:NS} with a force in $\Ccinf(\R^3\times(0,\infty);\R^3)$ and rest initial data~\cite{openai2026ns,openai2026blog}. The velocity remains compactly supported, the kinetic energy stays uniformly bounded, and
+\[
+\limsup_{t\uparrow 1}\|u(t)\|_{L^\infty}=\infty.
+\]
+This is precisely alternative (C); compact support yields (D) by periodisation. In the same week, {A}lp{\"o}ge and {B}uckmaster constructed finite-time blowup for \emph{forced} {E}uler~\cite{alpoegbuckmaster2026}, and {O}pen{AI} separately constructed blowup for \emph{unforced} {E}uler from smooth compactly supported data~\cite{openai2026euler}. The unforced viscous problem---alternatives (A) and (B)---remains open.
+
+The present paper takes the \emph{same model} as~\cite{openai2026ns}: a slender collapsing vortex, forced by a smooth compactly supported body force, starting from rest, with bounded energy and unbounded speed. We prove the same theorem twice.
+
+\subsection{The physical mechanism}
+\label{sec:intro-physics}
+
+The singularity is placed at the spatial origin at time $t=1$. Write $\tau=1-t$ for the time remaining. The leading flow is axisymmetric about the vertical axis. In cylindrical coordinates $(r,\theta,z)$ the inner core combines an inward spiral with axial outflow on opposite sides of a slightly tilted dividing layer near $z=0$. Angular momentum conservation on inward trajectories increases the swirl; incompressibility converts the incoming mass into axial escape, so that fluid does not accumulate on the axis. Viscosity transports angular momentum outward, and the increasing characteristic speed of the core is the balance between inward advection and viscous loss.
+
+The core is not isotropic. Its radial width shrinks faster than its height. With a small geometric parameter $0<h<1/100$ one has
+\begin{equation}
+\label{eq:intro-scales}
+\ell_r\asymp\tau^{1/2},
+\qquad
+\ell_z\asymp\tau^{1/2-h},
+\qquad
+|u_\theta|,\,|u_z|\asymp\tau^{-1/2-h},
+\qquad
+|u_r|=O(\tau^{-1/2}).
+\end{equation}
+Both lengths tend to zero, while $\ell_r/\ell_z\asymp\tau^h\to 0$: the core becomes an increasingly slender column. The kinetic energy of the core is of order $\tau^{1/2-3h}$ and therefore tends to zero, which is why unbounded speed is compatible with a uniform $L^2$ bound. The angular {R}eynolds number based on $\ell_r$ diverges like $\tau^{-h}$; the radial {R}eynolds number remains of order one, so that viscosity continues to compete with radial inflow.
+
+For an arbitrary smooth pair $(u,p)$ one may \emph{define} $f$ to be the momentum residual of~\eqref{eq:NS}. The equations then hold by construction. The analytical difficulty is to choose a blowing-up flow for which this residual, together with all of its space-time derivatives, extends smoothly through the singular time. Individual terms in the residual diverge; their sum must not. The background vortex, matched to a smooth decaying exterior, leaves an unbalanced residual in an annular transition region. That residual becomes unbounded as $\tau\downarrow 0$, and cannot itself serve as the {C}lay-admissible force. The two methods of this paper differ in how they remove it.
+
+\subsection{Two methods}
+\label{sec:intro-methods}
+
+\paragraph{Method~I: oscillatory residual-stress realisation.}
+We follow the lineage of oscillatory amplification developed by {C}{\'o}rdoba and {M}art{\'i}nez-{Z}oroa~\cite{cmz2023,cmz2024ipm,cmzzheng}, of exact finite-amplitude waves on affine backgrounds~\cite{craikcriminale1986}, of geometric optics for incompressible flow~\cite{lifschitz1991,friedlandervishik1991}, and of the use of oscillations to realise a prescribed stress~\cite{daneriszekelyhidi2017}. The same philosophy underlies~\cite{openai2026ns} and, in the inviscid forced setting,~\cite{alpoegbuckmaster2026}. Concretely: the annular residual of the background is represented, up to a remainder vanishing to every order at the singular point, as the divergence of a stress tensor $T_{\mathrm{ann}}$ taking values in an admissible cone. Two families of oscillatory ring pulses, seeded by an exponentially small force and amplified by the background shear, produce a phase-averaged {R}eynolds stress that realises $T_{\mathrm{ann}}$ to leading order. Further correctors remove the remaining singular error. After spatial cutoff and a smooth turn-on from rest, the residual is a force in $\Ccinf(\R^3\times(0,\infty);\R^3)$.
+
+\paragraph{Method~II: certified similarity dynamics.}
+We recast the \emph{same} inner core as a dynamical system in anisotropic similarity variables, in the spirit of the self-similar programme of {C}hen--{H}ou~\cite{chenhou2022} and of the physics-informed, interval-certified profile of {A}nandkumar, {G}aneshram and {D}uruisseaux~\cite{anandkumar2026}, and with a view toward the unstable-vortex analysis of {A}lbritton, {B}ru{\'e} and {C}olombo~\cite{abc2022}. The force is not manufactured by oscillations. It is defined as the residual of an approximate self-similar field plus a compactly supported corrector that restores smoothness through $t=1$. The $L^\infty$ blowup is then a statement about the profile, not about a high-frequency cascade. In the present draft the profile is constructed analytically near the axis and at infinity, and the residual is controlled in the inner region by matched asymptotics. A later version will add interval-arithmetic certificates on a compact set of similarity coordinates.
+
+The two methods are not two theorems about two flows. After subtracting a smooth compactly supported force they produce leading cores with the same exponents~\eqref{eq:intro-scales}. That comparison is recorded in Section~\ref{sec:comparison}.
+
+\subsection{What is proved in this draft, and what is not}
+\label{sec:intro-status}
+
+We prove completely:
+\begin{itemize}[leftmargin=1.4em]
+\item the residual criterion reducing {C}lay (C) to a smooth extension of $\Rmom{u}{p}$ through $t=1$ together with an $L^\infty$ lower bound (Lemma~\ref{lem:residual-criterion});
+\item the energy bound for a compactly supported smooth force
+(Lemma~\ref{lem:energy});
+\item viscosity rescaling from $\nu=1$ to every $\nu>0$ (Lemma~\ref{lem:rescale});
+\item periodisation from compact support on $\R^3$ to $\T^3$ (Corollary~\ref{cor:torus});
+\item the geometry of the anisotropic similarity coordinates and all scaling identities of the inner model (Section~\ref{sec:model});
+\item existence of leading profiles with the required axis regularity, far-field decay, and a strictly positive swirl on a ring that collapses to the origin (Section~\ref{sec:profiles});
+\item the exact heat exterior and the structure of the annular residual (Section~\ref{sec:background});
+\item localisation from rest initial data (Section~\ref{sec:cutoff}).
+\end{itemize}
+We record as a complete scheme, with every algebraic identity written out and with the remaining analytic estimates isolated as Assumptions~\ref{ass:pulses} and~\ref{ass:profile-control}:
+\begin{itemize}[leftmargin=1.4em]
+\item the pulse families, their mean-stress identities, and the iterative residual improvement of Method~I;
+\item the similarity-variable residual of Method~II.
+\end{itemize}
+Those two assumptions are the content of the high-order analysis in~\cite{openai2026ns} and of a forthcoming computer-assisted companion. The logical reduction is arranged so that, once either assumption is granted, the corresponding main theorem is unconditional. In particular this draft already yields:
+
+\begin{theorem}[Conditional {C}lay (C)]
+\label{thm:conditional}
+Assume either Assumption~\ref{ass:pulses} or Assumption~\ref{ass:profile-control}. Then for every $\nu>0$ there exist a force $f\in\Ccinf(\R^3\times(0,\infty);\R^3)$, a compact set $K\subset\R^3$, and smooth fields $u,p$ on $\R^3\times[0,1)$ satisfying~\eqref{eq:NS} together with $u(\cdot,0)=0$,
+\[
+\supp u(\cdot,t)\cup\supp p(\cdot,t)\subset K
+\quad\text{for all }0\le t<1,
+\]
+\[
+\sup_{0\le t<1}\|u(t)\|_{L^2(\R^3)}<\infty,
+\qquad
+\limsup_{t\uparrow 1}\|u(t)\|_{L^\infty(\R^3)}=\infty.
+\]
+Consequently there is no smooth solution on $\R^3\times[0,\infty)$ with the same data and uniformly bounded kinetic energy. Compact support yields the corresponding statement on $\T^3$.
+\end{theorem}
+
+The unforced problem is not treated. A vanishing-viscosity limit inside the present ansatz is not available: the radial {R}eynolds number is of order one, so viscosity is part of the leading inner balance.
+
+\subsection{Related work}
+\label{sec:intro-related}
+
+Partial regularity of suitable weak solutions is due to {C}affarelli, {K}ohn and {N}irenberg~\cite{ckn1982}. Scale-invariant regularity criteria of {P}rodi--{S}errin type, and the endpoint $L^\infty_t L^3_x$ theorem of {E}scauriaza, {S}eregin and {\v{S}}ver{\'a}k~\cite{ess2003}, control the unforced problem under additional integrability. {T}ao constructed finite-time blowup for an averaged {N}avier--{S}tokes equation that retains the energy cancellation of the genuine nonlinearity~\cite{tao2016}. {B}uckmaster and {V}icol obtained nonuniqueness of finite-energy weak solutions by convex integration~\cite{buckmastervicol2019}. {A}lbritton, {B}ru{\'e} and {C}olombo constructed distinct suitable {L}eray--{H}opf solutions from rest with a force in $L^1_t L^2_x$, singular at the initial time, using an unstable vortex in similarity variables~\cite{abc2022}. The force in~\cite{abc2022} is not {C}lay-admissible; upgrading that force to $\Cinf$ while keeping a genuine blowup is one way of reading Method~II.
+
+On the {E}uler side, {B}eale--{K}ato--{M}ajda~\cite{bkm1984} characterises breakdown by non-integrability of $\|\curl u\|_\infty$. {E}lgindi proved finite-time blowup for axisymmetric velocities without swirl at $C^{1,\alpha}$ regularity~\cite{elgindi2021}. {C}hen and {H}ou established a stable nearly self-similar blowup for $3$D {E}uler with a boundary~\cite{chenhou2022}. The 2026 results~\cite{openai2026euler,alpoegbuckmaster2026,anandkumar2026} sit on these two axes---iterative high-frequency amplification, and self-similar profiles---which we deliberately keep together in a single viscous paper.
+
+\subsection{Organisation}
+\label{sec:intro-org}
+
+Section~\ref{sec:setup} fixes notation, records the residual criterion, the energy identity, viscosity rescaling, and periodisation. Section~\ref{sec:model} introduces the common inner model and proves all scaling lemmas. Section~\ref{sec:methodI} carries out Method~I. Section~\ref{sec:methodII} carries out Method~II. Section~\ref{sec:comparison} compares the two leading cores. Section~\ref{sec:remarks} collects remarks on {E}uler, viscosity, and open problems. The appendices treat radial-moment matching, axis regularity, and the admissible stress cone.
+
+\begin{figure}[t]
+\centering
+\begin{tikzpicture}[
+  font=\small,
+  box/.style={draw, rounded corners=2pt, align=center, inner sep=6pt, fill=gray!6},
+  arr/.style={-{Latex}, thick}
+]
+\node[box] (model) {Common inner model\\[-1pt]{\scriptsize Section~\ref{sec:model}}};
+\node[box, below left=1.1cm and 0.2cm of model] (I) {Method I\\[-1pt]{\scriptsize oscillations, Section~\ref{sec:methodI}}};
+\node[box, below right=1.1cm and 0.2cm of model] (II) {Method II\\[-1pt]{\scriptsize similarity, Section~\ref{sec:methodII}}};
+\node[box, below=2.6cm of model] (cmp) {Comparison of leading cores\\[-1pt]{\scriptsize Section~\ref{sec:comparison}}};
+\node[box, below=1.1cm of cmp] (clay) {Clay (C) and (D)};
+\draw[arr] (model) -- (I);
+\draw[arr] (model) -- (II);
+\draw[arr] (I) -- (cmp);
+\draw[arr] (II) -- (cmp);
+\draw[arr] (cmp) -- (clay);
+\end{tikzpicture}
+\caption{Logical dependence. Both proofs start from the same inner vortex. Either method, once its remaining analytic assumption is granted, yields alternatives (C) and (D).}
+\label{fig:logic}
+\end{figure}

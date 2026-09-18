@@ -1,0 +1,352 @@
+\section{The common inner model}
+\label{sec:model}
+
+From here until the end of Section~\ref{sec:methodII} we work at viscosity $\nu=1$. General $\nu$ is restored by Lemma~\ref{lem:rescale}.
+
+\subsection{Cylindrical geometry and the concentration parameter}
+\label{sec:sim-coords}
+
+Place the singularity at $(x,t)=(0,1)$. Write $\tau:=1-t>0$ for $t<1$. Fix a geometric exponent
+\begin{equation}
+\label{eq:h}
+0<h<\frac1{100},
+\qquad
+A:=\frac12+h,
+\qquad
+D:=\frac12-h.
+\end{equation}
+The smallness of $h$ will be used only to guarantee that several polynomial inequalities among exponents are strict; any sufficiently small positive $h$ works, and we do not optimise it.
+
+\begin{definition}[Similarity coordinates]
+\label{def:sim}
+For $q>0$ and $\eta\in(-1,1)$ set
+\begin{equation}
+\label{eq:sim}
+\tau=q\bigl(1-\eta^2\bigr),
+\qquad
+z=q^{D}\eta,
+\qquad
+X=\frac{r^2}{2q}.
+\end{equation}
+\end{definition}
+
+\begin{lemma}[Inversion of $(q,\eta)$]
+\label{lem:invert}
+For every $\tau>0$ and $z\in\R$ there exists a unique $q=q(z,\tau)>0$ such that $\tau=q(1-\eta^2)$ and $z=q^D\eta$ for some $\eta\in(-1,1)$. One has
+\begin{equation}
+\label{eq:q-size}
+q\asymp \tau+|z|^{1/D},
+\end{equation}
+with implied constants depending only on $h$. On any region $|\eta|\le\eta_c<1$ one has $q\asymp\tau$. The endpoints $\eta\to\pm 1$ with $q$ bounded below by a positive constant describe the time $t=1$ away from the origin.
+\end{lemma}
+
+\begin{proof}
+Eliminating $\eta$ yields the scalar equation $\Phi(q):=q-z^2 q^{-2h}=\tau$, because $1-\eta^2=1-z^2 q^{-2D}$ and $2D=1-2h$, so $q\cdot z^2 q^{-2D}=z^2 q^{1-2D}=z^2 q^{2h}$. Differentiating,
+\[
+\Phi'(q)=1+2h\,z^2 q^{-2h-1}=1-2h\eta^2\ \ge\ 1-2h>0
+\]
+on $|\eta|<1$. Thus $\Phi$ is strictly increasing from $\Phi(0^+)=-\infty$ (if $z\neq 0$) or $0$ (if $z=0$) to $+\infty$, and there is a unique root $q>0$. The comparison~\eqref{eq:q-size} follows by checking the two regimes $|z|^{1/D}\ll\tau$ (then $\eta$ is small and $q\sim\tau$) and $|z|^{1/D}\gg\tau$ (then $1-\eta^2$ is small and $q\sim|z|^{1/D}$). If $|\eta|\le\eta_c<1$ then $1-\eta^2\ge 1-\eta_c^2>0$, hence $q=\tau/(1-\eta^2)\asymp\tau$.
+\end{proof}
+
+The coordinate $X$ is a parabolic radial similarity variable: $X$ bounded means $r=O(q^{1/2})$. Sending $q\downarrow 0$ at bounded $(X,\eta)$ approaches the singular point.
+
+\subsection{Leading-order ansatz}
+\label{sec:ansatz}
+
+\begin{construction}[Leading field]
+\label{con:leading}
+Let $E,U,\Pi$ be scalar profiles, to be chosen in Section~\ref{sec:profiles}, depending on $(X,\eta)$. Define cylindrical components of a leading velocity $u^{(0)}$ and a leading pressure $p^{(0)}$ by
+\begin{equation}
+\label{eq:leading}
+\begin{aligned}
+u^{(0)}_\theta &= q^{-A} E(X,\eta),\\
+u^{(0)}_z &= q^{-A} U(X,\eta),\\
+r\, u^{(0)}_r &= V_0(X,\eta),\\
+p^{(0)} &= q^{-2A}\Pi(X,\eta).
+\end{aligned}
+\end{equation}
+The radial profile $V_0$ is not independent: it is recovered from incompressibility and regularity on the axis.
+\end{construction}
+
+\begin{lemma}[Incompressibility determines $V_0$]
+\label{lem:V0}
+Assume $U$ is smooth in $(X,\eta)$ on a neighbourhood of $\{X=0\}\times[-1,1]$ and $U$ is even in a sense compatible with~\eqref{eq:sim}. The condition
+\[
+\frac1r\partial_r\bigl(r u^{(0)}_r\bigr)+\partial_z u^{(0)}_z=0,
+\qquad
+V_0(0,\eta)=0,
+\]
+is equivalent to a linear first-order ODE in $X$ for $V_0(\cdot,\eta)$, with smooth coefficients. In particular $V_0/X$ extends smoothly to $X=0$.
+\end{lemma}
+
+\begin{proof}
+Since $r^2=2qX$ one has $\partial_r= (r/q)\partial_X$. Also $u^{(0)}_z=q^{-A}U$, and $q=q(z,\tau)$ depends on $z$. Expanding $\partial_z u^{(0)}_z$ in $(X,\eta,q)$ produces
+\[
+\partial_z u^{(0)}_z
+= q^{-A}\bigl( \partial_z\log(q^{-A})\, U + \partial_z X\cdot\partial_X U + \partial_z\eta\cdot\partial_\eta U\bigr).
+\]
+The logarithmic derivative is $O(q^{-A-D})$ because $\partial_z q = O(q^{1-D})$ on compact $\eta$-sets by Lemma~\ref{lem:invert}. The incompressibility identity then becomes
+\[
+\frac1{qX}\partial_X V_0 + q^{-A} \mathcal D_{z} U=0,
+\]
+where $\mathcal D_z$ is a first-order operator in $(X,\eta)$ with smooth coefficients on $|\eta|\le\eta_c$, $X\ge 0$. Multiplying through by $qX$ yields an ODE $\partial_X V_0 = -q^{1-A} X \mathcal D_z U$. But $1-A=D=\tfrac12-h$ and $q^{D}$ times the $z$-derivatives hidden in $\mathcal D_z$ is of order one in similarity variables. Thus the right-hand side is of the form $X$ times a smooth function of $(X,\eta)$, and the unique solution with $V_0(0,\eta)=0$ satisfies $V_0=X\cdot(\text{smooth})$.
+\end{proof}
+
+The precise coefficients are recorded in Appendix~\ref{app:axis}. What matters here is the scaling: $u^{(0)}_r=V_0/r$ is $O(q^{-1/2})$ on bounded $X$, because $V_0=O(X)=O(1)$ and $r\asymp q^{1/2}$.
+
+\subsection{Axis regularity and centripetal balance}
+
+A smooth Cartesian vector field that is axisymmetric with swirl must have $u_\theta=0$ on the axis, and $u_\theta/r$, $u_r/r$, $u_z$ smooth as functions of $(r^2,z)$. In similarity variables this is the requirement that
+\[
+\frac{E}{\sqrt{2X}},\qquad
+\frac{V_0}{X},\qquad
+U
+\]
+extend smoothly to $X=0$.
+
+The leading radial momentum balance is centripetal:
+\begin{equation}
+\label{eq:centrip}
+\partial_r p^{(0)}=\frac{\bigl(u^{(0)}_\theta\bigr)^2}{r}.
+\end{equation}
+Substituting~\eqref{eq:leading} and integrating from $X$ to $+\infty$ (normalising $\Pi\to 0$ at radial infinity) gives
+\begin{equation}
+\label{eq:Pi}
+\Pi(X,\eta)=-\int_X^\infty \frac{E(x,\eta)^2}{2x}\,dx,
+\end{equation}
+provided the integral converges. This will be arranged by the far-field condition $E\sim c_\infty X^{-1/2-h}$ in Construction~\ref{con:profiles}.
+
+\subsection{The inner core, the annulus, and the exterior}
+\label{sec:regions}
+
+\begin{definition}[Regions]
+\label{def:core}
+Fix $0<X_c<X_a<X_b<\infty$ and $0<\eta_c<1$. At time $\tau=1-t>0$ define
+\begin{align*}
+\mathcal C_\tau
+&:=\cset{x}{0\le X(r,z,\tau)\le X_c,\ |\eta(z,\tau)|\le\eta_c},\\
+\mathcal A_\tau
+&:=\cset{x}{X_a\le X(r,z,\tau)\le X_b,\ |\eta(z,\tau)|\le\eta_c},\\
+\mathcal E_\tau
+&:=\cset{x}{X(r,z,\tau)\ge X_b}.
+\end{align*}
+We call $\mathcal C_\tau$ the \emph{core}, $\mathcal A_\tau$ the \emph{annulus}, and $\mathcal E_\tau$ the \emph{exterior}. The constants $X_c,X_a,X_b,\eta_c$ will be chosen in Section~\ref{sec:profiles} so that the inner profile identities hold throughout $\mathcal C_\tau$ and the heat exterior of Section~\ref{sec:heat} holds throughout $\mathcal E_\tau$.
+\end{definition}
+
+\begin{figure}[t]
+\centering
+\begin{tikzpicture}[scale=1.05, font=\small]
+\draw[-{Latex}] (-3.4,0) -- (3.4,0) node[right] {$r/\sqrt{\tau}$};
+\draw[-{Latex}] (0,-2.3) -- (0,2.3) node[above] {$z/\tau^{D}$};
+\fill[gray!12] (-1.15,-1.35) rectangle (1.15,1.35);
+\draw[thick] (-1.15,-1.35) rectangle (1.15,1.35);
+\node at (0,0.15) {core};
+\fill[orange!15] (1.15,-1.35) rectangle (2.15,1.35);
+\fill[orange!15] (-2.15,-1.35) rectangle (-1.15,1.35);
+\draw (1.15,-1.35) rectangle (2.15,1.35);
+\draw (-2.15,-1.35) rectangle (-1.15,1.35);
+\node[font=\scriptsize] at (1.65,0) {ann.};
+\node[font=\scriptsize] at (-1.65,0) {ann.};
+\draw[dashed] (2.15,-2) -- (2.15,2);
+\draw[dashed] (-2.15,-2) -- (-2.15,2);
+\node[font=\scriptsize] at (2.7,1.7) {heat exterior};
+\node[font=\scriptsize] at (-2.7,1.7) {heat exterior};
+\end{tikzpicture}
+\caption{Radial regions at fixed time, in similarity units. The core occupies a fixed rectangle in $(r/\sqrt{\tau},\,z/\tau^D)$. The annulus is a transition ring. Beyond a fixed similarity radius the flow is the heat exterior of Section~\ref{sec:heat}.}
+\label{fig:regions}
+\end{figure}
+
+\begin{lemma}[Core geometry]
+\label{lem:core-geom}
+On $\mathcal C_\tau$ one has $q\asymp\tau$ and
+\begin{equation}
+\label{eq:ell}
+\ell_r(\tau):=\sup_{x\in\mathcal C_\tau} r \asymp \tau^{1/2},
+\qquad
+\ell_z(\tau):=\sup_{x\in\mathcal C_\tau}|z| \asymp \tau^{D}=\tau^{1/2-h}.
+\end{equation}
+In particular $\ell_r/\ell_z\asymp\tau^{h}\to 0$, and the volume of $\mathcal C_\tau$ is $O(\tau^{3/2-h})$.
+\end{lemma}
+
+\begin{proof}
+Lemma~\ref{lem:invert} gives $q\asymp\tau$ on $|\eta|\le\eta_c$. Then $r=\sqrt{2qX}\le \sqrt{2q X_c}\asymp\tau^{1/2}$ and $|z|=q^D|\eta|\le q^D\eta_c\asymp\tau^D$. Volume in cylindrical coordinates is of order $\ell_r^2\ell_z\asymp \tau\cdot\tau^{1/2-h}=\tau^{3/2-h}$.
+\end{proof}
+
+\subsection{Scaling of the leading field}
+\label{sec:scaling}
+
+\begin{proposition}[Leading-order scales]
+\label{prop:scales}
+Assume the profiles satisfy the bounds
+\begin{equation}
+\label{eq:profile-bounds}
+\begin{aligned}
+c^{-1} &\le E(X,\eta) \le c &&\text{on }[\delta,X_c]\times[-\eta_c,\eta_c],\\
+|U(X,\eta)| &\le c, && |V_0(X,\eta)|\le cX,\\
+|E(X,\eta)| &\le C X^{1/2} &&\text{near }X=0,
+\end{aligned}
+\end{equation}
+for some $c,C,\delta>0$, and $E(X_*,0)>0$ for some $X_*\in(0,X_c)$. Then, writing $u^{(0)}$ as in Construction~\ref{con:leading},
+\begin{align}
+\|u^{(0)}_\theta\|_{L^\infty(\mathcal C_\tau)}
+&\asymp \tau^{-A}=\tau^{-1/2-h},
+\label{eq:uth-scale}\\
+\|u^{(0)}_z\|_{L^\infty(\mathcal C_\tau)}
+&\le C\tau^{-A},
+\label{eq:uz-scale}\\
+\|u^{(0)}_r\|_{L^\infty(\mathcal C_\tau)}
+&= O\bigl(\tau^{-1/2}\bigr),
+\label{eq:ur-scale}\\
+\|u^{(0)}\|_{L^2(\mathcal C_\tau)}^2
+&= O\bigl(\tau^{1/2-3h}\bigr).
+\label{eq:energy-core}
+\end{align}
+Moreover, on the ring $z=0$, $r=\sqrt{2X_*\tau}$,
+\begin{equation}
+\label{eq:blowup-ring}
+u^{(0)}_\theta = E(X_*,0)\,\tau^{-1/2-h}\ \longrightarrow\ +\infty
+\qquad(\tau\downarrow 0).
+\end{equation}
+If in addition $\inf_{\mathcal C_\tau}|U(\cdot)|$ is bounded below by a positive constant on a set of uniformly positive similarity measure (as arranged by the axial bias of Construction~\ref{con:profiles}), then $\|u^{(0)}_z\|_{L^\infty(\mathcal C_\tau)}\asymp\tau^{-A}$ as well.
+\end{proposition}
+
+\begin{proof}
+On $\mathcal C_\tau$ one has $q\asymp\tau$, so $q^{-A}\asymp\tau^{-A}$. The bound~\eqref{eq:uth-scale} follows from the assumed positive lower bound on $E$ away from the axis and the upper bound on $E$. The ring identity~\eqref{eq:blowup-ring} is $q=\tau$, $\eta=0$, $X=X_*$. Next, $u^{(0)}_r=V_0/r$ and $r\gtrsim \tau^{1/2}$ would be the wrong lower bound near the axis; near the axis $V_0=O(X)=O(r^2/q)$ so $u^{(0)}_r=O(r/q)=O(\tau^{-1/2})$ because $r=O(\tau^{1/2})$ on the core. This is~\eqref{eq:ur-scale}. For the energy,
+\[
+\int_{\mathcal C_\tau}|u^{(0)}|^2
+\lesssim
+\bigl(\tau^{-2A}+\tau^{-1}\bigr)\cdot \mathrm{Vol}(\mathcal C_\tau)
+\lesssim
+\tau^{-1-2h}\cdot\tau^{3/2-h}
+=\tau^{1/2-3h},
+\]
+where $\tau^{-2A}=\tau^{-1-2h}$ dominates $\tau^{-1}$. Since $h<1/100$, the exponent $1/2-3h$ is positive, so the core energy tends to zero.
+\end{proof}
+
+\begin{corollary}[$L^\infty$ blowup of the leading field]
+\label{cor:leading-blowup}
+Under the hypotheses of Proposition~\ref{prop:scales},
+\[
+\limsup_{\tau\downarrow 0}\|u^{(0)}(\cdot,1-\tau)\|_{L^\infty(\R^3)}=\infty.
+\]
+\end{corollary}
+
+This is the only $L^\infty$ lower bound we will ever need. Correctors in both methods will be of strictly smaller order in the core, so they cannot cancel~\eqref{eq:blowup-ring}.
+
+\subsection{Reynolds numbers and the inner balance}
+\label{sec:reynolds}
+
+For a characteristic speed $U$ and length $\ell$, the {R}eynolds number $U\ell/\nu$ at $\nu=1$ compares the viscous time $\ell^2$ with the inertial time $\ell/U$.
+
+\begin{lemma}[{R}eynolds numbers]
+\label{lem:reynolds}
+On the core, with length $\ell_r\asymp\tau^{1/2}$,
+\begin{equation}
+\label{eq:Re}
+\Ree_\theta
+:=\frac{\|u^{(0)}_\theta\|_{L^\infty(\mathcal C_\tau)}\,\ell_r}{1}
+\asymp \tau^{-h}\ \longrightarrow\ \infty,
+\qquad
+\Ree_r
+:=\frac{\|u^{(0)}_r\|_{L^\infty(\mathcal C_\tau)}\,\ell_r}{1}
+=O(1).
+\end{equation}
+The corresponding rates of radial transport, axial transport, and radial diffusion are all of order $\tau^{-1}$:
+\begin{equation}
+\label{eq:rates}
+\frac{|u^{(0)}_r|}{\ell_r}=O(\tau^{-1}),
+\qquad
+\frac{|u^{(0)}_z|}{\ell_z}\asymp\tau^{-1},
+\qquad
+\frac{1}{\ell_r^2}\asymp\tau^{-1}.
+\end{equation}
+Axial diffusion is smaller by the factor $\ell_r^2/\ell_z^2\asymp\tau^{2h}$.
+\end{lemma}
+
+\begin{proof}
+Combine Proposition~\ref{prop:scales} and Lemma~\ref{lem:core-geom}. The ratio of axial to radial diffusion is $\ell_r^2/\ell_z^2\asymp \tau/\tau^{1-2h}=\tau^{2h}$.
+\end{proof}
+
+\begin{remark}[The expansion parameter]
+\label{rem:q2h}
+Lemma~\ref{lem:reynolds} identifies $q^{2h}$ (equivalently $\tau^{2h}$) as the small parameter measuring the weakness of axial diffusion relative to the leading inner balance. Background correctors in Method~I are constructed as an expansion in this parameter. Viscosity cannot be removed: $\Ree_r=O(1)$ means that radial diffusion sits in the leading-order profile equation, not in a remainder.
+\end{remark}
+
+\subsection{The heat exterior}
+\label{sec:heat}
+
+Beyond the annulus we take a purely azimuthal flow, independent of height, solving the radial heat equation exactly. Then its momentum residual vanishes, and no force is required to sustain it.
+
+\begin{proposition}[Heat exterior]
+\label{prop:heat}
+Let $\Gamma(r,t)$ be a smooth radial function, even in $r$ in the sense of depending on $r^2$, and set
+\[
+u^{\heat}(x,t)=\Gamma(r,t)\,e_\theta,
+\qquad
+p^{\heat}(x,t)=\int_{\infty}^{r}\frac{\Gamma(\rho,t)^2}{\rho}\,d\rho.
+\]
+If $\partial_t\Gamma=\bigl(\partial_{rr}+\tfrac1r\partial_r-\tfrac1{r^2}\bigr)\Gamma$, then $\nabla\cdot u^{\heat}=0$ and $\Rmom{u^{\heat}}{p^{\heat}}=0$. Moreover, if $\Gamma(\cdot,t)$ is the restriction of a {B}iot--{S}avart / heat evolution of a compactly supported odd-in-a-Cartesian-sense swirl, then $u^{\heat}$ and $p^{\heat}$ extend smoothly to the axis.
+\end{proposition}
+
+\begin{proof}
+A purely azimuthal, $z$-independent, swirl-only field is automatically divergence-free away from the axis, and the axis condition follows from $\Gamma=O(r)$. The nonlinear term reduces to $-\frac{\Gamma^2}{r}e_r$, which is cancelled by $\nabla p^{\heat}$. The viscous operator on the azimuthal component of an axisymmetric field is precisely $\bigl(\partial_{rr}+\tfrac1r\partial_r-\tfrac1{r^2}\bigr)\Gamma$, and there is no $z$-dependence. Hence the residual vanishes.
+\end{proof}
+
+The matching of $u^{(0)}_\theta$ to $\Gamma$ through the annulus, at the level of radial moments, is carried out in Appendix~\ref{app:moments}. At every \emph{fixed} $r>0$ one has $q\gtrsim r^{2}$ as $\tau\downarrow 0$ only inside a shrinking neighbourhood of the axis; outside any ball $r\ge r_*>0$ the similarity coordinate $X$ tends to infinity and the exterior velocity has a smooth limit as $t\uparrow 1$. This is what permits a spatial cutoff.
+
+\subsection{Leading profiles}
+\label{sec:profiles}
+
+\begin{construction}[Admissible profiles]
+\label{con:profiles}
+We take profiles $E,U$ with the following properties, whose existence is proved in Appendix~\ref{app:axis}.
+\begin{enumerate}[label=\textup{(P\arabic*)}]
+\item \label{P1} $E/\sqrt{2X}$, $U$, and $V_0/X$ are smooth on $[0,\infty)\times[-1+\delta,1-\delta]$ for some $\delta>0$.
+\item \label{P2} $E(X,\eta)>0$ for $X>0$, while $E=0$ on $X=0$.
+\item \label{P3} Far-field: $E(X,\eta)=c_\infty X^{-1/2-h}\bigl(1+O(X^{-1})\bigr)$ as $X\to\infty$, uniformly in $\eta$ on compact subintervals of $(-1,1)$, with $c_\infty>0$. In the same regime $U=V_0=0$.
+\item \label{P4} Axial bias: $U(0,0)\neq 0$. (Exact $z$-reflection would force $U(\cdot,0)\equiv 0$ and would make rotational amplification and axial shear vanish on the same plane; a small upward bias separates these loci.)
+\item \label{P5} Inner balance: on $[0,X_c]\times[-\eta_c,\eta_c]$ the pair $(E,U)$ satisfies the leading axisymmetric tangential equations obtained by substituting~\eqref{eq:leading} into~\eqref{eq:NS} and retaining the order-$q^{-A-1}$ terms, up to an error $O(q^{-A-1+2h})$ coming from axial diffusion.
+\item \label{P6} Shear for pulses: on the annular interval $X\in[X_a,X_b]$ the radial derivative of angular velocity, together with the radial shear of $u_z$, satisfies the centrifugal-instability criterion of {L}eibovich--{S}tewartson type~\cite{leibovichstewartson1978,billantgallaire} by a definite margin, uniformly in $\eta\in[-\eta_c,\eta_c]$.
+\end{enumerate}
+\end{construction}
+
+\begin{proposition}[Existence of profiles]
+\label{prop:profiles}
+There exist $h\in(0,1/100)$, constants $X_c<X_a<X_b$, $\eta_c\in(0,1)$, and profiles $E,U$ satisfying \ref{P1}--\ref{P6}. The associated $\Pi$ is given by~\eqref{eq:Pi} and is smooth up to the axis.
+\end{proposition}
+
+The proof is a shooting argument for a degenerate elliptic system on the similarity rectangle, with analytic expansion at $X=0$ and prescribed decay at $X=\infty$. It is written in Appendix~\ref{app:axis}. The only qualitative choices are the sign of the swirl, the sign of the axial bias, and the smallness of $h$.
+
+\subsection{The background residual as an annular stress}
+
+Substituting the leading field into the momentum operator produces a residual that is small in the core (by \ref{P5}), that vanishes in the heat exterior (by Proposition~\ref{prop:heat}), and that concentrates in the annulus.
+
+\begin{proposition}[Structure of the leading residual]
+\label{prop:Tann}
+Let $u^{(0)},p^{(0)}$ be as above, and let $\chi_{\ann}(X,\eta)$ be a smooth cutoff that equals $1$ on $\mathcal A_\tau$ in similarity coordinates and vanishes in a neighbourhood of $\mathcal C_\tau\cup\mathcal E_\tau$. There exists a symmetric tensor $T^{(0)}_{\ann}(x,t)$, supported in the annular region, such that
+\begin{equation}
+\label{eq:Tann}
+\Rmom{u^{(0)}}{p^{(0)}}
+=-\divv T^{(0)}_{\ann}
++\mathcal E_{\infty}(x,t),
+\end{equation}
+where $\mathcal E_{\infty}$ vanishes to every order at $(x,t)=(0,1)$: for every multiindex $(\alpha,k)\in\N^3\times\N$,
+\[
+\partial_x^\alpha\partial_t^k \mathcal E_{\infty}(x,t)=o\bigl(\tau^N\bigr)
+\qquad(\tau\downarrow 0),
+\]
+uniformly for $x$ in any region $q\ge \tau$, and in fact $\mathcal E_{\infty}$ extends smoothly through $t=1$ after being set to $0$ at the origin at time $1$. Moreover $T^{(0)}_{\ann}$ takes values in the admissible cone $\mathcal K$ of Appendix~\ref{app:cone}, and
+\begin{equation}
+\label{eq:Tann-size}
+\bigl|T^{(0)}_{\ann}\bigr|
+\lesssim q^{-2A}
+=O\bigl(\tau^{-1-2h}\bigr)
+\qquad\text{on }\mathcal A_\tau.
+\end{equation}
+\end{proposition}
+
+\begin{proof}[Proof of the structural identity; size]
+In the core, \ref{P5} gives $\Rmom{u^{(0)}}{p^{(0)}}=O(q^{-A-1+2h})$. This error will be absorbed into background correctors of Method~I and into the profile remainder of Method~II; for the leading identity we subtract it into $\mathcal E_{\infty}$ after multiplying by a cutoff that localises it near the origin in similarity space, where every power of $q$ still vanishes in the $C^\infty$ sense after the extension through $t=1$ because $q^{N}\to 0$ faster than any derivative produces (derivatives cost at most $q^{-C}$ with $C$ depending on the multiindex but not on $N$). In the exterior the residual vanishes identically. The remaining support is annular. Any smooth compactly supported vector field $F$ with vanishing integral (which holds here by the divergence structure of all terms except the localised core error already removed) may be written $F=-\divv T$ for a symmetric compactly supported stress; this is the {B}ogovskii / {C}alder{\'o}n--{Z}ygmund construction in a thin annular region, recorded in Appendix~\ref{app:cone}. The size~\eqref{eq:Tann-size} is the size of $u^{(0)}\otimes u^{(0)}$ in the annulus, which is $q^{-2A}$.
+\end{proof}
+
+Equation~\eqref{eq:Tann} is the precise cancellation problem. Method~I realises $T^{(0)}_{\ann}$ as a mean {R}eynolds stress of oscillations. Method~II absorbs $-\divv T^{(0)}_{\ann}$ into the force after certifying that, once expressed in similarity variables and multiplied by a compact spatial cutoff, it extends smoothly. Both methods use the same $T^{(0)}_{\ann}$.

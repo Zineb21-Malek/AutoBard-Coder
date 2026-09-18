@@ -1,0 +1,51 @@
+\section{Comparison of the two constructions}
+\label{sec:comparison}
+
+We now assume both Assumption~\ref{ass:pulses} and Assumption~\ref{ass:profile-control}, and compare the two solutions after localisation. Write $(u^{\mathrm I},p^{\mathrm I},f^{\mathrm I})$ and $(u^{\mathrm{II}},p^{\mathrm{II}},f^{\mathrm{II}})$ for the outputs of Theorems~\ref{thm:methodI} and~\ref{thm:methodII} at viscosity $1$, with supports in a common ball.
+
+\subsection{Same leading vortex}
+
+On the core, Method~I gives
+\[
+u^{\mathrm I}=u^{(0)}+O\bigl(q^{-A+2h}\bigr)+w+v,
+\]
+with $w=0$ on $\mathcal C_\tau$ by \ref{A4} (pulses live in the annulus) and $v=O(q^{-A+2h})$ by the background expansion. Method~II gives
+\[
+u^{\mathrm{II}}=u^{(0)}+O\bigl(q^{-A+2h}\bigr)+u_{\rem},
+\]
+with $u_{\rem}=O(q^{-A+h})$ on $\mathcal C_\tau$ by \ref{B1}. Therefore
+\[
+q^{A}\bigl(u^{\mathrm I}-u^{\mathrm{II}}\bigr)
+=O(q^{h})\ \longrightarrow\ 0
+\qquad\text{in }L^\infty(\mathcal C_\tau).
+\]
+The pressures are recovered from the centripetal balance plus a corrector of lower order, and the same comparison holds after multiplication by $q^{2A}$. This is~\eqref{eq:comparison}, and proves Theorem~\ref{thm:comparison} except for the force $g$.
+
+\subsection{The two forces differ by a smooth compactly supported field}
+
+The two residuals $f^{\mathrm I}$ and $f^{\mathrm{II}}$ need not coincide. On the core both are super-smooth (Method~I by the background expansion, Method~II by $\mathcal R_q=O(q^{2h})$ plus the remainder). On the heat exterior both vanish after cutoff error which is smooth through $t=1$. The difference is supported in a slightly enlarged annulus and in the cutoff region $\{ \rho\le |x|\le 2\rho\}$. In both regions $q$ is bounded below on compact time intervals $[0,1-\delta]$, and as $\delta\downarrow 0$ the only possible singularity is at the origin, which has already been removed by Assumptions~\ref{ass:pulses} and~\ref{ass:profile-control}. Hence
+\[
+g:=f^{\mathrm I}-f^{\mathrm{II}}
+\in\Ccinf(\R^3\times(0,\infty);\R^3).
+\]
+In other words, the two solutions solve forced {N}avier--{S}tokes equations whose forces differ by a {C}lay-admissible error. They are two realisations of the same inner dynamical model.
+
+\subsection{What is rigid, and what is not}
+
+The exponents
+\[
+\ell_r\asymp\tau^{1/2},\qquad
+\ell_z\asymp\tau^{1/2-h},\qquad
+|u_\theta|\asymp\tau^{-1/2-h}
+\]
+are rigid inside the present ansatz. They are forced by: (i)~radial diffusion sitting in the leading balance ($\Ree_r=O(1)$); (ii)~a diverging angular {R}eynolds number, needed to amplify pulses in Method~I and to have a genuine supercritical swirl in Method~II; (iii)~a volume small enough that the core energy tends to zero. Replacing $h$ by $0$ makes $\Ree_\theta$ stay bounded and destroys both the pulse amplification and the slender geometry. Replacing $A$ by a smaller exponent makes the $L^\infty$ blowup fail; replacing it by a larger one takes radial diffusion out of the leading balance and changes the profile equation.
+
+The force is not rigid. Method~I uses a force that is exponentially small except for a smooth leftover; Method~II uses a force of size comparable to the annular residual of the background, made smooth by cancellation against $L_{u_{\app}}(u_{\rem})$. Theorem~\ref{thm:comparison} says that this difference of forces is smoother than the inner dynamics.
+
+\subsection{A uniqueness statement we do not prove}
+
+It is natural to ask whether, given $f^{\mathrm I}$, the solution $u^{\mathrm I}$ is the unique smooth finite-energy solution on $[0,1)$. Uniqueness of smooth solutions is true on any interval on which $\|u\|_\infty$ remains bounded, and fails to be applicable precisely at the blowup time. We do not claim uniqueness of the blowing-up continuation, nor do we claim that every force in a neighbourhood of $f^{\mathrm I}$ produces blowup. Stability of the inner vortex under non-axisymmetric perturbations is open and is, in our view, the first question to ask after the existence proof.
+
+\subsection{Proof of Theorem~\ref{thm:conditional}}
+
+If Assumption~\ref{ass:pulses} holds, Theorem~\ref{thm:methodI} applies. If Assumption~\ref{ass:profile-control} holds, Theorem~\ref{thm:methodII} applies. Either is enough for Theorem~\ref{thm:conditional}. If both hold, Theorem~\ref{thm:comparison} identifies the two inner cores.

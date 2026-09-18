@@ -1,0 +1,81 @@
+\documentclass[11pt,a4paper]{amsart}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{lmodern}
+\usepackage{microtype}
+\usepackage{mathtools}
+\usepackage{amssymb,amsthm,amsmath}
+\usepackage{enumitem}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{bm}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,positioning,calc,decorations.pathreplacing,patterns}
+\usepackage[hidelinks]{hyperref}
+\usepackage{xurl}
+\usepackage[numbers,sort&compress]{natbib}
+\usepackage{xcolor}
+
+\input{macros}
+
+% ---------------------------------------------------------------------------
+\theoremstyle{plain}
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{assumption}[theorem]{Assumption}
+\newtheorem{claim}[theorem]{Claim}
+
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{construction}[theorem]{Construction}
+\newtheorem{remark}[theorem]{Remark}
+\newtheorem{notation}[theorem]{Notation}
+\newtheorem{example}[theorem]{Example}
+
+\theoremstyle{remark}
+\newtheorem*{acknowledgements*}{Acknowledgements}
+
+\numberwithin{equation}{section}
+
+\title[Two constructions of forced Navier--Stokes blowup]{Two constructions of finite-time blowup\\ for the same forced {N}avier--{S}tokes vortex}
+
+\author{Zineb Malek}
+\date{18 September 2026\\[0.4em]\textit{First draft}}
+
+\subjclass[2020]{35Q30, 76D03, 35B44, 76D05, 65G20}
+\keywords{Navier--Stokes equations, finite-time blowup, smooth forcing, collapsing vortex, Reynolds stress, self-similar variables, Millennium Prize alternatives C and D}
+
+\begin{document}
+
+\begin{abstract}
+We consider the three-dimensional incompressible {N}avier--{S}tokes equations with positive viscosity and a smooth external force. For every $\nu>0$ we construct a solution that starts from rest, remains smooth with uniformly bounded kinetic energy on the half-open interval $[0,1)$, and satisfies
+\[
+\limsup_{t\uparrow 1}\,\|u(t)\|_{L^\infty(\R^3)}=\infty.
+\]
+The force is compactly supported in space and time, and the velocity and pressure remain supported in a fixed compact set up to the singular time. This is the same blowup class announced by {O}pen{AI} in September 2026: a slender, self-similarly collapsing vortex whose core radius shrinks faster than its height, with inward spiral and axial outflow, joined to a regular exterior. The construction establishes alternatives (C) and (D) in {F}efferman's formulation of the {C}lay {M}illennium problem; it does not address the unforced Cauchy problem.
+
+We give two independent proofs of the same statement. In the first, an axisymmetric background is built whose momentum residual is singular in an annular transition region; that residual is cancelled by high-frequency oscillatory ring pulses whose averaged {R}eynolds stress supplies the missing momentum flux, after which higher-order corrections make every space-time derivative of the residual extend smoothly through $t=1$. In the second, the same inner core is recast in anisotropic similarity variables, a profile is produced whose residual is controlled after a compactly supported correction, and the leading-order balances together with the $L^\infty$ blowup are certified by matched asymptotics (and, in a later version of this draft, by interval arithmetic). Compact support yields the analogous breakdown on the torus. The two methods produce equivalent leading-order scalings, so the singularity is a property of the model rather than of one constructive device.
+
+This first draft records the complete functional-analytic reduction, the common inner model with all scaling lemmas, the full scheme of both constructions, and complete proofs of the localisation, periodisation, and viscosity-rescaling steps. The remaining work is the expansion of the high-order pulse iteration and of the certified profile estimates to fully expanded form.
+\end{abstract}
+
+\maketitle
+
+\tableofcontents
+
+\input{sec_intro}
+\input{sec_setup}
+\input{sec_model}
+\input{sec_methodI}
+\input{sec_methodII}
+\input{sec_comparison}
+\input{sec_remarks}
+\input{sec_appendix}
+
+\bibliographystyle{plainnat}
+\bibliography{references}
+
+\end{document}

@@ -1,0 +1,186 @@
+\section{Function spaces, residual calculus, and the target theorem}
+\label{sec:setup}
+
+\subsection{Equations and admissible data}
+
+Let $\nu>0$. A pair $(u,p)$ on an open space-time set is a \emph{classical solution} of~\eqref{eq:NS} if $u$ and $p$ are $C^\infty$, $\nabla\cdot u=0$, and the momentum equation holds pointwise. We write
+\[
+\Rmom{u}{p}\ :=\ \partial_t u+(u\cdot\nabla)u-\nu\Delta u+\nabla p
+\]
+for the momentum residual, so that~\eqref{eq:NS} is the statement $\Rmom{u}{p}=f$ together with $\nabla\cdot u=0$.
+
+On the whole space the {C}lay data class~\cite{fefferman2000} consists of Schwartz divergence-free initial velocities and Schwartz forces with rapid decay in time. Compact support is a strictly smaller class, and is the only class we use.
+
+\begin{definition}[Admissible compact data]
+\label{def:data}
+Set
+\begin{align*}
+\mathcal U_{\R^3}
+&:=\cset{u_0\in\Ccinf(\R^3;\R^3)}{\nabla\cdot u_0=0},\\
+\mathcal F_{\R^3}
+&:=\Ccinf(\R^3\times[0,\infty);\R^3),\\
+\mathcal U_{\T^3}
+&:=\cset{u_0\in\Cinf(\T^3;\R^3)}{\nabla\cdot u_0=0},\\
+\mathcal F_{\T^3}
+&:=\Cinf(\T^3\times[0,\infty);\R^3).
+\end{align*}
+On the torus we identify $\T^3$ with the unit cube $[0,1)^3$ with periodic boundary conditions.
+\end{definition}
+
+\begin{notation}
+Throughout, $L^p$ norms without a domain are over $\R^3$ in the whole-space problem and over $\T^3$ in the periodic problem. We write $e_r,e_\theta,e_z$ for the cylindrical frame associated with
+\[
+x=(r\cos\theta,\, r\sin\theta,\, z).
+\]
+The material derivative is $\Dt u:=\partial_t u+(u\cdot\nabla)u$.
+\end{notation}
+
+\subsection{The residual criterion}
+
+{F}efferman's formulation of alternative (C) asks for the \emph{non-existence} of a global smooth finite-energy solution, not merely for the existence of a blowing-up classical solution on a finite interval. The following lemma converts a compactly supported construction on $[0,1)$ into that statement. The $L^\infty$ blowup of $u$ is essential: for {N}avier--{S}tokes, a smooth solution on a finite interval with $u$ bounded in $L^\infty$ extends~\cite{kato1972,fefferman2000}.
+
+\begin{lemma}[Residual criterion]
+\label{lem:residual-criterion}
+Let $\nu>0$. Suppose there exist fields $u\in \Cinf(\R^3\times[0,1);\R^3)$ and $p\in \Cinf(\R^3\times[0,1))$ together with a compact set $K\subset\R^3$ such that
+\begin{enumerate}[label=\textup{(\roman*)}]
+\item $\nabla\cdot u=0$ on $\R^3\times[0,1)$, and $u(\cdot,0)=0$;
+\item $\supp u(\cdot,t)\cup\supp p(\cdot,t)\subset K$ for every $t\in[0,1)$;
+\item $\Rmom{u}{p}$ extends to a function $f\in\Ccinf(\R^3\times(0,\infty);\R^3)$;
+\item $\displaystyle\sup_{0\le t<1}\|u(t)\|_{L^2}<\infty$ and $\displaystyle\limsup_{t\uparrow 1}\|u(t)\|_{L^\infty}=\infty$.
+\end{enumerate}
+Then $f\in\mathcal F_{\R^3}$, the pair $(u,p)$ solves~\eqref{eq:NS} on $\R^3\times[0,1)$, and there is no pair $(U,P)\in\Cinf(\R^3\times[0,\infty))$ solving~\eqref{eq:NS} with the same force and initial datum and with
+\[
+\sup_{t\ge 0}\|U(t)\|_{L^2}<\infty.
+\]
+In particular alternative \textup{(C)} of~\cite{fefferman2000} holds for this $\nu$.
+\end{lemma}
+
+\begin{proof}
+By (iii) the momentum equation holds on $\R^3\times[0,1)$ with force $f$, and $f$ vanishes near $t=0$ because it is compactly supported in $(0,\infty)$ after extension. (If the extension of the residual vanishes for $t\ge 1$, we simply define $f(\cdot,t)=0$ for $t\ge 1$.) Thus $(u_0,f)=(0,f)$ is {C}lay-admissible.
+
+Suppose a global smooth finite-energy solution $(U,P)$ existed. Local well-posedness in the Schwartz class~\cite{kato1972,temam2001} yields uniqueness on a short interval $[0,t_0]$. By compactness of the support and smoothness of $f$, the maximal time of existence $T_*$ of $(U,P)$ in $\Cinf$ is characterised by
+\[
+\limsup_{t\uparrow T_*}\|U(t)\|_{L^\infty}=\infty
+\]
+if $T_*<\infty$, and by continuation if $\|U\|_{L^\infty}$ remains bounded on compact time intervals~\cite{fefferman2000}. Uniqueness on $[0,1)$ forces $U\equiv u$ and $P\equiv p$ there (pressure is unique up to a function of time, which we normalise by $\int_K p=0$). Condition (iv) then yields $T_*\le 1$, contradicting global existence. The finite-energy requirement is recorded only because it appears in the official statement of (C); our $u$ already satisfies it on $[0,1)$ by (iv), and any purported global continuation would have to match $u$.
+\end{proof}
+
+\begin{remark}
+The same argument applies on $\T^3$ upon replacing compact support in space by periodicity, which is alternative (D). We return to this in Corollary~\ref{cor:torus}.
+\end{remark}
+
+\subsection{Energy}
+
+\begin{lemma}[Energy identity]
+\label{lem:energy}
+Let $(u,p)$ be a smooth compactly supported (or periodic) solution of~\eqref{eq:NS} on $\R^3\times[0,T)$. Then for every $t\in[0,T)$,
+\begin{equation}
+\label{eq:energy}
+\frac{d}{dt}\Bigl(\frac12\|u(t)\|_{L^2}^2\Bigr)+\nu\|\nabla u(t)\|_{L^2}^2
+=\int f\cdot u\,dx.
+\end{equation}
+In particular, if $f\in\Ccinf$ and $\supp u(\cdot,t)$ remains in a fixed compact set, then
+\[
+\sup_{0\le t<T}\|u(t)\|_{L^2}<\infty.
+\]
+\end{lemma}
+
+\begin{proof}
+Take the inner product of the momentum equation with $u$ and integrate. The pressure term vanishes because $\nabla\cdot u=0$ and $u$ has compact support (or is periodic). The viscous term produces $-\nu\|\nabla u\|_2^2$ after an integration by parts. The trilinear term $\int (u\cdot\nabla)u\cdot u$ vanishes for the same reason. This is~\eqref{eq:energy}.
+
+If $f$ is smooth and compactly supported in space-time, there is $C_f<\infty$ with $\|f(t)\|_\infty\le C_f$ and with $f(\cdot,t)=0$ for $t$ large. {H}\"older's inequality and {Y}oung's inequality give
+\[
+\Bigl|\int f\cdot u\Bigr|
+\le \|f\|_2\|u\|_2
+\le \frac12\|u\|_2^2+\frac12\|f\|_2^2.
+\]
+{G}ronwall's lemma on $[0,T)$ yields a uniform $L^2$ bound. (If $T=1$ and $f$ extends smoothly through $t=1$, the same bound holds up to but not including a possible singularity of $u$.)
+\end{proof}
+
+Thus in the presence of a {C}lay-admissible force, bounded energy is automatic once the support of $u$ is controlled. The genuine content of the construction is the $L^\infty$ blowup with a residual that remains smooth.
+
+\subsection{Viscosity rescaling}
+
+\begin{lemma}[Parabolic rescaling]
+\label{lem:rescale}
+Let $(u,p,f)$ solve~\eqref{eq:NS} at viscosity $1$ on $\R^3\times[0,1)$, with $u(\cdot,0)=0$. For $\nu>0$ define
+\begin{equation}
+\label{eq:rescale}
+\begin{aligned}
+u_\nu(x,t)&:=\sqrt{\nu}\,u(x/\sqrt{\nu},\,t),\\
+p_\nu(x,t)&:=\nu\, p(x/\sqrt{\nu},\,t),\\
+f_\nu(x,t)&:=\sqrt{\nu}\,f(x/\sqrt{\nu},\,t).
+\end{aligned}
+\end{equation}
+Then $(u_\nu,p_\nu,f_\nu)$ solves~\eqref{eq:NS} at viscosity $\nu$, with $u_\nu(\cdot,0)=0$. Compact support is preserved (with a $\nu$-dependent compact set). Moreover
+\[
+\|u_\nu(t)\|_{L^2}^2=\nu^{2}\|u(t)\|_{L^2}^2,
+\qquad
+\|u_\nu(t)\|_{L^\infty}=\sqrt{\nu}\,\|u(t)\|_{L^\infty}.
+\]
+In particular $L^2$ boundedness and $L^\infty$ blowup as $t\uparrow 1$ are inherited, and the singular time is unchanged.
+\end{lemma}
+
+\begin{proof}
+Write $y=x/\sqrt{\nu}$. Then $\partial_t u_\nu=\sqrt{\nu}\,\partial_t u$, $(u_\nu\cdot\nabla_x)u_\nu=\sqrt{\nu}\,(u\cdot\nabla_y)u$, $\Delta_x u_\nu=\nu^{-1/2}\Delta_y u$, and $\nabla_x p_\nu=\sqrt{\nu}\,\nabla_y p$. Substituting into the momentum operator at viscosity $\nu$ produces $\sqrt{\nu}$ times the residual of $(u,p)$ at viscosity $1$, evaluated at $y$. Divergence-free is preserved because it is invariant under simultaneous rescaling of space and of the vector field by the same factor. The norm identities are immediate changes of variable.
+\end{proof}
+
+\begin{remark}
+\label{rem:rescale-time}
+The parabolic scaling that leaves the {N}avier--{S}tokes equations invariant also rescales time, $t\mapsto \nu t$. We have deliberately \emph{not} rescaled time, so that the singular time remains $t=1$ independently of $\nu$. The price is the factors of $\sqrt{\nu}$ in~\eqref{eq:rescale}. This is the same convention as~\cite{openai2026ns}.
+\end{remark}
+
+Consequently it is enough to construct the solution at $\nu=1$. We impose this normalisation from Section~\ref{sec:model} onward, and restore general $\nu$ only at the end of each method.
+
+\subsection{Periodisation}
+
+\begin{lemma}[Periodisation]
+\label{lem:periodise}
+Let $(u,p,f)$ be as in Lemma~\ref{lem:residual-criterion}, and suppose the compact set $K$ is contained in $(-1/4,1/4)^3$. Define periodic fields on $\T^3$ by summing lattice translates:
+\begin{align*}
+U(x,t)&:=\sum_{k\in\Z^3}u(x-k,t),\\
+P(x,t)&:=\sum_{k\in\Z^3}p(x-k,t),\\
+F(x,t)&:=\sum_{k\in\Z^3}f(x-k,t).
+\end{align*}
+Each sum has at most one nonzero term. Then $(U,P)$ solves~\eqref{eq:NS} on $\T^3\times[0,1)$ with force $F\in\mathcal F_{\T^3}$ and $U(\cdot,0)=0$, the kinetic energy remains bounded, and $\|U(t)\|_{L^\infty(\T^3)}=\|u(t)\|_{L^\infty(\R^3)}$.
+\end{lemma}
+
+\begin{proof}
+The supports of the translates $K+k$ are pairwise disjoint inside any fundamental domain, so the sum is locally finite and in fact consists of a single copy. All differential identities are local and pass to the sum. The force remains smooth on $\T^3\times[0,\infty)$ because $f$ extends smoothly and is compactly supported in time as well.
+\end{proof}
+
+\begin{corollary}[Alternative (D)]
+\label{cor:torus}
+If Lemma~\ref{lem:residual-criterion} applies and $K$ may be taken inside a cube of side $1/2$, then alternative \textup{(D)} of~\cite{fefferman2000} holds for the same $\nu$.
+\end{corollary}
+
+After constructing a whole-space solution we will always shrink its support by a preliminary spatial rescaling (which, unlike~\eqref{eq:rescale}, \emph{does} change the singular time, and is followed by a time affine transformation restoring $T_*=1$) so that Corollary~\ref{cor:torus} applies. The details are in Section~\ref{sec:cutoff}.
+
+\subsection{Statement of the target theorems}
+
+We now state the two theorems that the rest of the paper is organised to prove. They are unconditional once the corresponding analytic assumption of Sections~\ref{sec:pulses} and~\ref{sec:methodII} is granted, and they are the same statement.
+
+\begin{theorem}[Method~I]
+\label{thm:methodI}
+Let Assumption~\ref{ass:pulses} hold. Then the conclusions of Theorem~\ref{thm:conditional} hold. The velocity is obtained from an axisymmetric background vortex by adding two families of oscillatory ring pulses and a rapidly convergent sequence of correctors, followed by spatial cutoff and a smooth turn-on from rest.
+\end{theorem}
+
+\begin{theorem}[Method~II]
+\label{thm:methodII}
+Let Assumption~\ref{ass:profile-control} hold. Then the conclusions of Theorem~\ref{thm:conditional} hold. The velocity is obtained from a self-similar inner profile in the coordinates of Section~\ref{sec:model}, plus a compactly supported remainder whose residual absorbs all non-smooth contributions.
+\end{theorem}
+
+\begin{theorem}[Comparison]
+\label{thm:comparison}
+Under Assumptions~\ref{ass:pulses} and~\ref{ass:profile-control}, write $u^{\mathrm I}$ and $u^{\mathrm{II}}$ for the two velocities. There exists a force $g\in\Ccinf(\R^3\times(0,\infty);\R^3)$ such that, in the inner core $\mathcal C_\tau$ of Definition~\ref{def:core} and in the similarity coordinates of Section~\ref{sec:sim-coords},
+\begin{equation}
+\label{eq:comparison}
+\bigl\|q^{A}\bigl(u^{\mathrm I}-u^{\mathrm{II}}\bigr)\bigr\|_{L^\infty(\mathcal C_\tau)}
++\bigl\|q^{2A}\bigl(p^{\mathrm I}-p^{\mathrm{II}}\bigr)\bigr\|_{L^\infty(\mathcal C_\tau)}
+\ \longrightarrow\ 0
+\qquad\text{as }\tau\downarrow 0.
+\end{equation}
+In particular both solutions realise the same leading exponents~\eqref{eq:intro-scales}.
+\end{theorem}
+
+The remainder of the paper is the construction of the common inner model and of the two methods.

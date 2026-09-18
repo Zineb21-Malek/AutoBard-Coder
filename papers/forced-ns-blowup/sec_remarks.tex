@@ -1,0 +1,48 @@
+\section{Remarks on {E}uler, viscosity, and open problems}
+\label{sec:remarks}
+
+\subsection{Relation to the 2026 {E}uler results}
+
+Three constructions of {E}uler singularities were announced in the same week as~\cite{openai2026ns}. {O}pen{AI} produced unforced blowup from smooth compactly supported data~\cite{openai2026euler}, with
+\[
+\limsup_{t\uparrow T_*}\|\nabla u(t)\|_{L^\infty}=\infty,
+\qquad
+\int_0^{T_*}\|\curl u(t)\|_{L^\infty}\,dt=\infty,
+\]
+as required by {B}eale--{K}ato--{M}ajda~\cite{bkm1984}. {A}lp{\"o}ge and {B}uckmaster produced forced {E}uler blowup with a force that remains smooth through the singular time~\cite{alpoegbuckmaster2026}, by iterative high-frequency amplification in the lineage of~\cite{cmz2023}. {A}nandkumar, {G}aneshram and {D}uruisseaux produced a self-similar unforced {E}uler profile with interval bounds~\cite{anandkumar2026}.
+
+Method~I of the present paper is the viscous analogue of~\cite{alpoegbuckmaster2026,openai2026ns}: oscillations realise a stress. Method~II is the viscous analogue of~\cite{chenhou2022,anandkumar2026}: a profile is certified and the obstruction is placed in a residual. We have deliberately not claimed a new {E}uler theorem. Passing from the present viscous inner balance to $\nu=0$ changes the leading-order operator, because $\Ree_r=O(1)$.
+
+\subsection{Why vanishing viscosity fails inside this ansatz}
+
+The parabolic rescaling of Lemma~\ref{lem:rescale} produces a solution at every $\nu>0$ with the \emph{same} singular time, but the physical support shrinks as $\sqrt{\nu}$ and the velocity is multiplied by $\sqrt{\nu}$. Sending $\nu\to 0$ after rescaling sends the $L^\infty$ blowup to zero, which is useless. Sending $\nu\to 0$ \emph{without} rescaling, inside a fixed construction at $\nu=1$, is not a vanishing-viscosity limit: it is a different PDE. To take $\nu\to 0$ at fixed data one would need uniform estimates. The radial diffusion term is leading order, so those estimates cannot hold in the topology in which the profile was constructed.
+
+A genuine vanishing-viscosity statement would have to start from the unforced {E}uler blowup of~\cite{openai2026euler} and add viscosity as a perturbation. That is a different paper, and it is not implied by {C}lay (C).
+
+\subsection{Unforced {N}avier--{S}tokes}
+
+Nothing in this draft produces a force that vanishes. The annular residual of the background is nonzero at leading order, and both methods use that residual as an obstruction class---either cancelling it by a {R}eynolds stress whose seed still costs an exponentially small force, or absorbing it into $f$. The exponentially small seed of Method~I is not zero. Whether a related vortex can run with $f\equiv 0$ is alternative (A), and remains open.
+
+\subsection{What a second version of this paper must contain}
+
+\begin{enumerate}[leftmargin=1.2em]
+\item A complete proof of Assumption~\ref{ass:pulses}, either by an independent expansion of the pulse estimates or by a self-contained re-writing of Sections~6--9 of~\cite{openai2026ns} in the notation of Section~\ref{sec:model}.
+\item A complete proof of Assumption~\ref{ass:profile-control}, ideally by a spectral-gap lemma for $\mathcal L_{\app}$ that does not require interval arithmetic, with interval arithmetic as an optional check.
+\item A fully expanded Appendix~\ref{app:axis} with the shooting argument written as a contraction mapping on a Banach space of axisymmetric profiles.
+\item Explicit numerical values of $h,X_c,X_a,X_b,\eta_c$, once they are no longer existential.
+\item If {L}ean is used, a statement-level formalisation of Lemma~\ref{lem:residual-criterion} and of Theorem~\ref{thm:conditional}, not a re-compilation of~\cite{openai2026ns}.
+\end{enumerate}
+
+\subsection{Perspectives}
+
+The comparison theorem suggests that the forced collapsing vortex is a robust dynamical object. Natural next questions, in increasing difficulty, are:
+\begin{itemize}[leftmargin=1.2em]
+\item stability of the axisymmetric blowup under axisymmetric perturbations of the force;
+\item stability under non-axisymmetric perturbations;
+\item existence of a blowup with a force of small $C^k$ norm, for large $k$;
+\item existence of a blowup with a force that vanishes for $t\ge 1-\delta$ with $\delta>0$ independent of the construction (a ``force that is switched off before the singularity'');
+\item the unforced problem.
+\end{itemize}
+The fourth item is already close to the spirit of {C}lay (C), but would rule out the suspicion that the force is doing the work at the last moment. In Method~I the seed forces of late generations do act arbitrarily close to $t=1$, albeit with exponentially small amplitude. Removing them is not a cosmetic change.
+
+We stop here. The reduction is complete; the inner model is complete; the two schemes are complete; the remaining analysis is isolated in two assumptions that we regard as the correct division of labour between a first draft and a finished paper.
