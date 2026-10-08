@@ -1,0 +1,2142 @@
+% Compile : pdflatex Maths_appliquees_gestion.tex  (deux passages pour le sommaire)
+% Logos optionnels dans le même dossier : munidia.png, honoris.jpg (ou honoris.png)
+\documentclass[aspectratio=169,11pt]{beamer}
+
+% ============================================================
+% THÈME ET PACKAGES
+% ============================================================
+\usetheme[progressbar=frametitle,numbering=fraction]{metropolis}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[french]{babel}
+\usepackage{lmodern}
+\usepackage{amsmath,amssymb,mathtools}
+\usepackage{graphicx}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,positioning,calc,shapes.geometric,overlay-beamer-styles}
+\usepackage{pgfplots}
+% Metropolis recharge pgfplots avec compat=1.9 : on rétablit 1.18 au début du document.
+\AtBeginDocument{\pgfplotsset{compat=1.18}}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{multicol}
+\usepackage{etoolbox}
+\usepackage{tcolorbox}
+\tcbuselibrary{skins,breakable}
+\usepackage{fontawesome5}
+\usepackage{xcolor}
+
+% Alias FontAwesome 5 (l'icône pencil-alt n'a plus de commande \faPencilAlt)
+\providecommand{\faPencilAlt}{\faIcon{pencil-alt}}
+
+\setbeamertemplate{section in toc}[sections numbered]
+\setbeamertemplate{subsection in toc}[subsections numbered]
+
+\defbeamertemplate{subsubsection in toc}{subsubsections numbered}
+{\leavevmode\leftskip=5em%
+	\rlap{\hskip-5em\inserttocsectionnumber.\inserttocsubsectionnumber.\inserttocsubsubsectionnumber}%
+	\inserttocsubsubsection\par}
+
+\setbeamertemplate{subsubsection in toc}[subsubsections numbered]
+\renewcommand{\thesection}{\arabic{section}}
+\renewcommand{\thesubsection}{\thesection.\arabic{subsection}}
+\renewcommand{\thesubsubsection}{\thesubsection.\arabic{subsubsection}}
+
+% ============================================================
+% COULEURS
+% ============================================================
+\definecolor{DarkBlue}{RGB}{31,67,104}
+\definecolor{LightBlue}{RGB}{225,239,250}
+\definecolor{Mustard}{RGB}{210,145,35}
+\definecolor{DarkGreen}{RGB}{38,105,75}
+\definecolor{LightGreen}{RGB}{230,245,235}
+\definecolor{DarkRed}{RGB}{145,45,45}
+\definecolor{LightRed}{RGB}{252,235,235}
+\definecolor{DarkGray}{RGB}{45,58,62}
+\setbeamerfont{section title}{size=\LARGE}
+\setbeamercolor{section title}{fg=DarkBlue}
+\setbeamerfont{subsection title}{size=\Large}
+\setbeamercolor{subsection title}{fg=teal}
+\definecolor{headerblue}{RGB}{102,178,216}
+
+% Page de section : NE PAS laisser \AtBeginSection{} (cela masque \section)
+\setbeamertemplate{section page}{
+	\centering
+	\vspace{2cm}
+	\begin{tcolorbox}[
+		colback=DarkBlue!8,
+		colframe=DarkBlue,
+		width=1\textwidth,
+		boxrule=1pt,
+		arc=3mm
+		]
+		\centering
+		\usebeamerfont{section title}
+		\color{DarkBlue}\thesection\quad\insertsectionhead
+	\end{tcolorbox}
+}
+\AtBeginSection[]{
+	\begin{frame}
+		\sectionpage
+	\end{frame}
+}
+
+% Subsection page style
+\setbeamertemplate{subsection page}{
+	\centering
+	\vspace{2cm}
+	\begin{tcolorbox}[
+		colback=cyan!10,
+		colframe=cyan!70!black,
+		width=1\textwidth,
+		boxrule=1pt,
+		arc=3mm
+		]
+		\centering
+		\usebeamerfont{subsection title}
+		\color{cyan!80!black}\thesubsection\quad\insertsubsectionhead
+	\end{tcolorbox}
+}
+\AtBeginSubsection[]{
+	\begin{frame}
+		\subsectionpage
+	\end{frame}
+}
+
+\setbeamercolor{normal text}{fg=DarkGray,bg=white}
+\setbeamercolor{frametitle}{bg=DarkBlue,fg=white}
+\setbeamercolor{progress bar}{fg=Mustard,bg=gray!25}
+\setbeamercolor{alerted text}{fg=DarkRed}
+\setbeamercolor{example text}{fg=DarkGreen}
+
+\setbeamertemplate{itemize item}{\color{Mustard}\small\faCircle}
+\setbeamertemplate{itemize subitem}{\color{DarkBlue}\small\faAngleRight}
+
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\important}[1]{\textcolor{DarkRed}{\textbf{#1}}}
+\newcommand{\key}[1]{\textcolor{DarkBlue}{\textbf{#1}}}
+
+% Boîtes avec titre optionnel : \begin{definitionbox}[Titre]
+\newtcolorbox{definitionbox}[1][]{
+	colback=LightBlue,colframe=DarkBlue,arc=3mm,
+	boxrule=0.7pt,left=2mm,right=2mm,top=1mm,bottom=1mm,
+	coltitle=DarkBlue,fonttitle=\bfseries,
+	title={#1}
+}
+\newtcolorbox{applicationbox}[1][]{
+	colback=LightGreen,colframe=DarkGreen,arc=3mm,
+	boxrule=0.7pt,left=2mm,right=2mm,top=1mm,bottom=1mm,
+	coltitle=DarkGreen,fonttitle=\bfseries,
+	title={#1}
+}
+\newtcolorbox{attentionbox}[1][]{
+	colback=LightRed,colframe=DarkRed,arc=3mm,
+	boxrule=0.7pt,left=2mm,right=2mm,top=1mm,bottom=1mm,
+	coltitle=DarkRed,fonttitle=\bfseries,
+	title={#1}
+}
+
+\definecolor{Mustard2}{RGB}{210,145,35}
+\definecolor{LightOrange}{RGB}{253,240,220}
+\definecolor{DarkPurple}{RGB}{106,61,154}
+\definecolor{LightPurple}{RGB}{240,230,250}
+
+\newtcolorbox{optionAbox}[1][]{
+	colback=LightOrange,colframe=Mustard2,arc=3mm,
+	boxrule=0.7pt,left=2mm,right=2mm,top=1mm,bottom=1mm,
+	coltitle=Mustard2,fonttitle=\bfseries,
+	title={#1}
+}
+\newtcolorbox{optionBbox}[1][]{
+	colback=LightPurple,colframe=DarkPurple,arc=3mm,
+	boxrule=0.7pt,left=2mm,right=2mm,top=1mm,bottom=1mm,
+	coltitle=DarkPurple,fonttitle=\bfseries,
+	title={#1}
+}
+% Manquantes au chapitre 1 (fonctions)
+\newtcolorbox{exemplebox}[1][]{
+	colback=LightOrange,colframe=Mustard2,arc=3mm,
+	boxrule=0.7pt,left=2mm,right=2mm,top=1mm,bottom=1mm,
+	coltitle=Mustard2,fonttitle=\bfseries,
+	title={#1}
+}
+\newtcolorbox{exercicebox}[1][]{
+	colback=LightPurple,colframe=DarkPurple,arc=3mm,
+	boxrule=0.7pt,left=2mm,right=2mm,top=1mm,bottom=1mm,
+	coltitle=DarkPurple,fonttitle=\bfseries,
+	title={#1}
+}
+
+% Style pgfplots utilisé par tous les graphiques du chapitre 1
+\pgfplotsset{
+	gestion/.style={
+		axis lines=middle,
+		axis line style={-{Latex}},
+		xlabel={$x$},
+		ylabel={$y$},
+		xlabel style={font=\small},
+		ylabel style={font=\small},
+		tick label style={font=\scriptsize},
+		width=7.2cm,
+		height=5.0cm,
+		grid=major,
+		grid style={gray!18},
+		legend cell align={left},
+		legend style={
+			font=\scriptsize,
+			draw=none,
+			fill=white,
+			fill opacity=0.85,
+			at={(0.98,0.98)},
+			anchor=north east,
+		},
+		every axis plot/.append style={line width=1.05pt},
+	}
+}
+
+% Afficher la section et la subsection dans la barre de navigation
+\setbeamertemplate{headline}{%
+	\begin{beamercolorbox}[wd=\paperwidth,ht=2.5ex,dp=1ex]{section in head/foot}
+		\insertsectionnavigationhorizontal{\paperwidth}{}{}
+	\end{beamercolorbox}%
+}
+
+% ============================================================
+% INFORMATIONS
+% ============================================================
+\title{Mathématiques appliquées à la gestion}
+\author{Pr. Rajae Malek}
+\institute{Business School -- Université Mundiapolis}
+\date{Année universitaire 2026--2027}
+\addtobeamertemplate{title page}{%
+	\begin{tikzpicture}[remember picture, overlay]
+		% Logo gauche : Mundiapolis (ignoré si le fichier est absent)
+		\IfFileExists{munidia.png}{
+			\node[anchor=north west]
+			at ($(current page.north west)+(0.6cm,-0.6cm)$)
+			{\includegraphics[height=1.6cm]{munidia.png}};
+		}{
+			\node[anchor=north west, fill=DarkBlue, text=white, rounded corners,
+				inner sep=4pt, font=\scriptsize\bfseries]
+			at ($(current page.north west)+(0.6cm,-0.6cm)$)
+			{Mundiapolis};
+		}
+		% Logo droit : Honoris (jpg ou png)
+		\IfFileExists{honoris.jpg}{
+			\node[anchor=north east]
+			at ($(current page.north east)+(-0.6cm,-0.6cm)$)
+			{\includegraphics[height=1.6cm]{honoris.jpg}};
+		}{
+			\IfFileExists{honoris.png}{
+				\node[anchor=north east]
+				at ($(current page.north east)+(-0.6cm,-0.6cm)$)
+				{\includegraphics[height=1.6cm]{honoris.png}};
+			}{
+				\node[anchor=north east, fill=Mustard, text=white, rounded corners,
+					inner sep=4pt, font=\scriptsize\bfseries]
+				at ($(current page.north east)+(-0.6cm,-0.6cm)$)
+				{Honoris};
+			}
+		}
+	\end{tikzpicture}%
+}{}
+\begin{document}
+	
+	% ============================================================
+	% INTRODUCTION
+	% ============================================================
+	\maketitle
+	
+	
+	%------------------------------------------------
+	%\begin{frame}{Notre charte d'apprentissage}
+	%	
+	%	\begin{itemize}
+		%		
+		%		\item \textbf{Ponctualité}
+		%		\begin{itemize}
+			%			\item Une tolérance de 10 minutes est accordée en cas de retard.
+			%			\item Au-delà de cette période, merci d'attendre la prochaine pause avant d'entrer en classe.
+			%		\end{itemize}
+		%		
+		%		\vspace{0.2cm}
+		%		
+		%		\item \textbf{Assiduité}
+		%		\begin{itemize}
+			%			\item La présence signifie participer à l'ensemble de la séance.
+			%			\item Chaque étudiant est responsable de sa propre présence.
+			%			\item Signer à la place d'un autre étudiant constitue une faute académique.
+			%		\end{itemize}
+		%		
+		%		\vspace{0.2cm}
+		%		
+		%		\item \textbf{Préparation}
+		%		\begin{itemize}
+			%			\item Les lectures, exercices ou travaux demandés doivent être préparés avant la séance.
+			%			\item Une bonne préparation permet de participer activement et de tirer pleinement profit du cours.
+			%		\end{itemize}
+		%		
+		%	\end{itemize}
+	%	
+	%\end{frame}
+	%%------------------------------------------------
+	%
+	%%------------------------------------------------
+	%%\begin{frame}{Notre charte d'apprentissage}
+	%%	
+	%%	\begin{itemize}
+		%%		
+		%%		\item \textbf{Téléphones, ordinateurs et tablettes}
+		%%		\begin{itemize}
+			%%			\item Les téléphones doivent être en mode silencieux.
+			%%			\item Les ordinateurs et tablettes sont autorisés lorsqu'ils sont nécessaires au cours ou à une activité pédagogique.
+			%%			\item L'utilisation d'un appareil ne doit pas perturber le déroulement de la séance.
+			%%		\end{itemize}
+		%%		
+		%%		\vspace{0.2cm}
+		%%		
+		%%		\item \textbf{Délais et travaux}
+		%%		\begin{itemize}
+			%%			\item Les dates et heures de remise indiquées sur la plateforme doivent être respectées.
+			%%			\item Tout retard est soumis aux règles et pénalités communiquées à l'avance.
+			%%			\item Une prolongation peut être accordée lorsqu'elle est demandée et validée au préalable.
+			%%		\end{itemize}
+		%%		
+		%%		\vspace{0.2cm}
+		%%		
+		%%		\item \textbf{Absence}
+		%%		\begin{itemize}
+			%%			\item En cas d'absence, l'étudiant reste responsable du contenu, des annonces et des travaux réalisés pendant la séance.
+			%%		\end{itemize}
+		%%		
+		%%		\vspace{0.2cm}
+		%%		
+		%%
+		%%		
+		%%	\end{itemize}
+	%%	
+	%%\end{frame}
+	%
+	%
+	%\begin{frame}{Notre charte d'apprentissage}
+	%	\begin{itemize}
+		%		\item Nous veillons ensemble à maintenir un environnement respectueux, bienveillant et professionnel.
+		%		\item Chacun doit pouvoir s'exprimer, poser des questions et donner son point de vue sans être interrompu ou jugé.
+		%		\item Les conversations parallèles, les interruptions répétées, les moqueries ou tout comportement perturbateur ne sont pas acceptables.
+		%		\item Le respect entre les étudiants et envers l'enseignante est une règle fondamentale de notre classe.
+		%	\end{itemize}
+	%\end{frame}
+	%%------------------------------------------------
+	%
+	%%------------------------------------------------
+	%\begin{frame}{Notre charte d'apprentissage}
+	%	
+	%	\begin{center}
+		%		\textbf{\large L'E-MAIL EST LE CANAL DE COMMUNICATION OFFICIEL}
+		%		
+		%		\vspace{0.15cm}
+		%		
+		%		\texttt{r.malek@mundiapolis.ma}
+		%	\end{center}
+	%	
+	%	\vspace{0.25cm}
+	%	
+	%	\textbf{Vous pouvez me contacter pour :}
+	%	
+	%	\begin{itemize}
+		%		\item Toute question concernant le cours ou les travaux ;
+		%		\item Une clarification concernant les consignes ;
+		%		\item Une question académique ou administrative liée au module ;
+		%		\item Une demande de rendez-vous.
+		%	\end{itemize}
+	%	
+	%	\vspace{0.15cm}
+	%	
+	%%	\textbf{Pour une communication efficace :}
+	%%	
+	%%	\begin{itemize}
+		%%		\item Utilisez votre adresse e-mail universitaire.
+		%%		\item Indiquez clairement l'objet de votre demande dans le titre de l'e-mail.
+		%%		\item Précisez le module et, si nécessaire, votre groupe.
+		%%		\item Privilégiez un message complet et clairement rédigé.
+		%%		\item Je répondrai dans les meilleurs délais ; merci de prévoir jusqu'à deux jours ouvrables.
+		%%	\end{itemize}
+	%%	
+	%%	\vspace{0.15cm}
+	%%	
+	%%	\textbf{Communication professionnelle :}
+	%%	
+	%%	\begin{itemize}
+		%%		\item Les questions concernant les notes, absences, délais ou travaux doivent être traitées par e-mail ou lors d'un rendez-vous.
+		%%		\item Les réseaux sociaux et les messageries personnelles ne constituent pas les canaux officiels pour ces demandes.
+		%%	\end{itemize}
+	%	
+	%\end{frame}
+	%%------------------------------------------------
+	%
+	%
+	%
+	%
+	%
+	%
+	%\begin{frame}{Avant-propos}
+	%\centering
+	%\Large \key{Pourquoi des mathématiques dans un cursus de gestion ?}
+	%\end{frame}
+	%
+	%% ------------------------------------------------------------
+	% SLIDE 1 : SITUATION 1 - COMBIEN PRODUIRE ? (TikZ + flèches)
+	% ------------------------------------------------------------
+	\begin{frame}{Une question pour commencer -- Situation 1}
+		
+		\begin{center}
+			\resizebox{0.78\textwidth}{!}{%
+				\begin{tikzpicture}[
+					every node/.style={rectangle, rounded corners, draw, line width=0.7pt,
+						align=center, font=\small, text width=4.6cm},
+					->, >=Latex, thick
+					]
+					
+					% --- Situation en haut, centrée ---
+					\node[fill=LightRed, draw=DarkRed] (sit) at (0,0)
+					{\faExclamationTriangle\ \textbf{Situation 1} \\
+						Une entreprise hésite entre produire 100, 200 ou 500 unités d'un produit.
+						Comment savoir laquelle de ces quantités maximise le profit ?};
+					
+					\pause
+					
+					% --- Réponse possible A ---
+					\node[fill=LightOrange, draw=Mustard2, visible on=<2->] (repA) at (-3.6,-3.4)
+					{\faUsers\ \textbf{Réponse A} \\
+						« Produire le maximum : plus on produit, plus on vend, plus on gagne. »};
+					\draw[visible on=<2->] (sit) -- (repA);
+					
+					\pause
+					
+					% --- Réponse possible B ---
+					\node[fill=LightPurple, draw=DarkPurple, visible on=<3->] (repB) at (3.6,-3.4)
+					{\faUsers\ \textbf{Réponse B} \\
+						« Attention à ne pas trop produire : risque d'invendus. »};
+					\draw[visible on=<3->] (sit) -- (repB);
+					
+					\pause
+					
+					% --- Conclusion / relance ---
+					\node[fill=LightBlue, draw=DarkBlue, visible on=<4->] (concl) at (0,-5.8)
+					{\key{Qui a raison ? Sans calcul, impossible de trancher avec certitude\dots}};
+					\draw[visible on=<4->] (repA) -- (concl);
+					\draw[visible on=<4->] (repB) -- (concl);
+					
+				\end{tikzpicture}%
+			}
+		\end{center}
+		
+	\end{frame}
+	
+	% ------------------------------------------------------------
+	% SLIDE 2 : SITUATION 2 - QUEL PLACEMENT CHOISIR ?
+	% ------------------------------------------------------------
+	\begin{frame}{Une question pour commencer -- Situation 2}
+		
+		\begin{center}
+			\resizebox{0.78\textwidth}{!}{%
+				\begin{tikzpicture}[
+					every node/.style={rectangle, rounded corners, draw, line width=0.7pt,
+						align=center, font=\small, text width=4.6cm},
+					->, >=Latex, thick
+					]
+					
+					% --- Situation en haut, centrée ---
+					\node[fill=LightRed, draw=DarkRed] (sit) at (0,0)
+					{\faExclamationTriangle\ \textbf{Situation 2} \\
+						Une banque propose 5\% d'intérêt simple, une autre 4{,}8\% d'intérêt composé, sur 5 ans.
+						Laquelle choisir  ?};
+					
+					\pause
+					
+					% --- Réponse possible A ---
+					\node[fill=LightOrange, draw=Mustard2, visible on=<2->] (repA) at (-3.6,-3.4)
+					{\faUsers\ \textbf{Réponse A} \\
+						« On prend le taux affiché le plus élevé : 5\%, c'est plus que 4{,}8\%. »};
+					\draw[visible on=<2->] (sit) -- (repA);
+					
+					\pause
+					
+					% --- Réponse possible B ---
+					\node[fill=LightPurple, draw=DarkPurple, visible on=<3->] (repB) at (3.6,-3.4)
+					{\faUsers\ \textbf{Réponse B} \\
+						« Le taux composé est toujours plus avantageux, il s'accumule dans le temps. »};
+					\draw[visible on=<3->] (sit) -- (repB);
+					
+					\pause
+					
+					% --- Conclusion / relance ---
+					\node[fill=LightBlue, draw=DarkBlue, visible on=<4->] (concl) at (0,-6.0)
+					{\key{Sans faire aucun calcul, pouvez-vous répondre avec certitude ?\dots}};
+					\draw[visible on=<4->] (repA) -- (concl);
+					\draw[visible on=<4->] (repB) -- (concl);
+					
+				\end{tikzpicture}%
+			}
+		\end{center}
+		
+	\end{frame}
+	
+	
+	
+	
+	
+	
+	
+	% \begin{frame}{Une question pour commencer -- Situation 2}
+		
+		% \begin{attentionbox}
+			% \faExclamationTriangle\ \textbf{Situation 2} \\[2pt]
+			% Une banque propose 5\% d'intérêt simple, une autre 4{,}8\% d'intérêt composé, sur 5 ans.
+			% Laquelle choisir ?
+			% \end{attentionbox}
+		
+		% \pause
+		% \vspace{0.35cm}
+		% \begin{optionAbox}
+			% \faUsers\ \textbf{Réponse possible A} \\[2pt]
+			% « On prend le taux affiché le plus élevé : 5\%, c'est plus que 4{,}8\%. »
+			% \end{optionAbox}
+		
+		% \pause
+		% \vspace{0.25cm}
+		% \begin{optionBbox}
+			% \faUsers\ \textbf{Réponse possible B} \\[2pt]
+			% « Le taux composé est toujours plus avantageux, il s'accumule dans le temps. »
+			% \end{optionBbox}
+		
+		% \pause
+		% \vspace{0.3cm}
+		% \begin{definitionbox}
+			% \centering
+			% \key{Sans faire aucun calcul, pouvez-vous répondre avec certitude ?}
+			% \end{definitionbox}
+		
+		% \end{frame}
+	
+	% ------------------------------------------------------------
+	% SLIDE 3 : LE DEBAT COGNITIF (Q/R)
+	% ------------------------------------------------------------
+	\begin{frame}{Un petit débat pour commencer}
+		
+		\begin{definitionbox}
+			\faComments\ Pour vous, c'est quoi \important{« gérer »} une entreprise ?
+		\end{definitionbox}
+		
+		\pause
+		\begin{applicationbox}
+			\faCheckCircle\ Organiser, décider, planifier, gérer l'argent, atteindre un objectif\dots
+		\end{applicationbox}
+		
+		\vspace{0.35cm}
+		
+		\begin{definitionbox}
+			\faComments\ Et les \important{mathématiques}, à quoi ça sert en dehors du lycée ?
+		\end{definitionbox}
+		
+		\pause
+		\begin{applicationbox}
+			\faCheckCircle\ « À calculer »\dots\ mais calculer quoi, et surtout \important{pourquoi} ?
+		\end{applicationbox}
+		
+	\end{frame}
+	
+	% ------------------------------------------------------------
+	% SLIDE 4 : LE LIEN MATHS - GESTION ET L'OBJECTIF DU MODULE
+	% ------------------------------------------------------------
+	\begin{frame}{Le lien entre les deux}
+		
+		\begin{definitionbox}
+			\centering
+			\key{Gérer, c'est décider. Les mathématiques sont l'outil de la décision.}
+		\end{definitionbox}
+		
+		\pause
+		\begin{table}
+			\centering
+			\small
+			\renewcommand{\arraystretch}{1.3}
+			\begin{tabular}{p{3cm}p{7cm}}
+				\toprule
+				\textbf{Outil (ce module)} & \textbf{Ce qu'il permet en gestion} \\
+				\midrule
+				Suites numériques & Intérêts composés, emprunts, croissance du chiffre d'affaires \\
+				Fonctions & Coût, revenu, profit selon la quantité produite \\
+				Dérivation & Trouver l'optimum : profit maximal, coût minimal \\
+				\bottomrule
+			\end{tabular}
+		\end{table}
+		
+		\pause
+		\begin{applicationbox}
+			\centering
+			\faLightbulb\ Les deux questions du début ? On y répondra ensemble, avec les bons outils, avant la fin du module.
+		\end{applicationbox}
+		
+	\end{frame}
+	\begin{frame}{Plan du module}
+		\tableofcontents 
+	\end{frame}
+	
+	% ==============================================================
+	% CHAPITRE 0 : RAPPELS D'OUTILS ESSENTIELS
+	% ==============================================================
+	
+	
+	\begin{frame}{Évaluation diagnostique (10 min, non notée)}
+		
+		\textbf{Répondre sans calculatrice :}
+		
+		\vspace{0.3cm}
+		
+		\begin{enumerate}
+			\item Calculer :
+			\[
+			\frac{3}{4}-\frac{2}{3}\times\frac{9}{8}.
+			\]
+			
+			\item Simplifier :
+			\[
+			(3^2)^2\times 3^{-3}.
+			\]
+			
+			\item Calculer :
+			\[
+			\sqrt{49+72}.
+			\]
+			
+			\item Développer et réduire :
+			\[
+			(3x-2)^2.
+			\]
+			
+			\item Résoudre dans $\mathbb{R}$ :
+			\[
+			\frac{x+2}{3}=\frac{2x-1}{5}.
+			\]
+		\end{enumerate}
+		
+		\vfill
+		
+		\begin{center}
+			\textbf{Indiquer, pour chaque question, votre degré de confiance :}
+			\qquad
+			$\bigcirc$ Très à l'aise
+			\quad
+			$\bigcirc$ Moyen
+			\quad
+			$\bigcirc$ Difficile
+		\end{center}
+		
+	\end{frame}
+	
+	
+	
+	
+	\section{Chapitre 0 -- Rappels d'outils essentiels}
+	
+	
+	
+	
+	
+	
+	
+	
+	\begin{frame}{Pourquoi ce chapitre ?}
+		\begin{definitionbox}
+			Ce chapitre \key{ne fait pas partie du programme} à proprement parler : il consolide les
+			outils de calcul du lycée dont vous aurez besoin \important{tout au long du semestre}
+			(fonctions, suites, dérivation).
+		\end{definitionbox}
+		
+		\vspace{0.3cm}
+		\begin{applicationbox}
+			\faLightbulb\ Si vous êtes déjà à l'aise avec les puissances, les identités remarquables
+			et la résolution d'équations : ce chapitre sera un simple rappel rapide.
+		\end{applicationbox}
+	\end{frame}
+	
+	\begin{frame}{Priorités opératoires}
+		\begin{definitionbox}
+			\textbf{Ordre de calcul :} parenthèses $\to$ puissances/racines $\to$ multiplications/divisions
+			$\to$ additions/soustractions (de gauche à droite).
+		\end{definitionbox}
+		
+		\vspace{0.3cm}
+		\begin{applicationbox}
+			\faBriefcase\ \textbf{Exemple gestion --} Coût total pour 50 unités, coût fixe 200, coût
+			unitaire 8 :
+			\[
+			C = 200 + 8 \times 50 = 200 + 400 = 600
+			\]
+			\pause
+			\important{Erreur fréquente :} calculer $(200+8)\times 50$ -- ce n'est pas la même chose !
+		\end{applicationbox}
+	\end{frame}
+	
+	\begin{frame}{Puissances et racines}
+		\begin{definitionbox}
+			\begin{align*}
+				& a^m \times a^n = a^{m+n} &\dfrac{a^m}{a^n}=a^{m-n}  \\
+				& (a^m)^n=a^{mn} &a^{-n}=\dfrac{1}{a^n} \\
+				& \sqrt{a}\times\sqrt{b}=\sqrt{ab} &  
+			\end{align*}
+		\end{definitionbox}
+		
+		\pause
+		\vspace{0.3cm}
+		\begin{applicationbox}
+			\faBriefcase\ \textbf{Exemple gestion --} Un capital double tous les $n$ ans : après $n$
+			périodes, il est multiplié par $2^n$ (on retrouvera cette idée avec les suites géométriques).
+		\end{applicationbox}
+	\end{frame}
+	
+	\begin{frame}{Identités remarquables}
+		\begin{definitionbox}
+			\centering
+			$(a+b)^2 = a^2+2ab+b^2 \qquad (a-b)^2=a^2-2ab+b^2 \qquad (a-b)(a+b)=a^2-b^2$
+		\end{definitionbox}
+		
+		\pause
+		\vspace{0.3cm}
+		\begin{applicationbox}
+			\faBriefcase\ \textbf{Utilité --} Factoriser une expression pour \important{résoudre une
+				équation} ou étudier le \important{signe} d'une fonction -- deux compétences essentielles
+			pour les Chapitres 1 et 3.
+		\end{applicationbox}
+	\end{frame}
+	
+	\begin{frame}{Fractions et proportions}
+		\begin{definitionbox}
+			Simplifier, mettre au même dénominateur, multiplier/diviser des fractions -- ce sont les
+			mêmes règles qu'au lycée.
+		\end{definitionbox}
+		
+		\vspace{0.3cm}
+		\begin{applicationbox}
+			\faBriefcase\ \textbf{Exemple gestion --} Une charge représente $\dfrac{3}{8}$ du chiffre
+			d'affaires de 1600 dh :
+			\[
+			\frac{3}{8}\times 1600 = 600 \text{ dh}
+			\]
+		\end{applicationbox}
+	\end{frame}
+	
+	\begin{frame}{Résoudre une équation du 1\textsuperscript{er} degré}
+		\begin{definitionbox}
+			$ax+b=0 \ \Longleftrightarrow\ x=-\dfrac{b}{a}$ \quad (pour $a\neq 0$)
+		\end{definitionbox}
+		
+		\pause
+		\begin{applicationbox}
+			\faBriefcase\ 	\textbf{Exemple 1: } On considère l'équation suivante:  $2x+1=0$ , donc la solution de cette équation  est $x=\frac{-1}{2}$
+		\end{applicationbox}
+		
+		\begin{applicationbox}
+			\faBriefcase\ \textbf{Exemple 2: seuil de rentabilité simplifié} \\
+			Coût : $C(x)=200+8x$. \quad Revenu : $R(x)=12x$. \\
+			On cherche $x$ tel que $C(x)=R(x)$ :
+			\[
+			200+8x = 12x \ \Longrightarrow\ 200 = 4x \ \Longrightarrow\ x = 50
+			\]
+			\pause
+			\important{Interprétation :} à partir de 50 unités vendues, l'entreprise devient rentable.
+		\end{applicationbox}
+	\end{frame}
+	\begin{frame}{Signe de ax+b}
+		On considère le polynôme $	ax+b,\qquad a\neq0,$ la racine est $x_0=-\frac{b}{a}$.
+		\[
+		\begin{array}{c|ccccc}
+			x      & -\infty &                                  & x_0&               &+\infty \\ \hline
+			ax+b &            & -\mbox{signe de }a & 0   & \mbox{signe de }a& 
+		\end{array}
+		\]
+		\begin{alertblock}{À retenir}
+			Pour une expression du premier degré, le signe change en passant par
+			sa racine $x_0=-\frac{b}{a}$.
+		\end{alertblock}
+	\end{frame}
+	
+	
+	\begin{frame}{Exercice -- Équation et signe du premier degré}
+		
+		On considère l'expression :
+		\[
+		A(x)=3x-6.
+		\]
+		
+		\begin{enumerate}
+			\item Résoudre dans $\mathbb{R}$ l'équation :
+			\[
+			3x-6=0.
+			\]
+			
+			\item Étudier le signe de $A(x)=3x-6$ sur $\mathbb{R}$.
+			
+			\item Dresser le tableau de signe de $A(x)$.
+			
+			\item En déduire l'ensemble des solutions de :
+			\[
+			3x-6\geq 0.
+			\]
+		\end{enumerate}
+		
+		\vfill
+		
+		\begin{center}
+			\textit{Rappel : le signe de $ax+b$ change au niveau de sa racine.}
+		\end{center}
+		
+	\end{frame}
+	
+	
+	
+	\begin{frame}{Résoudre une équation du 2\textsuperscript{nd} degré}
+		\begin{definitionbox}
+			$ax^2+bx+c=0$, \quad $\Delta=b^2-4ac$
+			\begin{itemize}
+				\item $\Delta>0$ : deux solutions $x_{1,2}=\dfrac{-b\pm\sqrt{\Delta}}{2a}$
+				\item $\Delta=0$ : une solution $x_0=\dfrac{-b}{2a}$
+				\item $\Delta<0$ : aucune solution réelle
+			\end{itemize}
+		\end{definitionbox}
+		
+		\pause
+		\vspace{0.2cm}
+		\begin{applicationbox}
+			\faBriefcase\ On retrouvera cette formule au \important{Chapitre 1} pour trouver les
+			quantités qui annulent un profit modélisé par une fonction du second degré.
+		\end{applicationbox}
+	\end{frame}
+	
+	
+	
+	\begin{frame}{Exercice d'application}
+		\begin{applicationbox}
+			\textbf{Exercices d'application:} \\
+			Résoudre les équations suivantes, d'inconnue $ x \in \mathbb{R}$
+			\begin{itemize}
+				\item $ x^2+3 x+2=0$  \\
+				\item $ 2 x^2-4 x+1=0$  \\
+				\item $ 3 x^2+5 x+7=0$  \\
+				\item $ 4 x^2+12 x+9=0$  \\
+				\item $-5 x^2-10 x-3=0$  \\
+				\item $-2 x^2+5 x+7=0$  \\
+				\item $ x^2-\sqrt{2} x-3 =0$
+			\end{itemize}
+			
+		\end{applicationbox}
+	\end{frame}
+	
+	
+	
+	
+	\begin{frame}{Signe d'une expression, intervalles}
+		\begin{definitionbox}
+			Étudier le signe des polynômes de la forme $ax^2+bx+c$ : on résout d'abord l'équation associée, puis on
+			place les racines sur un \important{tableau de signes}.
+		\end{definitionbox}
+		
+		\pause
+		
+		On considère $	P(x)=ax^2+bx+c,\qquad a\neq0,$ avec $	\Delta=b^2-4ac.$
+		
+		\begin{itemize}
+			\item Cas $\Delta>0$
+			Le trinôme possède deux racines réelles distinctes :
+			\[
+			x_1=\frac{-b-\sqrt{\Delta}}{2a},
+			\qquad
+			x_2=\frac{-b+\sqrt{\Delta}}{2a},
+			\qquad x_1<x_2.
+			\]
+		\end{itemize}
+	\end{frame}
+	
+	
+	\begin{frame}
+		\begin{center}
+			\renewcommand{\arraystretch}{1.4}
+			\[
+			\begin{array}{c|ccccccc}
+				x & -\infty & & x_1 & & x_2 & &+\infty \\ \hline
+				P(x) & & \mbox{signe de }a & 0 & - \mbox{signe de }a& 0 & \mbox{signe de }a&\\
+			\end{array}
+			\]
+		\end{center}
+		
+		\begin{alertblock}{À retenir}
+			Le signe de $P(x)$ est celui de $a$ à l'extérieur des racines
+			et le signe opposé à $a$ entre les racines.
+		\end{alertblock}
+		\begin{itemize}
+			\item Cas $\Delta<0: $ Le signe de $P(x)$ est toujours du signe de $a$ sur tout l'ensemble des réels. Il ne s'annule jamais.
+			\item  Cas $\Delta=0: $ Le signe de $P(x)$ est toujours du signe de $a$, et il s'annule pour $x=\frac{-b}{2a}$.
+		\end{itemize}
+	\end{frame}
+	
+	\begin{frame}{Exercice}
+		\begin{applicationbox}
+			\textbf{Exercices d'application:} \\
+			Étudiez le signe des polynômes suivants en traçant le tableau de signes:
+			\begin{itemize}
+				\item $ x^2+3 x+2$  \\
+				\item $ 2 x^2-4 x+1$  \\
+				\item $ 3 x^2+5 x+7$  \\
+				\item $ 4 x^2+12 x+9$  \\
+				\item $-5 x^2-10 x-3$  \\
+				\item $ x^2-\sqrt{2} x-3 $
+			\end{itemize}
+			
+		\end{applicationbox}
+	\end{frame}
+	\begin{frame}{Taux de variation : mesurer une évolution}
+		
+		\textbf{\color{blue}À quoi sert le taux de variation ?} \\
+		
+		Lorsqu'une grandeur passe d'une valeur initiale $V_0$ à une valeur
+		finale $V_1$, le taux de variation permet de mesurer
+		\textbf{l'évolution relative} de cette grandeur.
+		
+		\[
+		\boxed{
+			t=\frac{V_1-V_0}{V_0}
+		}
+		\]
+		
+		\begin{applicationbox}
+			\textbf{Exemple:} \\
+			Le prix d'un produit passe de $100$ DH à $120$ DH.
+			
+			\[
+			t=\frac{120-100}{100}
+			=\frac{20}{100}
+			=0{,}20=20\%.
+			\]
+			
+			Le prix a donc \textbf{augmenté de $20\,\%$}.
+		\end{applicationbox}
+		
+		
+		
+	\end{frame}
+	
+	\begin{frame}{Le taux de variation : À retenir}
+		
+		\begin{applicationbox}
+			\textbf{ \color{red}À retenir} \\
+			
+			Le taux de variation répond à la question :
+			
+			\begin{center}
+				\textbf{« De combien, en pourcentage, la grandeur a-t-elle évolué ? »}
+			\end{center}
+		\end{applicationbox}
+		
+	\end{frame}
+	
+	
+	
+	\begin{frame}{Coefficient multiplicateur et variations}
+		
+		\textbf{\color{blue}À quoi sert le coefficient multiplicateur ?} \\
+		Le coefficient multiplicateur permet de passer
+		\textbf{directement de la valeur initiale à la valeur finale}. \vspace{-0.6cm}
+	
+	\[
+	\boxed{
+		c=\frac{V_1}{V_0}
+	}
+	\]
+	
+	\begin{applicationbox}{Dans le même exemple}
+		Le prix passe de $100$ DH à $120$ DH : $	c=\frac{120}{100}=1{,}2$. Donc :
+		\[
+		\boxed{120=1{,}2\times100}
+		\]
+	\end{applicationbox}
+	Le coefficient multiplicateur répond à la question :
+	
+	\begin{center}
+		\textbf{« Par quel nombre dois-je multiplier la valeur initiale
+			pour obtenir la nouvelle valeur ? »}
+	\end{center}
+\end{frame}
+
+\begin{frame}{Variations successives}	
+	
+	
+	\begin{definitionbox}
+		\textbf{Principe: }Lorsqu'une grandeur subit plusieurs variations successives,
+		on applique chaque coefficient multiplicateur à la valeur obtenue
+		à l'étape précédente.
+	\end{definitionbox}
+	
+	\begin{exampleblock}{Cas de deux variations}
+		Une grandeur passe de $V_0$ à $V_1$ avec un taux $t_1$, puis de
+		$V_1$ à $V_2$ avec un taux $t_2$.
+		\vspace{-0.3cm}
+		\[
+		V_1=(1+t_1)V_0 	\vspace{-0.3cm}
+		\]
+		
+		puis 	\vspace{-0.7cm}
+		
+		\[
+		V_2=(1+t_2)V_1.
+		\]
+		
+		En remplaçant $V_1$ par son expression :
+		
+		\[
+		\boxed{
+			V_2=(1+t_2)(1+t_1)V_0
+		}
+		\]
+	\end{exampleblock}
+	
+	
+	
+\end{frame}
+\begin{frame}{Coefficient multiplicateur global}
+	
+	Pour deux variations successives, le coefficient multiplicateur global est :
+	\vspace{-0.2cm}
+	\[
+	\boxed{
+		c_{\mathrm{global}}=(1+t_1)(1+t_2)
+	}
+	\]
+	\vspace{-0.4cm}
+	et donc :
+	
+	\[
+	\boxed{
+		V_2=c_{\mathrm{global}}V_0
+	}
+	\]
+	
+	\vspace{-0.4cm}
+	
+	\begin{applicationbox}
+		{	\bf Exemple:} 	Un prix de $100$ DH augmente de $20\,\%$, puis diminue de $10\,\%$.
+		\vspace{-0.2cm}
+		\[
+		V_1=1{,}20\times100=120
+		\]
+		\vspace{-0.5cm}
+		\[
+		V_2=0{,}90\times120=108.
+		\]
+		\vspace{-0.4cm}
+		Ainsi :
+		\[
+		c_{\mathrm{global}}=1{,}20\times0{,}90=1{,}08.
+		\]
+		\vspace{-0.2cm}
+		Le prix final est donc de $108$ DH.
+	\end{applicationbox}
+\end{frame}
+
+\begin{frame}{Exercice 1 -- Taux de variation}
+	
+	Le chiffre d'affaires d'une entreprise est passé de
+	$250\,000$ DH en 2025 à $280\,000$ DH en 2026.
+	
+	\begin{enumerate}
+		\item Calculer le taux de variation du chiffre d'affaires.
+		\item Exprimer le résultat en pourcentage.
+		\item Interpréter le résultat.
+	\end{enumerate}
+	
+	\vfill
+	
+	\begin{center}
+		\textit{Rappel :}\qquad
+		\[
+		t=\frac{V_1-V_0}{V_0}
+		\]
+	\end{center}
+	
+\end{frame}
+
+\begin{frame}{Correction -- Exercice 1}
+	\begin{enumerate}
+		
+		\item On a :
+		\[
+		V_0=250\,000,
+		\qquad
+		V_1=280\,000.
+		\]
+		
+		Le taux de variation est :
+		
+		\[
+		t=\frac{V_1-V_0}{V_0}
+		=\frac{280\,000-250\,000}{250\,000}
+		=\frac{30\,000}{250\,000}
+		=0{,}12.
+		\]
+		
+		\item Le taux de variation en pourcentage est :
+		
+		\[
+		\boxed{t=12\,\%}
+		\]
+		
+		\item  \textbf{Interprétation: }Le chiffre d'affaires a \textbf{augmenté de $12\,\%$}
+		entre 2025 et 2026.
+		
+	\end{enumerate}
+	
+\end{frame}
+
+\begin{frame}{Exercice 2 -- Coefficient multiplicateur et variations successives}
+	
+	Le prix d'un article est initialement de $500$ DH.
+	Il augmente de $20\,\%$, puis diminue de $10\,\%$.
+	
+	\begin{enumerate}
+		\item Déterminer le coefficient multiplicateur associé
+		à chaque variation.
+		
+		\item Calculer le prix après les deux variations successives.
+		
+		\item Déterminer le coefficient multiplicateur global.
+		
+		\item En déduire le taux de variation global.
+	\end{enumerate}
+	
+	\vfill
+	
+	\begin{center}
+		\textit{Rappel :}\qquad
+		\[
+		V_1=cV_0
+		\]
+	\end{center}
+	
+\end{frame}
+
+
+\begin{frame}{Correction -- Exercice 2}
+	\begin{enumerate}
+		
+		\item 
+		
+		Hausse de $20\,\%$ :
+		\[
+		c_1=1+\frac{20}{100}=1{,}20.
+		\]
+		
+		Baisse de $10\,\%$ :
+		\[
+		c_2=1-\frac{10}{100}=0{,}90.
+		\]
+		
+		\item Le prix après les deux variations est donné par: 
+		\vspace{-0.3cm}
+		\[
+		V_2=c_2c_1V_0
+		=0{,}90\times1{,}20\times500
+		=\boxed{540\text{ DH}}.
+		\]
+		
+		\item Le coefficient multiplicateur global est donné par: 
+		\vspace{-0.3cm}
+		\[
+		c_{\mathrm{global}}
+		=1{,}20\times0{,}90
+		=\boxed{1{,}08}.
+		\]
+		
+		\item Le taux de variation global est donné par
+		\vspace{-0.3cm}
+		\[
+		t_{\mathrm{global}}=1{,}08-1
+		=\boxed{0{,}08=8\,\%}.
+		\]
+		
+		\textbf{Conclusion:} Le prix a finalement \textbf{augmenté de $8\,\%$}.
+		
+	\end{enumerate}
+	
+\end{frame}
+
+
+
+
+
+\begin{frame}{Synthèse -- Chapitre 0}
+	\begin{applicationbox}
+		\faCheckCircle\ Priorités opératoires \quad
+		\faCheckCircle\ Puissances \& racines \quad
+		\faCheckCircle\ Identités remarquables \\[4pt]
+		\faCheckCircle\ Fractions \quad
+		\faCheckCircle\ Équations 1\textsuperscript{er}/2\textsuperscript{nd} degré \quad
+		\faCheckCircle\ Signe \& intervalles
+	\end{applicationbox}
+	
+	\vspace{0.4cm}
+	\begin{definitionbox}
+		\centering
+		\key{Ces outils reviendront constamment dès le Chapitre 1 : les fonctions.}
+	\end{definitionbox}
+\end{frame}
+
+% ===================== DEBUT DU CHAPITRE =====================
+\section{Chapitre 1 -- Les fonctions}
+\subsection{Introduction}
+
+\begin{frame}{Objectifs du chapitre}
+	\begin{definitionbox}
+		Une fonction permet de \key{modéliser une relation} entre deux grandeurs -- par exemple
+		la quantité produite et le coût, ou la quantité vendue et le revenu.
+	\end{definitionbox}
+	
+	\vspace{0.3cm}
+	\begin{applicationbox}
+		\faBullseye\ À la fin du chapitre, vous saurez construire et étudier les fonctions de
+		\important{coût}, \important{revenu} et \important{profit} d'une entreprise, et déterminer
+		son \important{seuil de rentabilité}.
+	\end{applicationbox}
+\end{frame}
+
+\begin{frame}{Plan du chapitre}
+	\small
+	\begin{multicols}{2}
+		\tableofcontents
+	\end{multicols}
+\end{frame}
+
+\begin{frame}{Pourquoi des fonctions en gestion ?}
+	Chaque décision de gestion relie une grandeur que l'on \key{contrôle} à une grandeur que l'on \key{observe}.
+	\medskip
+	\begin{center}\small
+		\renewcommand{\arraystretch}{1.3}
+		\begin{tabular}{lll}
+			\toprule
+			\textbf{Grandeur étudiée} & \textbf{Fonction} & \textbf{Exemple}\\
+			\midrule
+			Coût de production & $C(x)$ & $C(x)=500+12x$\\
+			Revenu des ventes & $R(x)$ & $R(x)=20x$\\
+			Profit (bénéfice) & $B(x)=R(x)-C(x)$ & $B(x)=8x-500$\\
+			Prix selon la quantité demandée & $y=D(x)$ & $y=-4x+200$\\
+			Capital placé après $n$ années & $y=x(1+i)^n$ & $10\,000\times1{,}04^{\,n}$\\
+			\bottomrule
+		\end{tabular}
+	\end{center}
+	\begin{applicationbox}
+		\faLightbulb\ Étudier ces fonctions permet de répondre à : \emph{combien produire ? à quel prix vendre ? quelle banque choisir ?}
+	\end{applicationbox}
+\end{frame}
+
+\subsection{Notion de fonction}
+
+\begin{frame}{Variables et relations}
+	\begin{definitionbox}[Variables]
+		Une \key{variable} est une grandeur qui peut prendre plusieurs valeurs ($q$ : quantité, $p$ : prix, $c$ : coût\ldots). Une \key{constante} garde la même valeur.\\[2pt]
+		La variable \key{indépendante} $x$ se choisit librement ; la variable \key{dépendante} $y$ s'en déduit.
+	\end{definitionbox}
+	\vspace{0.2cm}
+	\begin{definitionbox}[Relation]
+		Une \key{relation} associe à des valeurs de $x$ des valeurs de $y$ (ensemble de couples $(x\,;y)$).
+	\end{definitionbox}
+	\vspace{0.2cm}
+	\begin{exemplebox}
+		$A=\{(x;y):\ x<y\}$ contient $(1;2)$ et $(1;3)$ : à $x=1$ correspondent \emph{plusieurs} valeurs de $y$.\\
+		$B=\{(x;y):\ y=2x-1\}$ : à chaque $x$ correspond \emph{une seule} valeur $y$.
+	\end{exemplebox}
+\end{frame}
+
+\begin{frame}{Définition d'une fonction}
+	\begin{definitionbox}
+		Une \key{fonction} $f$ associe à \important{chaque} élément $x$ d'un ensemble de départ $D$ \important{un seul} réel $f(x)$ :
+		\[ f : D \longrightarrow \R,\qquad x \longmapsto f(x). \]
+	\end{definitionbox}
+	\begin{itemize}
+		\item $D$ est l'\key{ensemble de définition} (ou domaine) de $f$ ;
+		\item $f(x)$ est l'\key{image} de $x$ par $f$ ;
+		\item le \key{graphe} de $f$ est la courbe d'équation $y=f(x)$.
+	\end{itemize}
+	\begin{attentionbox}
+		Toute fonction est une relation, mais \emph{toute relation n'est pas une fonction} : la relation $A$ de la diapositive précédente n'en est pas une, la relation $B$ est la fonction $f(x)=2x-1$.
+	\end{attentionbox}
+\end{frame}
+
+\begin{frame}{Image et antécédent}
+	Soit $f(x)=x^2+x-2$.
+	\[ f(1)=1+1-2=0,\qquad f(-2)=4-2-2=0,\qquad f(x+1)=x^2+3x. \]
+	\begin{itemize}
+		\item $0$ est l'\key{image} de $1$ et de $-2$ ;
+		\item $1$ et $-2$ sont des \key{antécédents} de $0$.
+	\end{itemize}
+	\begin{attentionbox}
+		Une valeur $x$ a \important{une seule} image, mais un nombre $y$ peut avoir \important{zéro, un ou plusieurs} antécédents.
+	\end{attentionbox}
+	\vspace{0.1cm}
+	\begin{exemplebox}[{Exemple : $f:\R\to\R_+,\ x\mapsto\max\{x,1\}$}]
+		$1$ a une infinité d'antécédents (tous les $x\le1$), $3$ en a un seul, et $\tfrac12$ n'en a aucun.
+	\end{exemplebox}
+\end{frame}
+
+\begin{frame}{Ensemble de définition}
+	On cherche les valeurs de $x$ pour lesquelles $f(x)$ \important{existe}.
+	\begin{center}\renewcommand{\arraystretch}{1.35}
+		\begin{tabular}{lll}
+			\toprule
+			\textbf{Expression} & \textbf{Condition} & \textbf{Exemple}\\
+			\midrule
+			$\dfrac{1}{g(x)}$ & $g(x)\neq 0$ & $\dfrac{1}{x-2}$ : $\R\setminus\{2\}$\\
+			$\sqrt{g(x)}$ & $g(x)\ge 0$ & $\sqrt{x+3}$ : $[-3,+\infty[$\\
+			$\ln g(x)$ & $g(x)>0$ & $\ln(x-1)$ : $]1,+\infty[$\\
+			polynôme & aucune & $x^2+x-2$ : $\R$\\
+			\bottomrule
+		\end{tabular}
+	\end{center}
+	\begin{attentionbox}
+		La division par $0$ est impossible : $\dfrac{a}{0}$ n'a pas de sens.
+	\end{attentionbox}
+\end{frame}
+
+\begin{frame}{Exercice -- Ensemble de définition, image, antécédent}
+	\begin{columns}[T]
+		\begin{column}{0.52\textwidth}
+			\begin{exercicebox}
+				\begin{enumerate}\small
+					\item Déterminer l'ensemble de définition de\\ $f(x)=\dfrac{1}{x-5}$, \ $g(x)=\sqrt{2x-6}$, \ $h(x)=\ln(10-x)$.
+					\item Soit $k(x)=x^2+x-2$. Calculer $k(0)$, $k(1)$, $k(-2)$, puis déterminer les antécédents de $4$.
+				\end{enumerate}
+			\end{exercicebox}
+		\end{column}
+		\begin{column}{0.46\textwidth}
+			\onslide<2->{
+				\begin{definitionbox}[Correction]\small
+					1. $D_f=\R\setminus\{5\}$ ; $2x-6\ge0$ donc $D_g=[3,+\infty[$ ; $10-x>0$ donc $D_h=]-\infty,10[$.\\[3pt]
+					2. $k(0)=-2$, $k(1)=0$, $k(-2)=0$.\\
+					$k(x)=4\iff x^2+x-6=0$, $\Delta=25$, donc $x=2$ ou $x=-3$.
+			\end{definitionbox}}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\subsection{Représentation graphique et opérations}
+
+\begin{frame}{Représentation graphique}
+	\begin{columns}[T]
+		\begin{column}{0.47\textwidth}
+			Dans un repère, on place les points $(x\,;f(x))$ : le graphe de $f$.\\[6pt]
+			Pour $f(x)=x^2+x-2$ :
+			\begin{itemize}
+				\item $f(0)=-2$ : le graphe coupe l'axe des $y$ en $-2$ ;
+				\item $f(x)=0$ : il coupe l'axe des $x$ en $-2$ et $1$.
+			\end{itemize}
+			\begin{applicationbox}\small
+				En économie, seul le \important{quadrant I} ($x\ge0$, $y\ge0$) a un sens : ni quantités ni prix négatifs.
+			\end{applicationbox}
+		\end{column}
+		\begin{column}{0.5\textwidth}
+			\begin{tikzpicture}\begin{axis}[gestion,xmin=-3.2,xmax=2.6,ymin=-3,ymax=5]
+					\addplot[DarkBlue,domain=-3:2.2,samples=60]{x^2+x-2};
+					\addplot[only marks,mark=*,DarkRed] coordinates{(-2,0)(1,0)(0,-2)};
+			\end{axis}\end{tikzpicture}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{Opérations sur les fonctions}
+	Pour $f$ et $g$ définies sur $D$ :
+	\[ (f+g)(x)=f(x)+g(x),\qquad (f-g)(x)=f(x)-g(x) \]
+	\[ (f\cdot g)(x)=f(x)\,g(x),\qquad \Big(\frac fg\Big)(x)=\frac{f(x)}{g(x)}\ \ (g(x)\neq0) \]
+	\begin{applicationbox}
+		\faChartLine\ \textbf{Le profit est une différence de fonctions.}\\
+		$R(x)=20x$ et $C(x)=500+12x$ donnent
+		\[ B(x)=R(x)-C(x)=20x-(500+12x)=8x-500. \]
+	\end{applicationbox}
+	\begin{exemplebox}[Coût moyen : un quotient]
+		$C_M(x)=\dfrac{C(x)}{x}=\dfrac{500+12x}{x}$ pour $x>0$ : coût par unité produite.
+	\end{exemplebox}
+\end{frame}
+
+\begin{frame}{Composition de fonctions}
+	\begin{definitionbox}
+		Si $f:A\to B$ et $g:B\to C$, la \key{composée} $g\circ f$ est définie par $(g\circ f)(x)=g\big(f(x)\big)$.
+		\[ x\ \xrightarrow{\ f\ }\ y=f(x)\ \xrightarrow{\ g\ }\ z=g(y) \qquad\text{soit}\qquad x\xrightarrow{\ g\circ f\ } z \]
+	\end{definitionbox}
+	\begin{exemplebox}[En gestion]
+		$x$ : heures-machine ; $f(x)=30x$ : unités produites ; $g(y)=15y$ : revenu. Alors $(g\circ f)(x)=15\times30x=450x$.
+	\end{exemplebox}
+	\begin{attentionbox}
+		En général $f(g(x))\ne g(f(x))$. Avec $f(x)=x^2+x+1$ et $g(x)=x+1$ :\\
+		$g(f(x))=x^2+x+2$ \quad mais \quad $f(g(x))=x^2+3x+3$.
+	\end{attentionbox}
+\end{frame}
+
+\subsection{Fonctions affines et marché}
+
+\begin{frame}{La fonction affine $f(x)=ax+b$}
+	\begin{columns}[T]
+		\begin{column}{0.5\textwidth}
+			\begin{definitionbox}
+				Son graphe est une \key{droite} :\\
+				$a$ = \key{pente} $=\dfrac{f(x_2)-f(x_1)}{x_2-x_1}$,\\
+				$b=f(0)$ = ordonnée à l'origine.
+			\end{definitionbox}
+			\begin{itemize}\small
+				\item $a>0$ : croissante ; $a<0$ : décroissante ; $a=0$ : constante.
+				\item Deux droites de même pente sont parallèles : $y=2x+1$ et $y=2x+2$ ne se coupent pas.
+			\end{itemize}
+			\begin{applicationbox}\small
+				$C(x)=b+ax$ : $b$ = \important{coût fixe}, $a$ = \important{coût variable unitaire}.
+			\end{applicationbox}
+		\end{column}
+		\begin{column}{0.48\textwidth}
+			\begin{tikzpicture}\begin{axis}[gestion,xmin=-2,xmax=3,ymin=-3,ymax=6]
+					\addplot[DarkBlue,domain=-2:3]{2*x+1};
+					\addplot[DarkRed,domain=-2:3]{-x+3};
+					\legend{$y=2x+1$,$y=-x+3$}
+			\end{axis}\end{tikzpicture}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{Droite passant par deux points : la fonction de demande}
+	\begin{columns}[T]
+		\begin{column}{0.54\textwidth}
+			\small
+			La demande de montres est de $10$ unités à $160$ dh et de $20$ unités à $120$ dh. Convention : \key{quantité} $x$ en abscisse, \key{prix} $y$ en ordonnée.
+			\[ a=\frac{120-160}{20-10}=-4 \]
+			\[ 160=-4\times10+b\ \Rightarrow\ b=200 \]
+			\begin{definitionbox}[Équation de la demande]
+				$y=-4x+200$
+			\end{definitionbox}
+			\vspace{2pt}
+			Interprétation : prix maximal $200$ dh ; pente négative : \important{quand le prix monte, la demande baisse}.
+		\end{column}
+		\begin{column}{0.44\textwidth}
+			\begin{tikzpicture}\begin{axis}[gestion,xmin=0,xmax=55,ymin=0,ymax=215,xlabel={quantité $x$},ylabel={prix $y$}]
+					\addplot[DarkBlue,domain=0:50]{-4*x+200};
+					\addplot[only marks,mark=*,DarkRed] coordinates{(10,160)(20,120)};
+			\end{axis}\end{tikzpicture}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{Offre, demande et équilibre du marché}
+	\begin{columns}[T]
+		\begin{column}{0.54\textwidth}
+			\small
+			\begin{itemize}
+				\item \key{Demande} : droite de pente \important{négative}.
+				\item \key{Offre} : droite de pente \important{positive}.
+				\item \key{Équilibre} : point d'intersection, où la quantité demandée égale la quantité offerte.
+			\end{itemize}
+			\begin{exemplebox}[Exemple]
+				Demande $y=-5x+11$, offre $y=2x+4$ :
+				\[ -5x+11=2x+4\iff x=1 \]
+				puis $y=2\times1+4=6$.\\
+				Équilibre : quantité $1$, prix $6$.
+			\end{exemplebox}
+		\end{column}
+		\begin{column}{0.44\textwidth}
+			\begin{tikzpicture}\begin{axis}[gestion,xmin=0,xmax=2.4,ymin=0,ymax=12,xlabel={quantité},ylabel={prix}]
+					\addplot[DarkRed,domain=0:2.2]{-5*x+11};
+					\addplot[DarkBlue,domain=0:2.4]{2*x+4};
+					\addplot[only marks,mark=*,Mustard!80!black] coordinates{(1,6)};
+					\legend{demande,offre}
+			\end{axis}\end{tikzpicture}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{Exercice -- Demande, offre et équilibre}
+	\begin{columns}[T]
+		\begin{column}{0.52\textwidth}
+			\begin{exercicebox}\small
+				Si le prix d'une montre est de $80$ dh, aucune n'est vendue ; si elle est gratuite, la demande est de $40$ montres. L'offre est donnée par $y=x+20$.
+				\begin{enumerate}
+					\item Déterminer l'équation de la demande.
+					\item Déterminer l'équilibre du marché.
+					\item Interpréter.
+				\end{enumerate}
+			\end{exercicebox}
+		\end{column}
+		\begin{column}{0.46\textwidth}
+			\onslide<2->{
+				\begin{definitionbox}[Correction]\small
+					1. Points $(0\,;80)$ et $(40\,;0)$ : $a=\dfrac{0-80}{40-0}=-2$, $b=80$, d'où $y=-2x+80$.\\[3pt]
+					2. $-2x+80=x+20\Rightarrow x=20$, puis $y=40$.\\[3pt]
+					3. À $40$ dh, les consommateurs demandent $20$ montres et les producteurs en offrent $20$.
+			\end{definitionbox}}
+		\end{column}
+	\end{columns}
+\end{frame}
+\subsection{Fonction du second degré}
+
+\begin{frame}{Fonction du second degré}
+	\begin{definitionbox}
+		$f(x)=ax^2+bx+c$ avec $a\neq0$ : son graphe est une \key{parabole}.
+	\end{definitionbox}
+	\begin{columns}[T]
+		\begin{column}{0.54\textwidth}
+			\small
+			\begin{itemize}
+				\item $a>0$ : parabole tournée vers le \important{haut} (minimum) ;
+				\item $a<0$ : parabole tournée vers le \important{bas} (maximum) ;
+				\item \key{sommet} : $x_S=-\dfrac{b}{2a}$, \ $y_S=f(x_S)$ ;
+				\item racines si $\Delta=b^2-4ac\ge0$ : $x=\frac{-b\pm\sqrt\Delta}{2a}$.
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.46\textwidth}
+			\begin{tikzpicture}\begin{axis}[gestion,xmin=-3,xmax=3,ymin=-5,ymax=5,height=4.6cm]
+					\addplot[DarkBlue,domain=-2.4:2.4,samples=50]{x^2-2};
+					\addplot[DarkRed,domain=-2.4:2.4,samples=50]{-x^2+2};
+					\legend{$a>0$,$a<0$}
+			\end{axis}\end{tikzpicture}
+		\end{column}
+	\end{columns}
+	\begin{applicationbox}\small
+		Le \important{profit} d'une entreprise est souvent modélisé par une parabole tournée vers le bas : il existe une quantité qui le rend maximal.
+	\end{applicationbox}
+\end{frame}
+
+\begin{frame}{Exemple : étudier $f(x)=-x^2+8x-12$}
+	\begin{columns}[T]
+		\begin{column}{0.54\textwidth}
+			\small
+			$a=-1<0$ : parabole tournée vers le bas.
+			\begin{itemize}
+				\item Sommet : $x_S=-\dfrac{8}{2(-1)}=4$, \ $f(4)=-16+32-12=4$, donc $S(4\,;4)$.
+				\item Racines : $x^2-8x+12=0$, $\Delta=16$, donc $x=2$ ou $x=6$.
+				\item Signe : $f(x)>0$ pour $2<x<6$.
+			\end{itemize}
+			\[
+			\begin{array}{c|ccccc}
+				x & -\infty & & 4 & & +\infty\\\hline
+				f(x) & & \nearrow & 4 & \searrow &
+			\end{array}
+			\]
+		\end{column}
+		\begin{column}{0.44\textwidth}
+			\begin{tikzpicture}\begin{axis}[gestion,xmin=0,xmax=8,ymin=-13,ymax=6]
+					\addplot[DarkBlue,domain=0:8,samples=60]{-x^2+8*x-12};
+					\addplot[only marks,mark=*,DarkRed] coordinates{(2,0)(6,0)(4,4)};
+			\end{axis}\end{tikzpicture}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\subsection{Autres fonctions usuelles}
+
+\begin{frame}{Fonctions puissances}
+	\begin{columns}[T]
+		\begin{column}{0.54\textwidth}
+			\begin{definitionbox}
+				$f(x)=x^{\alpha}$ avec $\alpha$ réel fixé.
+			\end{definitionbox}
+			\small
+			Domaine selon $\alpha$ :
+			\begin{itemize}
+				\item $\alpha$ entier négatif ou nul : $\R\setminus\{0\}$ ;
+				\item $\alpha=\frac1q$, $q$ pair (racine carrée\ldots) : $[0,+\infty[$ ;
+				\item $\alpha=\frac1q$, $q$ impair : $\R$.
+			\end{itemize}
+			\begin{exemplebox}
+				$x^{1/2}=\sqrt{x}$, \ $x^{-1}=\dfrac1x$, \ $x^{3/2}=\sqrt{x^3}$.
+			\end{exemplebox}
+		\end{column}
+		\begin{column}{0.44\textwidth}
+			\begin{tikzpicture}\begin{axis}[gestion,xmin=0,xmax=3,ymin=0,ymax=3.2]
+					\addplot[DarkBlue,domain=0:3,samples=60]{sqrt(x)};
+					\addplot[Mustard!80!black,domain=0:3]{x};
+					\addplot[DarkRed,domain=0:1.75,samples=50]{x^2};
+					\legend{$x^{1/2}$,$x$,$x^2$}
+			\end{axis}\end{tikzpicture}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{Fonctions rationnelles et hyperbole}
+	\begin{columns}[T]
+		\begin{column}{0.54\textwidth}
+			\begin{definitionbox}
+				$f(x)=\dfrac{p(x)}{q(x)}$ où $p$ et $q$ sont des polynômes ; définie si $q(x)\neq0$.
+			\end{definitionbox}
+			\small
+			\key{Hyperbole} $y=\frac ax$ : domaine $\R^*$ ; décroissante sur $]0,+\infty[$ si $a>0$.
+			\begin{exemplebox}[Demande hyperbolique]
+				Demande $y=\frac{12}{x+1}$, offre $y=x+2$ :\\
+				$x^2+3x-10=0$, donc $x=2$ ($x=-5$ rejeté).\\
+				Équilibre : $(2\,;4)$.
+			\end{exemplebox}
+		\end{column}
+		\begin{column}{0.44\textwidth}
+			\begin{tikzpicture}\begin{axis}[gestion,xmin=0,xmax=5,ymin=0,ymax=12,xlabel={quantité},ylabel={prix}]
+					\addplot[DarkRed,domain=0:5,samples=60]{12/(x+1)};
+					\addplot[DarkBlue,domain=0:5]{x+2};
+					\addplot[only marks,mark=*,Mustard!80!black] coordinates{(2,4)};
+					\legend{demande,offre}
+			\end{axis}\end{tikzpicture}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{Fonction exponentielle}
+	\begin{columns}[T]
+		\begin{column}{0.54\textwidth}
+			\begin{definitionbox}
+				$f(x)=a^x$ avec $a>0$ et $a\neq1$ (cas usuel : $e^x$, $e\approx2{,}718$).
+			\end{definitionbox}
+			\small
+			\begin{itemize}
+				\item définie sur $\R$, toujours \important{strictement positive} ;
+				\item $a>1$ : croissante ; $0<a<1$ : décroissante ;
+				\item $a^0=1$, \ $a^{x+y}=a^xa^y$, \ $a^{-x}=\dfrac1{a^x}$ ;
+				\item si $a>1$ : $a^x\to0$ quand $x\to-\infty$ et $a^x\to+\infty$ quand $x\to+\infty$.
+			\end{itemize}
+			\begin{applicationbox}\small
+				Modèle de la \important{croissance par pourcentage constant} : capital, chiffre d'affaires.
+			\end{applicationbox}
+		\end{column}
+		\begin{column}{0.44\textwidth}
+			\begin{tikzpicture}\begin{axis}[gestion,xmin=-3,xmax=3,ymin=0,ymax=8.5]
+					\addplot[DarkBlue,domain=-3:3,samples=60]{2^x};
+					\addplot[DarkRed,domain=-3:3,samples=60]{0.5^x};
+					\legend{$2^x$,$(0{,}5)^x$}
+			\end{axis}\end{tikzpicture}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{Fonction logarithme}
+	\begin{columns}[T]
+		\begin{column}{0.54\textwidth}
+			\begin{definitionbox}
+				$\ln$ est la fonction \key{réciproque} de $\exp$ :\quad $y=\ln x\iff x=e^y$, définie pour $x>0$.
+			\end{definitionbox}
+			\small
+			\[ \ln1=0,\quad \ln e=1,\quad \ln(e^x)=x,\quad e^{\ln x}=x \]
+			\[ \ln(xy)=\ln x+\ln y,\quad \ln\tfrac xy=\ln x-\ln y,\quad \ln(x^r)=r\ln x \]
+			\begin{attentionbox}\small
+				$\ln x$ n'existe pas pour $x\le 0$.
+			\end{attentionbox}
+		\end{column}
+		\begin{column}{0.44\textwidth}
+			\begin{tikzpicture}\begin{axis}[gestion,xmin=-3,xmax=6,ymin=-3,ymax=6,width=4.8cm]
+					\addplot[DarkBlue,domain=-3:1.8,samples=60]{exp(x)};
+					\addplot[DarkRed,domain=0.05:6,samples=80]{ln(x)};
+					\addplot[dashed,gray,domain=-3:6]{x};
+					\legend{$e^x$,$\ln x$}
+			\end{axis}\end{tikzpicture}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{Application : les intérêts composés}
+	Un capital $x$ placé au taux annuel $i$, intérêts versés $k$ fois par an, devient après $n$ années
+	\[ y=x\Big(1+\frac ik\Big)^{kn}. \]
+	\begin{exemplebox}[10\,000 francs placés à 4 \%]
+		\centering\small
+		\renewcommand{\arraystretch}{1.25}
+		\begin{tabular}{rcc}
+			\toprule
+			\textbf{Années $n$} & \textbf{1 versement/an} & \textbf{4 versements/an}\\
+			\midrule
+			0 & 10\,000 & 10\,000\\
+			1 & 10\,400 & 10\,406,04\\
+			5 & 12\,166,53 & 12\,201,90\\
+			10 & 14\,802,44 & 14\,888,64\\
+			\bottomrule
+		\end{tabular}
+	\end{exemplebox}
+	\begin{applicationbox}\small
+		Plus les versements sont fréquents, plus le capital final est élevé (suites géométriques : Chapitre 2).
+	\end{applicationbox}
+\end{frame}
+
+\subsection{Monotonie}
+
+\begin{frame}{Monotonie : croissance et décroissance}
+	\begin{definitionbox}
+		Soit $f$ définie sur un intervalle $I$.\\
+		$f$ est \key{croissante} sur $I$ si $x_1<x_2\Rightarrow f(x_1)\le f(x_2)$.\\
+		$f$ est \key{décroissante} sur $I$ si $x_1<x_2\Rightarrow f(x_1)\ge f(x_2)$.\\
+		(Strictement : inégalités strictes.)
+	\end{definitionbox}
+	\begin{exemplebox}[Exemples]
+		$f(x)=3x+2$ est croissante : $x_1<x_2\Rightarrow 3x_1+2<3x_2+2$.\\
+		$f(x)=-x^2+8x-12$ est croissante sur $]-\infty,4]$ puis décroissante sur $[4,+\infty[$ : elle \emph{n'est pas} monotone sur $\R$, mais elle l'est sur chaque morceau.
+	\end{exemplebox}
+	\[
+	\begin{array}{c|ccccc}
+		x & -\infty & & 4 & & +\infty\\\hline
+		f(x) & & \nearrow & 4 & \searrow &
+	\end{array}
+	\]
+\end{frame}
+
+\begin{frame}{La monotonie en gestion}
+	\begin{itemize}
+		\item La \key{demande} est une fonction \important{décroissante} du prix : si le prix monte, la quantité demandée baisse.
+		\item L'\key{offre} est une fonction \important{croissante} du prix.
+		\item Le \key{coût total} $C(x)=500+12x$ est croissant : produire plus coûte plus.
+		\item Le \key{profit} $B(x)$ est en général croissant puis décroissant : il existe une quantité optimale.
+	\end{itemize}
+	\begin{applicationbox}
+		\faLightbulb\ Repérer sur quels intervalles une fonction croît ou décroît, c'est déjà décider : \emph{jusqu'où augmenter la production ?}
+	\end{applicationbox}
+	\begin{attentionbox}[À retenir]
+		Pour une parabole, le sens de variation change au sommet $x_S=-\dfrac{b}{2a}$.
+	\end{attentionbox}
+\end{frame}
+
+\subsection{Injection, surjection et bijection}
+
+\begin{frame}{Injection et surjection}
+	Soit $f:A\to B$.
+	\begin{definitionbox}[Injective]
+		Deux éléments différents de $A$ ont des images différentes : $f(x_1)=f(x_2)\Rightarrow x_1=x_2$.
+	\end{definitionbox}
+	\vspace{2pt}
+	\begin{definitionbox}[Surjective]
+		Tout élément de $B$ a \important{au moins} un antécédent : $\forall y\in B,\ \exists x\in A,\ y=f(x)$.
+	\end{definitionbox}
+	\begin{exemplebox}\small
+		$f(x)=3x+2$ est injective : $3x_1+2=3x_2+2\Rightarrow x_1=x_2$.\\
+		$f:\mathbb Z\to\mathbb Z,\ x\mapsto2x$ n'est pas surjective : $5$ n'a pas d'antécédent.\\
+		$f:\R\to\R,\ x\mapsto x^2$ n'est pas injective : $(-2)^2=2^2$.
+	\end{exemplebox}
+\end{frame}
+
+\begin{frame}{Bijection et fonction réciproque}
+	\begin{columns}[T]
+		\begin{column}{0.56\textwidth}
+			\begin{definitionbox}
+				$f$ est \key{bijective} si elle est injective \emph{et} surjective : tout $y\in B$ a \important{un unique} antécédent. On définit alors $f^{-1}:B\to A$ par $f^{-1}(y)=x\iff y=f(x)$.
+			\end{definitionbox}
+			\small
+			\textbf{Méthode.} Résoudre $y=f(x)$ par rapport à $x$, puis renommer les variables.
+			\begin{exemplebox}\small
+				$f(x)=2x+4$ : $y=2x+4\iff x=\dfrac{y-4}{2}$, donc $f^{-1}(x)=\dfrac{x-4}{2}$.
+			\end{exemplebox}
+			Couples réciproques : $\exp/\ln$ ; $x^2/\sqrt x$ sur $[0,+\infty[$.
+		\end{column}
+		\begin{column}{0.42\textwidth}
+			\begin{tikzpicture}\begin{axis}[gestion,xmin=-4,xmax=6,ymin=-4,ymax=6,width=4.6cm,height=4.6cm]
+					\addplot[DarkBlue,domain=-4:1]{2*x+4};
+					\addplot[DarkRed,domain=-4:6]{(x-4)/2};
+					\addplot[dashed,gray,domain=-4:6]{x};
+					\legend{$f$,$f^{-1}$}
+			\end{axis}\end{tikzpicture}\\
+			\scriptsize Les graphes de $f$ et $f^{-1}$ sont symétriques par rapport à la droite $y=x$.
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{Exercice -- Injection, surjection, bijection}
+	\begin{columns}[T]
+		\begin{column}{0.5\textwidth}
+			\begin{exercicebox}\small
+				\begin{enumerate}
+					\item $f:\R\to\R,\ f(x)=-3x+6$ est-elle bijective ? Déterminer $f^{-1}$.
+					\item $g:\R\to\R,\ g(x)=x^2$ est-elle injective ? surjective ? Comment la rendre bijective ?
+					\item Le coût est $C(x)=500+12x$. Déterminer $C^{-1}$ et la quantité produite avec $2\,000$ dh.
+				\end{enumerate}
+			\end{exercicebox}
+		\end{column}
+		\begin{column}{0.48\textwidth}
+			\onslide<2->{
+				\begin{definitionbox}[Correction]\scriptsize
+					1. $y=-3x+6\iff x=\frac{6-y}{3}$ pour tout $y$ : bijective, $f^{-1}(x)=\frac{6-x}{3}$.\\[2pt]
+					2. $g(-1)=g(1)$ : pas injective ; $-1$ sans antécédent : pas surjective. Sur $[0,+\infty[\to[0,+\infty[$ : bijective, de réciproque $\sqrt{x}$.\\[2pt]
+					3. $y=500+12x\iff x=\frac{y-500}{12}$, donc $C^{-1}(y)=\frac{y-500}{12}$ et $C^{-1}(2000)=125$ unités.
+			\end{definitionbox}}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\subsection{Limites et continuité}
+
+\begin{frame}{Limite d'une fonction (approche intuitive)}
+	\begin{definitionbox}
+		$\lim\limits_{x\to a}f(x)=L$ signifie que $f(x)$ se rapproche de $L$ quand $x$ se rapproche de $a$ (ou quand $x\to+\infty$, si $a=+\infty$).
+	\end{definitionbox}
+	\begin{exemplebox}[Coût moyen]\small
+		$C_M(x)=\dfrac{200+8x}{x}=8+\dfrac{200}{x}$
+		\begin{center}\renewcommand{\arraystretch}{1.2}
+			\begin{tabular}{r|rrrrr}
+				$x$ & $10$ & $50$ & $100$ & $1\,000$ & $10\,000$\\\hline
+				$C_M(x)$ & $28$ & $12$ & $10$ & $8{,}2$ & $8{,}02$
+			\end{tabular}
+		\end{center}
+		Quand la production augmente, le coût moyen tend vers le coût variable unitaire : $\lim\limits_{x\to+\infty}C_M(x)=8$.
+	\end{exemplebox}
+	\small Limites usuelles ($a>1$) : $a^x\to0$ en $-\infty$ ; $\ln x\to-\infty$ quand $x\to0^+$ ; $\ln x\to+\infty$ en $+\infty$.
+\end{frame}
+
+\begin{frame}{Continuité (approche intuitive)}
+	\begin{columns}[T]
+		\begin{column}{0.52\textwidth}
+			\begin{definitionbox}
+				$f$ est \key{continue en $a$} si $\lim\limits_{x\to a}f(x)=f(a)$. Graphiquement : on trace la courbe \important{sans lever le crayon}.
+			\end{definitionbox}
+			\small
+			Les fonctions usuelles (polynômes, $\sqrt x$, $e^x$, $\ln x$, fractions rationnelles) sont continues sur leur domaine.
+			\begin{exemplebox}[Remise sur quantité]\scriptsize
+				$P(x)=10x$ si $x\le100$, $9x$ si $x>100$.\\
+				$P(100)=1\,000$ mais $P(x)\to900$ en $100^+$ : \important{saut}, $P$ est discontinue.
+			\end{exemplebox}
+		\end{column}
+		\begin{column}{0.46\textwidth}
+			\begin{tikzpicture}\begin{axis}[gestion,xmin=0,xmax=150,ymin=0,ymax=1450,xlabel={quantité},ylabel={prix payé}]
+					\addplot[DarkBlue,domain=0:100]{10*x};
+					\addplot[DarkBlue,domain=100:150]{9*x};
+					\addplot[only marks,mark=*,DarkBlue] coordinates{(100,1000)};
+					\addplot[only marks,mark=o,DarkBlue] coordinates{(100,900)};
+			\end{axis}\end{tikzpicture}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\subsection{Concavité et convexité}
+
+\begin{frame}{Concavité et convexité}
+	\begin{columns}[T]
+		\begin{column}{0.5\textwidth}
+			\small
+			La \key{courbure} du graphe est tournée vers le bas (\key{concave}) ou vers le haut (\key{convexe}).
+			\medskip
+			\begin{tikzpicture}\begin{axis}[gestion,xmin=0,xmax=4,ymin=0,ymax=4,width=5cm,height=4cm,title={\small concave : $\sqrt{x}$}]
+					\addplot[DarkBlue,domain=0:4,samples=50]{sqrt(x)};
+			\end{axis}\end{tikzpicture}
+		\end{column}
+		\begin{column}{0.5\textwidth}
+			\small\phantom{.}\medskip\par\medskip\medskip
+			\begin{tikzpicture}\begin{axis}[gestion,xmin=0,xmax=4,ymin=0,ymax=4,width=5cm,height=4cm,title={\small convexe : $x^2/4$}]
+					\addplot[DarkRed,domain=0:4,samples=50]{x^2/4};
+			\end{axis}\end{tikzpicture}
+		\end{column}
+	\end{columns}
+	\vspace{0.1cm}
+	\begin{applicationbox}\small
+		\faLightbulb\ \textbf{Fonction de production} : concave $\Rightarrow$ \important{rendements décroissants} (chaque unité de facteur ajoute moins que la précédente) ; convexe $\Rightarrow$ \important{rendements croissants}. Le signe de la dérivée seconde (Chapitre 3) permettra de trancher.
+	\end{applicationbox}
+\end{frame}
+
+\subsection{Application : coût, revenu, profit}
+
+\begin{frame}{Fonction de coût}
+	\begin{definitionbox}[Coût total]
+		$C(x)=\underbrace{c_F}_{\text{coût fixe}}+\underbrace{c_v\,x}_{\text{coût variable}}$ où $x$ est la quantité produite.
+	\end{definitionbox}
+	\begin{exemplebox}
+		Coût fixe $500$ dh, coût variable $12$ dh par unité : $C(x)=500+12x$.\\
+		$C(0)=500$ \ ; \ $C(50)=1\,100$ \ ; \ $C(100)=1\,700$.
+	\end{exemplebox}
+	\begin{itemize}
+		\item $C$ est \key{croissante} (pente $12>0$) ;
+		\item \key{coût moyen} : $C_M(x)=\dfrac{C(x)}{x}=12+\dfrac{500}{x}$, qui diminue quand $x$ augmente.
+	\end{itemize}
+	\begin{applicationbox}\small
+		Le coût fixe est payé même sans produire (loyer, machines) : c'est lui qui rend rentable de produire davantage.
+	\end{applicationbox}
+\end{frame}
+
+\begin{frame}{Fonctions de revenu et de profit}
+	\begin{definitionbox}[Revenu et profit]
+		$R(x)=p\times x$ si le prix $p$ est constant ; $B(x)=R(x)-C(x)$.
+	\end{definitionbox}
+	\vspace{2pt}
+	\textbf{Modèle utilisé dans la suite} (prix qui baisse quand la quantité augmente) :
+	\[ R(x)=-x^2+30x,\qquad C(x)=10x+64,\qquad x\in[0,30]. \]
+	\[ B(x)=R(x)-C(x)=-x^2+30x-10x-64=-x^2+20x-64. \]
+	\begin{attentionbox}[Lecture]\small
+		$B(x)>0$ : bénéfice ; $B(x)<0$ : perte ; $B(x)=0$ : seuil de rentabilité.
+	\end{attentionbox}
+\end{frame}
+
+\begin{frame}{Seuil de rentabilité}
+	\begin{columns}[T]
+		\begin{column}{0.5\textwidth}
+			\small
+			On résout $R(x)=C(x)$, c'est-à-dire $B(x)=0$ :
+			$B(x)=0\iff x^2-20x+64=0$,\\ $\Delta=400-256=144$, donc\\ $x=\frac{20\pm12}{2}$, soit $x=4$ ou $x=16$.
+			\begin{definitionbox}[Interprétation]
+				Le revenu couvre le coût pour $x=4$ et $x=16$ ; entre les deux ($4<x<16$), l'entreprise réalise un \important{bénéfice}.
+			\end{definitionbox}
+		\end{column}
+		\begin{column}{0.48\textwidth}
+			\begin{tikzpicture}\begin{axis}[gestion,xmin=0,xmax=30,ymin=0,ymax=240,xlabel={quantité $x$},ylabel={dh}]
+					\addplot[DarkBlue,domain=0:30,samples=60]{-x^2+30*x};
+					\addplot[DarkRed,domain=0:30]{10*x+64};
+					\addplot[only marks,mark=*,Mustard!80!black] coordinates{(4,104)(16,224)};
+					\legend{$R(x)$,$C(x)$}
+			\end{axis}\end{tikzpicture}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{Profit maximal}
+	\begin{columns}[T]
+		\begin{column}{0.52\textwidth}
+			\small
+			$B(x)=-x^2+20x-64$ : $a=-1<0$.
+			\begin{itemize}
+				\item Sommet : $x_S=10$ ;\\ $B(10)=-100+200-64=36$.
+				\item $B$ est croissante sur $[0,10]$, décroissante sur $[10,30]$.
+			\end{itemize}
+			\[
+			\begin{array}{c|ccccc}
+				x & 0 & & 10 & & 30\\\hline
+				B(x) & & \nearrow & 36 & \searrow &
+			\end{array}
+			\]
+			\begin{applicationbox}
+				\faBullseye\ Le profit est maximal pour \important{10 unités} : \important{36 dh}.
+			\end{applicationbox}
+		\end{column}
+		\begin{column}{0.46\textwidth}
+			\begin{tikzpicture}\begin{axis}[gestion,xmin=0,xmax=20,ymin=-70,ymax=45,xlabel={quantité $x$},ylabel={$B(x)$}]
+					\addplot[DarkBlue,domain=0:20,samples=60]{-x^2+20*x-64};
+					\addplot[only marks,mark=*,DarkRed] coordinates{(4,0)(16,0)(10,36)};
+			\end{axis}\end{tikzpicture}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{Retour sur les deux questions du début}
+	\begin{columns}[T]
+		\begin{column}{0.5\textwidth}
+			\begin{definitionbox}[Situation 1 : combien produire ?]\small
+				Avec $B(x)=-x^2+20x-64$ :\\
+				$B(5)=11$, \ $B(10)=36$, \ $B(20)=-64$.\\[3pt]
+				Ni « produire le maximum » ni « produire peu » : l'optimum se calcule. Au-delà de $16$ unités, l'entreprise perd de l'argent.
+			\end{definitionbox}
+		\end{column}
+		\begin{column}{0.48\textwidth}
+			\begin{definitionbox}[Situation 2 : quelle banque ?]\small
+				Pour $10\,000$ dh sur $5$ ans :\\
+				simple à $5\,\%$ : $10\,000(1+5\times0{,}05)=12\,500$ ;\\
+				composé à $4{,}8\,\%$ : $10\,000\times1{,}048^5\approx12\,642$.\\[3pt]
+				Le taux affiché le plus élevé n'est pas toujours le meilleur : il faut \important{calculer}.
+			\end{definitionbox}
+		\end{column}
+	\end{columns}
+	\vspace{0.2cm}
+	\begin{applicationbox}\small
+		Gérer, c'est décider ; les fonctions sont l'outil qui permet de décider avec des chiffres.
+	\end{applicationbox}
+\end{frame}
+
+\subsection{Exercices d'application}
+
+\begin{frame}{Exercices d'application 1 -- Domaine, image, antécédent}
+	\begin{exercicebox}\small
+		\begin{enumerate}
+			\item Déterminer l'ensemble de définition de $f(x)=\dfrac{x+1}{x^2-4}$, \ $g(x)=\sqrt{5-x}$, \ $h(x)=\ln(x-3)$.
+			\item Soit $k(x)=2x^2-3x$. Calculer $k(2)$, $k(-1)$ et $k(a+1)$, puis déterminer les antécédents de $2$.
+		\end{enumerate}
+	\end{exercicebox}
+\end{frame}
+
+\begin{frame}{Correction -- Exercices d'application 1}
+	\small
+	\begin{enumerate}
+		\item $x^2-4\neq0$ : $D_f=\R\setminus\{-2,2\}$ ; \ $5-x\ge0$ : $D_g=]-\infty,5]$ ; \ $x-3>0$ : $D_h=]3,+\infty[$.
+		\item $k(2)=8-6=2$ ; \ $k(-1)=2+3=5$ ; \ $k(a+1)=2(a+1)^2-3(a+1)=2a^2+a-1$.\\
+		$k(x)=2\iff 2x^2-3x-2=0$, $\Delta=25$, donc $x=2$ ou $x=-\tfrac12$.
+	\end{enumerate}
+\end{frame}
+
+\begin{frame}{Exercices d'application 2 -- Composition}
+	\begin{exercicebox}\small
+		Soit $f(x)=2x+1$ et $g(x)=x^2$.
+		\begin{enumerate}
+			\item Calculer $(g\circ f)(x)$ et $(f\circ g)(x)$. Sont-elles égales ?
+			\item Une machine produit $f(x)=25x$ unités en $x$ heures, chaque unité rapporte $40$ dh. Exprimer le revenu $h(x)$ en fonction du temps. Combien d'heures faut-il pour atteindre $8\,000$ dh ?
+		\end{enumerate}
+	\end{exercicebox}
+\end{frame}
+
+\begin{frame}{Correction -- Exercices d'application 2}
+	\small
+	\begin{enumerate}
+		\item $(g\circ f)(x)=(2x+1)^2=4x^2+4x+1$ ; \ $(f\circ g)(x)=2x^2+1$. Elles sont différentes : pour $x=1$, on obtient $9$ et $3$.
+		\item Revenu : $h(x)=40\times25x=1\,000x$. $1\,000x=8\,000\iff x=8$ heures.
+	\end{enumerate}
+\end{frame}
+
+\begin{frame}{Exercices d'application 3 -- Demande, offre, équilibre}
+	\begin{exercicebox}\small
+		La demande est de $50$ unités à $30$ dh et de $80$ unités à $15$ dh. L'offre est de $20$ unités à $20$ dh et de $60$ unités à $40$ dh (prix $y$, quantité $x$).
+		\begin{enumerate}
+			\item Déterminer les équations de la demande et de l'offre.
+			\item Déterminer l'équilibre du marché.
+			\item Si le prix est fixé à $40$ dh, que se passe-t-il ?
+		\end{enumerate}
+	\end{exercicebox}
+\end{frame}
+
+\begin{frame}{Correction -- Exercices d'application 3}
+	\small
+	\begin{enumerate}
+		\item Demande : $a=\dfrac{15-30}{80-50}=-0{,}5$, $30=-25+b$, donc $y=-0{,}5x+55$.\\
+		Offre : $a=\dfrac{40-20}{60-20}=0{,}5$, $20=10+b$, donc $y=0{,}5x+10$.
+		\item $-0{,}5x+55=0{,}5x+10\iff x=45$, puis $y=32{,}5$ : équilibre $(45\,;32{,}5)$.
+		\item À $40$ dh : demande $x=\frac{55-40}{0{,}5}=30$, offre $x=\frac{40-10}{0{,}5}=60$. Il y a un \important{excédent d'offre} de $30$ unités.
+	\end{enumerate}
+\end{frame}
+
+\begin{frame}{Exercices d'application 4 -- Second degré et variations}
+	\begin{exercicebox}\small
+		Soit $f(x)=-2x^2+8x-3$.
+		\begin{enumerate}
+			\item Déterminer le sommet de la parabole.
+			\item Écrire $f(x)$ sous forme canonique.
+			\item Dresser le tableau de variation de $f$ sur $\R$.
+			\item Résoudre $f(x)=0$, puis $f(x)\ge0$.
+		\end{enumerate}
+	\end{exercicebox}
+\end{frame}
+
+\begin{frame}{Correction -- Exercices d'application 4}
+	\small
+	\begin{enumerate}
+		\item $x_S=-\dfrac{8}{2(-2)}=2$, $f(2)=-8+16-3=5$ : $S(2\,;5)$.
+		\item $f(x)=-2(x-2)^2+5$.
+		\item $a<0$ : croissante sur $]-\infty,2]$, décroissante sur $[2,+\infty[$.
+		\[
+		\begin{array}{c|ccccc}
+			x & -\infty & & 2 & & +\infty\\\hline
+			f(x) & & \nearrow & 5 & \searrow &
+		\end{array}
+		\]
+		\item $\Delta=64-24=40$ : $x=2\pm\dfrac{\sqrt{10}}{2}$. Donc $f(x)\ge0\iff x\in\Big[2-\dfrac{\sqrt{10}}2,\,2+\dfrac{\sqrt{10}}2\Big]$.
+	\end{enumerate}
+\end{frame}
+
+\begin{frame}{Exercices d'application 5 -- Profit : seuil et maximum}
+	\begin{exercicebox}\small
+		$R(x)=-2x^2+100x$ et $C(x)=20x+350$ pour $x\in[0,50]$.
+		\begin{enumerate}
+			\item Exprimer le bénéfice $B(x)$.
+			\item Déterminer le seuil de rentabilité (résoudre $B(x)=0$).
+			\item Étudier le signe de $B(x)$.
+			\item Quelle quantité maximise le bénéfice ? Quel est ce bénéfice ?
+		\end{enumerate}
+	\end{exercicebox}
+\end{frame}
+
+\begin{frame}{Correction -- Exercices d'application 5}
+	\small
+	\begin{enumerate}
+		\item $B(x)=-2x^2+100x-20x-350=-2x^2+80x-350$.
+		\item $\Delta=6\,400-2\,800=3\,600$ : $x=\dfrac{-80\pm60}{-4}$, soit $x=5$ ou $x=35$.
+		\item $a<0$ : $B>0$ pour $5<x<35$ ; $B<0$ pour $x<5$ ou $x>35$.
+		\item $x_S=20$, $B(20)=-800+1\,600-350=450$ : bénéfice maximal de $450$ dh pour $20$ unités. Pour $40$ unités : $B(40)=-350$ (perte).
+	\end{enumerate}
+\end{frame}
+
+\begin{frame}{Exercices d'application 6 -- Exponentielle et logarithme}
+	\begin{exercicebox}\small
+		\begin{enumerate}
+			\item Simplifier $e^{3}e^{-5}$ et $\dfrac{e^{2x}}{e^{x}}$.
+			\item Résoudre : $e^{2x-1}=e^5$ ; \ $e^x=7$ ; \ $\ln(x-1)=2$.
+			\item Résoudre $\ln x+\ln(x-1)=\ln 6$ (préciser le domaine).
+			\item $(\ast)$ Résoudre $e^{2x}-3e^x+2=0$ (poser $X=e^x$).
+		\end{enumerate}
+	\end{exercicebox}
+\end{frame}
+
+\begin{frame}{Correction -- Exercices d'application 6}
+	\small
+	\begin{enumerate}
+		\item $e^{3-5}=e^{-2}$ ; \ $e^{2x-x}=e^x$.
+		\item $2x-1=5\Rightarrow x=3$ ; \ $x=\ln7$ ; \ $x-1=e^2\Rightarrow x=1+e^2$.
+		\item Domaine $x>1$ ; $x(x-1)=6\iff x^2-x-6=0\iff x=3$ ou $x=-2$ ; seule $x=3$ convient.
+		\item $X^2-3X+2=0$ : $X=1$ ou $X=2$, donc $x=0$ ou $x=\ln2$.
+	\end{enumerate}
+\end{frame}
+
+\begin{frame}{Exercices d'application 7 -- Intérêts composés (calculatrice)}
+	\begin{exercicebox}\small
+		\begin{enumerate}
+			\item Un capital placé à $5\,\%$ (intérêts annuels) double au bout de combien d'années ? (utiliser $\ln2\approx0{,}693$ et $\ln1{,}05\approx0{,}0488$)
+			\item Une société place $80\,000$ dh pendant $20$ ans : option A à $5\,\%$ payable $2$ fois par an, option B à $4{,}5\,\%$ payable $6$ fois par an. Quelle option choisir ?
+		\end{enumerate}
+	\end{exercicebox}
+\end{frame}
+
+\begin{frame}{Correction -- Exercices d'application 7}
+	\small
+	\begin{enumerate}
+		\item $1{,}05^n=2\iff n=\dfrac{\ln2}{\ln1{,}05}\approx14{,}2$ : il faut \important{15 ans} (à 14 ans le capital est multiplié par $1{,}98$ seulement).
+		\item A : $80\,000\,(1+0{,}025)^{40}\approx214\,800$ dh.\\
+		B : $80\,000\,\big(1+\tfrac{0{,}045}{6}\big)^{120}=80\,000\times1{,}0075^{120}\approx196\,100$ dh.\\
+		L'option \important{A} est préférable, malgré un taux annuel plus faible versé moins souvent.
+	\end{enumerate}
+\end{frame}
+
+\begin{frame}{Exercices d'application 8 -- Limites et continuité}
+	\begin{exercicebox}\small
+		\begin{enumerate}
+			\item Le coût total est $C(x)=300+5x$. Écrire le coût moyen $C_M(x)$ et calculer sa limite quand $x\to+\infty$. Interpréter.
+			\item Un fournisseur facture $P(x)=8x$ si $0\le x\le50$ et $P(x)=7x$ si $x>50$. Calculer $P(50)$ et la limite de $P(x)$ quand $x\to50^+$. $P$ est-elle continue en $50$ ?
+			\item Pour quelles quantités $x>50$ paie-t-on moins que pour $50$ unités ?
+		\end{enumerate}
+	\end{exercicebox}
+\end{frame}
+
+\begin{frame}{Correction -- Exercices d'application 8}
+	\small
+	\begin{enumerate}
+		\item $C_M(x)=\dfrac{300+5x}{x}=5+\dfrac{300}{x}\to5$ : le coût moyen se rapproche du coût variable unitaire ($5$ dh) quand la production devient très grande.
+		\item $P(50)=400$ mais $\lim_{x\to50^+}P(x)=350$ : $P$ \important{n'est pas continue} en $50$ (saut de $-50$ dh).
+		\item $7x<400\iff x<57{,}14$ : pour $51\le x\le57$ unités, on paie moins que pour $50$ unités.
+	\end{enumerate}
+\end{frame}
+
+\subsection{Synthèse}
+
+\begin{frame}{Synthèse du chapitre}
+	\begin{columns}[T]
+		\begin{column}{0.5\textwidth}
+			\textbf{Notions}
+			\begin{itemize}\small
+				\item fonction, domaine, image, antécédent ;
+				\item opérations et composition ;
+				\item monotonie, tableau de variation ;
+				\item injection, surjection, bijection, réciproque ;
+				\item limite et continuité (intuitif) ;
+				\item concavité, convexité.
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.48\textwidth}
+			\textbf{Fonctions usuelles}
+			\begin{itemize}\small
+				\item affine : droites, demande, offre ;
+				\item second degré : sommet, racines, profit ;
+				\item puissances, rationnelles ;
+				\item exponentielle et logarithme.
+			\end{itemize}
+		\end{column}
+	\end{columns}
+	\vspace{0.2cm}
+	\begin{applicationbox}
+		\faBullseye\ \textbf{Méthode de gestion :} modéliser $C(x)$, $R(x)$ ; former $B(x)=R(x)-C(x)$ ; chercher le seuil de rentabilité ($B=0$) puis le maximum (sommet).
+	\end{applicationbox}
+	\vspace{0.1cm}
+	\begin{attentionbox}[À faire]\small
+		\faPencilAlt\ Série de TD n\textsuperscript{o}~2 (Chapitre 1) ; apprendre les formules du sommet et les propriétés de $\exp$ et $\ln$.
+	\end{attentionbox}
+\end{frame}
+% ====================== FIN DU CHAPITRE ======================
+\end{document}
