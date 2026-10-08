@@ -1,0 +1,1685 @@
+% Compile : pdflatex Chapitre2_Fonction_variable_reelle.tex  (deux passages)
+% Logos optionnels dans le même dossier : munidia.png, honoris.jpg
+\documentclass[aspectratio=169,11pt]{beamer}
+\usepackage{iftex}
+\ifPDFTeX
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\fi
+\IfFileExists{frenchb.ldf}{\usepackage[french]{babel}}{}
+% ============================================================
+% THÈME ET PACKAGES
+% ============================================================
+\usetheme[progressbar=frametitle,numbering=fraction]{metropolis}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[french]{babel}
+\usepackage{amsmath,amssymb,mathtools}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,positioning,calc,shapes.geometric,overlay-beamer-styles}
+\usepackage{pgfplots}
+% Metropolis charge pgfplotsthemetol via \AtEndPreamble et impose compat=1.9.
+% babel-french active « : », ce qui casse domain=a:b et axis cs:.
+% Ces deux réglages doivent donc venir *après* la fin du préambule.
+\AtBeginDocument{%
+	\pgfplotsset{compat=1.18}%
+	\catcode`\:=12\relax
+}
+\usepackage[most]{tcolorbox}
+\usepackage{booktabs,array,multicol}
+\IfFileExists{fontawesome5.sty}{\usepackage{fontawesome5}}{}
+% icones de secours si fontawesome5 est absent
+\providecommand{\faBullseye}{$\circ$}
+\providecommand{\faLightbulb}{$\ast$}
+\providecommand{\faExclamationTriangle}{$!$}
+\providecommand{\faPencilAlt}{$\diamond$}
+\providecommand{\faChartLine}{$\nearrow$}
+\providecommand{\faCircle}{$\bullet$}
+\providecommand{\faAngleRight}{$>$}
+
+\usepackage{xcolor}
+\setbeamertemplate{section in toc}[sections numbered]
+\setbeamertemplate{subsection in toc}[subsections numbered]
+
+\defbeamertemplate{subsubsection in toc}{subsubsections numbered}
+{\leavevmode\leftskip=5em%
+	\rlap{\hskip-5em\inserttocsectionnumber.\inserttocsubsectionnumber.\inserttocsubsubsectionnumber}%
+	\inserttocsubsubsection\par}
+
+\setbeamertemplate{subsubsection in toc}[subsubsections numbered]
+\renewcommand{\thesection}{\arabic{section}}
+\renewcommand{\thesubsection}{\thesection.\arabic{subsection}}
+\renewcommand{\thesubsubsection}{\thesubsection.\arabic{subsubsection}}
+% ============================================================
+% COULEURS
+% ============================================================
+\definecolor{DarkBlue}{RGB}{31,67,104}
+\definecolor{LightBlue}{RGB}{225,239,250}
+\definecolor{Mustard}{RGB}{210,145,35}
+\definecolor{DarkGreen}{RGB}{38,105,75}
+\definecolor{LightGreen}{RGB}{230,245,235}
+\definecolor{Slate}{HTML}{2F3E46}
+\definecolor{DarkRed}{RGB}{145,45,45}
+\definecolor{LightRed}{RGB}{252,235,235}
+\definecolor{DarkGray}{RGB}{45,58,62}
+\setbeamerfont{subsection title}{size=\Large}
+\setbeamercolor{subsection title}{fg=teal}
+\definecolor{headerblue}{RGB}{102,178,216}
+% Subsection page style
+\setbeamertemplate{subsection page}{
+	\centering
+	\vspace{2cm}
+	\begin{tcolorbox}[
+		colback=cyan!10,
+		colframe=cyan!70!black,
+		width=1\textwidth,
+		boxrule=1pt,
+		arc=3mm
+		]
+		\centering
+		\usebeamerfont{subsection title}
+		\color{cyan!80!black}\thesubsection\quad\insertsubsectionhead
+	\end{tcolorbox}
+}
+
+\setbeamertemplate{section page}{
+	\centering
+	\vspace{2cm}
+	\begin{tcolorbox}[
+		colback=DarkBlue!8,
+		colframe=DarkBlue,
+		width=1\textwidth,
+		boxrule=1pt,
+		arc=3mm
+		]
+		\centering
+		\usebeamerfont{section title}
+		\color{DarkBlue}\thesection\quad\insertsectionhead
+	\end{tcolorbox}
+}
+
+\usetikzlibrary{positioning}
+\setbeamercolor{normal text}{fg=DarkGray,bg=white}
+\setbeamercolor{frametitle}{bg=DarkBlue,fg=white}
+\setbeamercolor{progress bar}{fg=Mustard,bg=gray!25}
+\setbeamercolor{alerted text}{fg=DarkRed}
+\setbeamercolor{example text}{fg=DarkGreen}
+
+\setbeamertemplate{itemize item}{\color{Mustard}\small\faCircle}
+\setbeamertemplate{itemize subitem}{\color{DarkBlue}\small\faAngleRight}
+\setbeamertemplate{frame numbering}[fraction]
+\setbeamertemplate{navigation symbols}{}
+
+% ---------- Macros
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\key}[1]{\textbf{\color{DarkBlue}#1}}
+\newcommand{\important}[1]{\textbf{\color{DarkRed}#1}}
+\newcommand{\fonc}[3]{#1\colon #2\to #3}
+
+% Mini-graphe pour les tests visuels
+\pgfplotsset{
+	mini/.style={
+		axis lines=middle,
+		xtick=\empty, ytick=\empty,
+		xlabel={}, ylabel={},
+		xmin=-2.4, xmax=2.4, ymin=-2.2, ymax=2.2,
+		width=4.3cm, height=3.5cm,
+		clip=false,
+		every axis plot/.append style={thick},
+	}
+}
+
+% ---------- Boites
+\tcbset{enhanced,boxrule=0.6pt,arc=2pt,left=5pt,right=5pt,top=2pt,bottom=2pt,fonttitle=\bfseries\small}
+\newtcolorbox{definitionbox}[1][Définition]{colback=DarkBlue!6,colframe=DarkBlue,title={#1}}
+\newtcolorbox{exemplebox}[1][Exemple]{colback=Mustard!10,colframe=Mustard!85!black,title={#1}}
+\newtcolorbox{attentionbox}[1][Attention]{colback=DarkRed!6,colframe=DarkRed,title={#1}}
+\newtcolorbox{applicationbox}{colback=DarkGreen!7,colframe=DarkGreen,frame hidden,borderline west={3pt}{0pt}{DarkGreen}}
+\newtcolorbox{exercicebox}[1][Exercice]{colback=Slate!5,colframe=Slate,title={#1}}
+
+% ---------- Style des graphiques
+\pgfplotsset{gestion/.style={axis lines=middle,xlabel={$x$},ylabel={$y$},
+		xlabel style={at={(ticklabel* cs:1)},anchor=west},ylabel style={at={(ticklabel* cs:1)},anchor=south},
+		tick label style={font=\scriptsize},label style={font=\small},legend style={font=\scriptsize,at={(0.02,0.98)},anchor=north west},
+		every axis plot/.append style={thick},width=0.86\linewidth,height=4.2cm}}
+
+\definecolor{Mustard2}{RGB}{210,145,35}
+\definecolor{LightOrange}{RGB}{253,240,220}
+\definecolor{DarkPurple}{RGB}{106,61,154}
+\definecolor{LightPurple}{RGB}{240,230,250}
+
+\newtcolorbox{optionAbox}{
+	colback=LightOrange,colframe=Mustard2,arc=3mm,
+	boxrule=0.7pt,left=2mm,right=2mm,top=1mm,bottom=1mm
+}
+\newtcolorbox{optionBbox}{
+	colback=LightPurple,colframe=DarkPurple,arc=3mm,
+	boxrule=0.7pt,left=2mm,right=2mm,top=1mm,bottom=1mm
+}
+% Afficher la section et la subsection dans la barre de navigation
+\setbeamertemplate{headline}{%
+	\begin{beamercolorbox}[wd=\paperwidth,ht=2.5ex,dp=1ex]{section in head/foot}
+		\insertsectionnavigationhorizontal{\paperwidth}{}{}
+	\end{beamercolorbox}%
+}
+
+% ============================================================
+% INFORMATIONS
+% ============================================================
+\title{\vspace{1.35cm}Mathématiques appliquées à la gestion}
+\subtitle{Chapitre 2 --- Fonction d'une variable réelle}
+\author{Pr. Rajae Malek}
+\institute{Business School -- Université Mundiapolis}
+\date{Année universitaire 2026--2027}
+\addtobeamertemplate{title page}{%
+	\begin{tikzpicture}[remember picture, overlay]
+		% Logo gauche : Mundiapolis
+		\IfFileExists{munidia.png}{
+			\node[anchor=north west]
+			at ($(current page.north west)+(0.6cm,-0.6cm)$)
+			{\includegraphics[height=1.25cm]{munidia.png}};
+		}{
+			\node[anchor=north west, fill=DarkBlue, text=white, rounded corners,
+				inner sep=4pt, font=\scriptsize\bfseries]
+			at ($(current page.north west)+(0.6cm,-0.6cm)$)
+			{Mundiapolis};
+		}
+		% Logo droit : Honoris
+		\IfFileExists{honoris.jpg}{
+			\node[anchor=north east]
+			at ($(current page.north east)+(-0.6cm,-0.6cm)$)
+			{\includegraphics[height=1.25cm]{honoris.jpg}};
+		}{
+			\node[anchor=north east, fill=Mustard, text=white, rounded corners,
+				inner sep=4pt, font=\scriptsize\bfseries]
+			at ($(current page.north east)+(-0.6cm,-0.6cm)$)
+			{Honoris};
+		}
+	\end{tikzpicture}%
+}{}
+
+\AtBeginSection[]{
+	\begin{frame}
+		\sectionpage
+	\end{frame}
+}
+
+\AtBeginSubsection[]{
+	\begin{frame}
+		\subsectionpage
+	\end{frame}
+}
+
+\begin{document}
+
+% ============================================================
+% INTRODUCTION
+% ============================================================
+\maketitle
+
+\begin{frame}[shrink=5]{Objectifs du chapitre}
+	\begin{applicationbox}
+		\faBullseye\ À la fin de ce chapitre, vous saurez :
+		\begin{itemize}
+			\item reconnaître une \key{fonction} et déterminer son \key{domaine de définition} ;
+			\item étudier la \key{monotonie}, la \key{parité} et la \key{périodicité} ;
+			\item composer deux fonctions et calculer images / images réciproques ;
+			\item décider si une fonction est \key{bijective} et déterminer sa \key{réciproque} ;
+			\item dériver, lire un tableau de variations et tracer une tangente.
+		\end{itemize}
+	\end{applicationbox}
+	\vspace{0.25cm}
+	\begin{exemplebox}[En gestion]
+		Coût $C(q)$, revenu $R(q)$, profit $B(q)=R(q)-C(q)$, demande $D(p)$ : ce sont des
+		\key{fonctions d'une variable réelle}. Les outils de ce chapitre servent à les étudier.
+	\end{exemplebox}
+\end{frame}
+
+\begin{frame}{Plan du chapitre}
+	\tableofcontents[sections={2-3},hideallsubsections]
+	\vspace{0.3cm}
+	\begin{applicationbox}
+		\textbf{Chapitre 2 :} définitions, monotonie, parité, composition,
+		images, bijection, dérivabilité, variations.\\
+		\textbf{Chapitre 3 (début) :} la valeur absolue.
+	\end{applicationbox}
+\end{frame}
+
+% Le polycopié numérote ce chapitre « 2 »
+\setcounter{section}{1}
+\section{Fonction d'une variable réelle}
+
+\begin{frame}[shrink=8]{Cadre de travail}
+	Dans toute la suite, on considère $E$ et $F$ deux sous-ensembles de $\R$
+	(ce que l'on note respectivement $E\subset\R$ et $F\subset\R$).
+	\vspace{0.35cm}
+	\begin{definitionbox}[Rappel]
+		Un sous-ensemble de $\R$ peut être :
+		\begin{itemize}
+			\item un intervalle : $[a,b]$, $]a,b[$, $[a,+\infty[$, $\R$ ;
+			\item une réunion : $\R\setminus\{0\}=]-\infty,0[\,\cup\,]0,+\infty[$ ;
+			\item un ensemble fini : $\{0,1,2\}$.
+		\end{itemize}
+	\end{definitionbox}
+	\vspace{0.2cm}
+	\begin{applicationbox}
+		\faLightbulb\ En gestion, $E$ est souvent $[0,+\infty[$ : une quantité, un prix ou un temps
+		ne peut pas être négatif.
+	\end{applicationbox}
+\end{frame}
+
+% ============================================================
+\subsection{Définitions}
+% ============================================================
+
+\begin{frame}{Qu'est-ce qu'une fonction ?}
+	\begin{definitionbox}
+		Une \key{fonction d'une variable réelle} c'est la donnée de \important{trois} choses :
+		\begin{enumerate}
+			\item un ensemble de départ $E$ ;
+			\item un ensemble d'arrivée $F$ ;
+			\item un procédé qui transforme \important{tout} élément de $E$ en \important{un} élément de $F$.
+		\end{enumerate}
+	\end{definitionbox}
+	\vspace{0.25cm}
+	\begin{attentionbox}
+		Dans toute la suite on écrira « fonction » plutôt que « fonction d'une variable réelle »,
+		par souci de concision.
+	\end{attentionbox}
+\end{frame}
+
+\begin{frame}{Notation}
+	\begin{definitionbox}[Notation]
+		Une fonction $f$ sera notée
+		\[
+			f \colon E \longrightarrow F, \qquad
+			x \longmapsto f(x),
+		\]
+		où, pour tout $x\in E$, $f(x)$ est l'\key{image} de $x$ par la fonction $f$.
+	\end{definitionbox}
+	\vspace{0.2cm}
+	\begin{columns}[T]
+		\begin{column}{0.48\textwidth}
+			\begin{exemplebox}
+				$\fonc{f}{\R}{\R}$, $x\longmapsto x^2+1$.\\
+				$f(3)=10$ : $10$ est l'image de $3$.
+			\end{exemplebox}
+		\end{column}
+		\begin{column}{0.48\textwidth}
+			\begin{exemplebox}[En gestion]
+				$\fonc{C}{[0,+\infty[}{\R_+}$, $q\longmapsto 500+12q$ :\\
+				coût de production de $q$ unités.
+			\end{exemplebox}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{Test de la droite verticale}
+	\begin{columns}[c]
+		\begin{column}{0.52\textwidth}
+			Une courbe du plan est le graphe d'une fonction $\R\to\R$
+			si et seulement si \important{toute droite verticale} coupe la courbe
+			en \important{au plus un} point.
+			\vspace{0.3cm}
+			\begin{attentionbox}
+				Si une même abscisse $x$ correspond à \emph{deux} ordonnées,
+				ce n'est \important{pas} une fonction.
+			\end{attentionbox}
+		\end{column}
+		\begin{column}{0.46\textwidth}
+			\centering
+			\begin{tikzpicture}
+				\begin{axis}[mini, xmin=-0.4, xmax=2.6, ymin=-0.4, ymax=2.2,
+					width=5.2cm, height=4.2cm]
+					\addplot[DarkBlue, domain=0.2:2.3, samples=60] ({x}, {0.35*(x-1.2)^2+0.5});
+					\draw[DarkRed, densely dashed, thick] (axis cs:1.2,-0.3) -- (axis cs:1.2,2.1);
+					\node[DarkRed, font=\scriptsize] at (axis cs:1.55,1.85) {une seule};
+					\node[DarkRed, font=\scriptsize] at (axis cs:1.55,1.55) {intersection};
+					\addplot[only marks, mark=*, DarkRed] coordinates{(1.2,0.5)};
+				\end{axis}
+			\end{tikzpicture}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{Ces courbes sont-elles des graphes de fonctions $\R\to\R$ ?}
+	\begin{columns}[T]
+		\begin{column}{0.24\textwidth}
+			\centering
+			\begin{tikzpicture}
+				\begin{axis}[mini]
+					\draw[DarkRed, very thick] (axis cs:1,-2) -- (axis cs:1,2);
+					\node[font=\scriptsize] at (axis cs:1.55,1.6) {$x=1$};
+				\end{axis}
+			\end{tikzpicture}\\[2pt]
+			{\scriptsize $x=1$}\\[-1pt]
+			{\scriptsize\color{DarkRed}\textbf{non} : droite verticale}
+		\end{column}
+		\begin{column}{0.24\textwidth}
+			\centering
+			\begin{tikzpicture}
+				\begin{axis}[mini]
+					\addplot[DarkBlue, domain=-1.5:1.5, samples=50] ({x}, {x^2-0.4});
+				\end{axis}
+			\end{tikzpicture}\\[2pt]
+			{\scriptsize $\mathcal{C}_f$ : $y=x^2$}\\[-1pt]
+			{\scriptsize\color{DarkGreen}\textbf{oui}}
+		\end{column}
+		\begin{column}{0.24\textwidth}
+			\centering
+			\begin{tikzpicture}
+				\begin{axis}[mini, axis equal image, xmin=-2.2, xmax=2.2, ymin=-2.2, ymax=2.2]
+					\addplot[DarkBlue, domain=0:360, samples=80, smooth] ({1.35*cos(x)}, {1.35*sin(x)});
+				\end{axis}
+			\end{tikzpicture}\\[2pt]
+			{\scriptsize $\mathcal{C}_g$ : cercle}\\[-1pt]
+			{\scriptsize\color{DarkRed}\textbf{non} : deux $y$ pour un $x$}
+		\end{column}
+		\begin{column}{0.24\textwidth}
+			\centering
+			\begin{tikzpicture}
+				\begin{axis}[mini]
+					\addplot[DarkBlue, domain=-1.3:1.3, samples=50] ({x}, {x^3});
+				\end{axis}
+			\end{tikzpicture}\\[2pt]
+			{\scriptsize $\mathcal{C}_h$ : $y=x^3$}\\[-1pt]
+			{\scriptsize\color{DarkGreen}\textbf{oui}}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{Domaine de définition}
+	\begin{definitionbox}
+		Si $\fonc{f}{E}{F}$ est une fonction, l'ensemble $E$ est appelé
+		\key{domaine de définition} de $f$. On le note aussi $D_f$.
+		En particulier, le domaine de définition ne contient que des éléments
+		qui possèdent une image par le procédé $x\longmapsto f(x)$.
+	\end{definitionbox}
+	\vspace{0.2cm}
+	\begin{attentionbox}
+		En pratique, si $f$ n'est donnée que par la formule $f(x)$ et que l'on souhaite
+		déterminer son domaine \key{maximal} $D_f$, on cherche :
+		\begin{itemize}
+			\item les $x\in\R$ pour lesquels $f(x)$ \important{n'existe pas}, et on les
+			« enlève » de $\R$ (dénominateur qui s'annule) ;
+			\item \emph{ou} les $x$ pour lesquels $f(x)$ \important{existe}
+			(racine, logarithme).
+		\end{itemize}
+	\end{attentionbox}
+\end{frame}
+
+\begin{frame}{Conditions usuelles sur le domaine}
+	\begin{center}
+		\renewcommand{\arraystretch}{1.35}
+		\begin{tabular}{lll}
+			\toprule
+			\textbf{Expression} & \textbf{Condition} & \textbf{Exemple} \\
+			\midrule
+			$\dfrac{1}{g(x)}$ & $g(x)\neq 0$ & $\dfrac{1}{x}$ : $\R\setminus\{0\}$ \\
+			$\sqrt{g(x)}$ & $g(x)\ge 0$ & $\sqrt{x+1}$ : $[-1,+\infty[$ \\
+			$\dfrac{1}{\sqrt{g(x)}}$ & $g(x)>0$ & $\dfrac{1}{\sqrt{x-2}}$ : $]2,+\infty[$ \\
+			$\ln g(x)$ & $g(x)>0$ & $\ln x$ : $]0,+\infty[$ \\
+			polynôme & aucune & $x^2-4x+3$ : $\R$ \\
+			\bottomrule
+		\end{tabular}
+	\end{center}
+	\vspace{0.15cm}
+	\begin{applicationbox}
+		On combine les conditions avec des \key{intersections} d'ensembles.
+	\end{applicationbox}
+\end{frame}
+
+\begin{frame}{Exemples --- domaines maximaux}
+	Déterminer les domaines maximaux $E_1$, $E_2$ et $E_3$ des fonctions
+	\[
+		f_1(x)=\frac{1}{x},\qquad
+		f_2(x)=\sqrt{x+1},\qquad
+		f_3(x)=\frac{1}{\sqrt{x-2}}.
+	\]
+	\vspace{0.1cm}
+	\begin{exemplebox}[Correction]
+		\begin{itemize}
+			\item $\frac{1}{x}$ n'est pas défini seulement lorsque $x=0$, ainsi
+			$E_1=\R\setminus\{0\}$.
+			\item $\sqrt{x+1}$ est défini lorsque $x+1\ge 0$, c'est-à-dire $x\ge -1$.
+			Donc $E_2=[-1,+\infty[$.
+			\item $\frac{1}{\sqrt{x-2}}$ est défini lorsque $x-2\ge 0$ \emph{et}
+			$\sqrt{x-2}\neq 0$, i.e. $x\ge 2$ et $x\neq 2$.
+			On en déduit $E_3=]2,+\infty[$.
+		\end{itemize}
+	\end{exemplebox}
+\end{frame}
+
+\begin{frame}{Égalité de deux fonctions}
+	\begin{definitionbox}[Proposition 2.1]
+		Deux fonctions $\fonc{f_1}{E_1}{F_1}$ et $\fonc{f_2}{E_2}{F_2}$ sont
+		\key{égales} si et seulement si les trois points suivants sont vérifiés :
+		\begin{enumerate}
+			\item $E_1=E_2$ (égalité des ensembles de départ) ;
+			\item $F_1=F_2$ (égalité des ensembles d'arrivée) ;
+			\item $\forall x\in E_1=E_2$, $f_1(x)=f_2(x)$ (égalité du procédé).
+		\end{enumerate}
+		Si ces trois propriétés sont vérifiées, on note alors $f_1=f_2$.
+	\end{definitionbox}
+	\vspace{0.15cm}
+	\begin{exemplebox}
+		Les fonctions
+		$\fonc{f}{\R}{\R}$, $x\longmapsto x+1$
+		et
+		$\fonc{g}{[0,1]}{\R}$, $x\longmapsto x+1$
+		\important{ne sont pas égales} : les ensembles de départ ne sont pas les mêmes.
+	\end{exemplebox}
+\end{frame}
+
+\begin{frame}{Exercice d'application --- définitions}
+	\begin{exercicebox}[Exercice 2.1]
+		\begin{enumerate}
+			\item Déterminer les domaines maximaux de
+			\[
+				u(x)=\frac{1}{x^2-9},\quad
+				v(x)=\sqrt{4-x},\quad
+				w(x)=\frac{1}{\sqrt{x+2}}.
+			\]
+			\item Un coût de production est donné par
+			$C(q)=200+15q+\dfrac{40}{q-8}$ pour $q\ge 0$.
+			Quel est le domaine \emph{mathématique} de $C$ ? Quel sous-ensemble
+			a un sens \emph{en gestion} ?
+			\item Les fonctions $\fonc{f}{\R_+}{\R}$, $x\longmapsto \sqrt{x}$ et
+			$\fonc{g}{\R_+}{\R_+}$, $x\longmapsto \sqrt{x}$ sont-elles égales ? Pourquoi ?
+		\end{enumerate}
+	\end{exercicebox}
+\end{frame}
+
+\begin{frame}{Correction --- exercice 2.1}
+	\begin{definitionbox}[Correction]
+		\begin{enumerate}
+			\item $x^2-9\neq 0\iff x\neq\pm 3$, donc $D_u=\R\setminus\{-3,3\}$.\\
+			$4-x\ge 0\iff x\le 4$, donc $D_v=]-\infty,4]$.\\
+			$x+2>0\iff x>-2$, donc $D_w=]-2,+\infty[$.
+			\item Mathématiquement, $q\neq 8$ et $q\in\R$. En gestion : quantité
+			positive, et le modèle « explose » en $q=8$, donc
+			$D_C^{\text{gest}}=[0,8[\,\cup\,]8,+\infty[$. On travaillera souvent sur $[0,8[$.
+			\item \important{Non} : les ensembles d'arrivée $\R$ et $\R_+$ sont distincts
+			(proposition 2.1, point 2).
+		\end{enumerate}
+	\end{definitionbox}
+\end{frame}
+
+% ============================================================
+\subsection{Monotonie}
+% ============================================================
+
+\begin{frame}{Croissance et décroissance}
+	\begin{definitionbox}
+		Soit $\fonc{f}{E}{\R}$ une fonction définie sur un sous-ensemble $E$ de $\R$.
+		On dit que :
+		\begin{itemize}
+			\item $f$ est \key{croissante} sur $E$ si
+			$\forall x,y\in E$, $x\le y \Rightarrow f(x)\le f(y)$ ;
+			\item $f$ est \key{strictement croissante} sur $E$ si
+			$\forall x,y\in E$, $x< y \Rightarrow f(x)< f(y)$ ;
+			\item $f$ est \key{décroissante} sur $E$ si
+			$\forall x,y\in E$, $x\le y \Rightarrow f(x)\ge f(y)$ ;
+			\item $f$ est \key{strictement décroissante} sur $E$ si
+			$\forall x,y\in E$, $x< y \Rightarrow f(x)> f(y)$.
+		\end{itemize}
+	\end{definitionbox}
+\end{frame}
+
+\begin{frame}{Lecture graphique}
+	\begin{columns}[c]
+		\begin{column}{0.48\textwidth}
+			\centering
+			{\scriptsize Fonction \key{strictement croissante}}\\
+			\begin{tikzpicture}
+				\begin{axis}[gestion, width=6.0cm, height=3.8cm,
+					xmin=-0.3, xmax=3.2, ymin=-0.3, ymax=3.2]
+					\addplot[DarkBlue, domain=0.15:2.9, samples=60] ({x}, {0.22*x^2+0.35*x+0.2});
+					\addplot[only marks, mark=*, DarkRed] coordinates{(0.8,0.62)(2.2,1.84)};
+					\draw[Mustard, dashed] (axis cs:0.8,0) -- (axis cs:0.8,0.62)
+						-- (axis cs:0,0.62);
+					\draw[Mustard, dashed] (axis cs:2.2,0) -- (axis cs:2.2,1.84)
+						-- (axis cs:0,1.84);
+					\node[font=\scriptsize, below] at (axis cs:0.8,0) {$x$};
+					\node[font=\scriptsize, below] at (axis cs:2.2,0) {$y$};
+				\end{axis}
+			\end{tikzpicture}
+		\end{column}
+		\begin{column}{0.48\textwidth}
+			\centering
+			{\scriptsize Fonction \key{strictement décroissante}}\\
+			\begin{tikzpicture}
+				\begin{axis}[gestion, width=6.0cm, height=3.8cm,
+					xmin=-0.3, xmax=3.2, ymin=-0.3, ymax=3.2]
+					\addplot[DarkGreen, domain=0.15:2.9, samples=60] ({x}, {2.6-0.55*x});
+					\addplot[only marks, mark=*, DarkRed] coordinates{(0.7,2.215)(2.3,1.335)};
+				\end{axis}
+			\end{tikzpicture}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}[shrink=12]{À retenir --- monotonie}
+	\begin{center}
+		\renewcommand{\arraystretch}{1.25}
+		\small
+		\begin{tabular}{lll}
+			\toprule
+			\textbf{Type} & \textbf{Inégalité sur $f$} & \textbf{Graphe} \\
+			\midrule
+			strict.\ croissant & $x<y\Rightarrow f(x)<f(y)$ & « monte » \\
+			croissant & $x\le y\Rightarrow f(x)\le f(y)$ & « ne descend pas » \\
+			strict.\ décroissant & $x<y\Rightarrow f(x)>f(y)$ & « descend » \\
+			décroissant & $x\le y\Rightarrow f(x)\ge f(y)$ & « ne monte pas » \\
+			\bottomrule
+		\end{tabular}
+	\end{center}
+	\vspace{0.2cm}
+	\begin{applicationbox}
+		\faChartLine\ En gestion : une \key{fonction de demande} $D(p)$ est en général
+		décroissante. Une \key{fonction de coût} $C(q)$ est en général croissante.
+	\end{applicationbox}
+	\vspace{0.15cm}
+	\begin{attentionbox}
+		La monotonie se lit \important{sur un intervalle}. $x\mapsto x^2$ n'est ni croissante
+		ni décroissante sur $\R$ : strictement décroissante sur $]-\infty,0]$,
+		strictement croissante sur $[0,+\infty[$.
+	\end{attentionbox}
+\end{frame}
+
+\begin{frame}{Exercice d'application --- monotonie}
+	\begin{exercicebox}[Exercice 2.2]
+		\begin{enumerate}
+			\item Parmi $f(x)=3x-5$, $g(x)=-2x+1$ et $h(x)=x^2$, lesquelles sont
+			(strictement) monotones sur $\R$ ? Préciser le sens. Étudier $h$ sur
+			$\R_-$ et sur $\R_+$.
+			\item La demande d'un bien est $D(p)=120-5p$, $p$ le prix unitaire.
+			\begin{enumerate}
+				\item Montrer que $D$ est strictement décroissante sur $\R$.
+				\item Pour quels prix $p\ge 0$ a-t-on $D(p)\ge 0$ ? Interpréter.
+			\end{enumerate}
+		\end{enumerate}
+	\end{exercicebox}
+\end{frame}
+
+\begin{frame}{Correction --- exercice 2.2}
+	\begin{definitionbox}[Correction]
+		\begin{enumerate}
+			\item $f$ est strictement croissante ($3>0$). $g$ est strictement décroissante ($-2<0$).
+			$h$ n'est pas monotone sur $\R$ : $h(-2)=4>h(0)=0<h(2)=4$.
+			Sur $\R_-$, $h$ est strictement décroissante ; sur $\R_+$, strictement croissante.
+			\item $p_1<p_2\Rightarrow -5p_1>-5p_2\Rightarrow D(p_1)>D(p_2)$ : strictement décroissante.
+			$D(p)\ge 0\iff 120-5p\ge 0\iff p\le 24$.
+			Le modèle n'a de sens que pour $p\in[0,24]$ : au-delà, plus personne n'achète.
+		\end{enumerate}
+	\end{definitionbox}
+\end{frame}
+
+% ============================================================
+\subsection{Parité et périodicité}
+% ============================================================
+
+\begin{frame}{Fonctions paires et impaires}
+	\begin{definitionbox}
+		Soient $I$ un intervalle de $\R$ \key{symétrique par rapport à $0$}
+		(de la forme $[-a,a]$, $]-a,a[$ ou $\R$) et $\fonc{f}{I}{\R}$.
+		\begin{itemize}
+			\item $f$ est \key{paire} si $\forall x\in I$, $f(-x)=f(x)$.\\
+			Son graphe est alors \important{symétrique par rapport à l'axe des ordonnées}.
+			\item $f$ est \key{impaire} si $\forall x\in I$, $f(-x)=-f(x)$.\\
+			Son graphe est alors \important{symétrique par rapport à l'origine} $(0,0)$.
+		\end{itemize}
+	\end{definitionbox}
+	\vspace{0.15cm}
+	\begin{attentionbox}
+		Si $D_f$ n'est pas symétrique par rapport à $0$, la question de la parité
+		ne se pose pas.
+	\end{attentionbox}
+\end{frame}
+
+\begin{frame}{Lecture graphique --- parité}
+	\begin{columns}[c]
+		\begin{column}{0.48\textwidth}
+			\centering
+			{\scriptsize Paire : $y=x^2$}\\
+			\begin{tikzpicture}
+				\begin{axis}[gestion, width=6.2cm, height=4.6cm,
+					xmin=-2.3, xmax=2.3, ymin=-0.4, ymax=3.2]
+					\addplot[DarkBlue, domain=-1.7:1.7, samples=50] ({x}, {x^2});
+					\draw[Mustard, dashed] (axis cs:1.2,0) -- (axis cs:1.2,1.44);
+					\draw[Mustard, dashed] (axis cs:-1.2,0) -- (axis cs:-1.2,1.44);
+					\addplot[only marks, mark=*, DarkRed] coordinates{(1.2,1.44)(-1.2,1.44)};
+				\end{axis}
+			\end{tikzpicture}
+		\end{column}
+		\begin{column}{0.48\textwidth}
+			\centering
+			{\scriptsize Impaire : $y=x^3$}\\
+			\begin{tikzpicture}
+				\begin{axis}[gestion, width=6.2cm, height=4.6cm,
+					xmin=-1.7, xmax=1.7, ymin=-2.2, ymax=2.2]
+					\addplot[DarkGreen, domain=-1.25:1.25, samples=50] ({x}, {x^3});
+					\addplot[only marks, mark=*, DarkRed] coordinates{(1,1)(-1,-1)};
+				\end{axis}
+			\end{tikzpicture}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{Périodicité}
+	\begin{definitionbox}
+		Soient $\fonc{f}{\R}{\R}$ une fonction et un réel $T>0$.
+		La fonction $f$ est dite \key{périodique de période $T$} si
+		\[
+			\forall x\in\R,\qquad f(x+T)=f(x).
+		\]
+		La plus petite telle période (si elle existe) est la \key{période fondamentale}.
+	\end{definitionbox}
+	\vspace{0.15cm}
+	\begin{exemplebox}
+		Les fonctions cosinus et sinus sont $2\pi$-périodiques :
+		$\cos(x+2\pi)=\cos x$ et $\sin(x+2\pi)=\sin x$ pour tout $x\in\R$.
+	\end{exemplebox}
+\end{frame}
+
+\begin{frame}{Cosinus et sinus}
+	\centering
+	\begin{tikzpicture}
+		\begin{axis}[gestion, width=13.2cm, height=4.4cm,
+			xmin=-1.2, xmax=13.2, ymin=-1.6, ymax=1.6,
+			xtick={0,1.5708,3.1416,4.7124,6.2832,9.4248,12.566},
+			xticklabels={$0$, $\frac{\pi}{2}$, $\pi$, $\frac{3\pi}{2}$, $2\pi$, $3\pi$, $4\pi$},
+			legend style={at={(0.98,0.98)}, anchor=north east}]
+			\addplot[DarkBlue, domain=-0.4:12.8, samples=200] ({x}, {cos(deg(x))});
+			\addlegendentry{$\cos x$}
+			\addplot[Mustard, domain=-0.4:12.8, samples=200] ({x}, {sin(deg(x))});
+			\addlegendentry{$\sin x$}
+			\draw[DarkRed, densely dashed] (axis cs:0,-1.45) -- (axis cs:6.2832,-1.45);
+			\node[font=\scriptsize, DarkRed, above] at (axis cs:3.14,-1.45) {$T=2\pi$};
+		\end{axis}
+	\end{tikzpicture}
+\end{frame}
+
+\begin{frame}{Exercice d'application --- parité et périodicité}
+	\begin{exercicebox}[Exercice 2.3]
+		\begin{enumerate}
+			\item Étudier la parité de
+			$f(x)=x^2$, $g(x)=x^3$, $h(x)=\lvert x\rvert$, $k(x)=x+x^2$,
+			$c(x)=\cos x$, $s(x)=\sin x$.
+			\item La fonction $u(x)=\cos(2x)$ est-elle périodique ? Si oui, donner une période.
+			Même question pour $v(x)=\sin(x/2)$.
+			\item Le chiffre d'affaires mensuel (en kDH) d'une boutique est modélisé par
+			\[
+				\mathrm{CA}(t)=50+10\cos\!\left(\frac{2\pi t}{12}\right),
+			\]
+			$t$ en mois. Quelle est la période ? Que représente-t-elle ?
+		\end{enumerate}
+	\end{exercicebox}
+\end{frame}
+
+\begin{frame}{Correction --- exercice 2.3}
+	\begin{definitionbox}[Correction]\small
+		\begin{enumerate}
+			\item $f$, $h$, $c$ sont paires. $g$, $s$ sont impaires.
+			$k(-x)=-x+x^2\neq \pm k(x)$ en général : $k$ n'est ni paire ni impaire.
+			\item $u(x+T)=\cos(2x+2T)=\cos(2x)$ dès que $2T=2\pi k$ ($k\in\N^\ast$).
+			La période fondamentale est $T=\pi$.\\
+			$v(x+T)=\sin(\frac{x+T}{2})=\sin(\frac{x}{2})$ si $\frac{T}{2}=2\pi$, d'où $T=4\pi$.
+			\item $\mathrm{CA}(t+12)=\mathrm{CA}(t)$ : période de $12$ mois, soit
+			\key{une année} de saisonnalité (pic / creux qui se répètent chaque année).
+		\end{enumerate}
+	\end{definitionbox}
+\end{frame}
+
+% ============================================================
+\subsection{Composition de deux fonctions}
+% ============================================================
+
+\begin{frame}{Définition de la composée}
+	\begin{definitionbox}
+		Soient $E,F,G,H$ des sous-ensembles de $\R$ et $\fonc{f}{E}{F}$, $\fonc{g}{G}{H}$
+		deux fonctions. Si l'ensemble d'arrivée $F$ de $f$ est inclus dans l'ensemble
+		de départ $G$ de $g$, alors on définit la fonction \key{composée} $g\circ f$ par
+		\[
+			g\circ f \colon E \longrightarrow H, \qquad
+			x \longmapsto g\bigl(f(x)\bigr).
+		\]
+	\end{definitionbox}
+	\vspace{0.2cm}
+	\centering
+	\begin{tikzpicture}[
+		box/.style={draw=DarkBlue, rounded corners, fill=DarkBlue!6,
+			minimum width=1.6cm, minimum height=0.7cm, font=\small},
+		arr/.style={-{Latex}, thick, DarkBlue}]
+		\node[box] (x) {$x$};
+		\node[box, right=1.6cm of x] (fx) {$f(x)$};
+		\node[box, right=1.6cm of fx] (gfx) {$g(f(x))$};
+		\draw[arr] (x) -- node[above, font=\small] {$f$} (fx);
+		\draw[arr] (fx) -- node[above, font=\small] {$g$} (gfx);
+		\draw[arr, Mustard] ([yshift=-0.55cm]x.south) -- node[below, font=\small, Mustard] {$g\circ f$} ([yshift=-0.55cm]gfx.south);
+	\end{tikzpicture}
+\end{frame}
+
+\begin{frame}{Deux précautions}
+	\begin{attentionbox}
+		\begin{enumerate}
+			\item La condition $F\subset G$ est \important{essentielle} pour que $g(f(x))$ ait
+			toujours un sens. De même, $H\subset E$ est essentielle pour que $f(g(x))$ ait un sens.
+			\item Il faut faire attention à l'\key{ordre} : en général $f\circ g$ et $g\circ f$
+			\important{ne sont pas égales}. Il existe même des cas où $f\circ g$ existe
+			alors que $g\circ f$ n'existe pas.
+		\end{enumerate}
+	\end{attentionbox}
+	\vspace{0.25cm}
+	\begin{applicationbox}
+		\faChartLine\ En gestion : $t$ (heures-machine) $\xrightarrow{f}$ quantité produite
+		$\xrightarrow{g}$ revenu. Le revenu en fonction du temps est $g\circ f$.
+	\end{applicationbox}
+\end{frame}
+
+\begin{frame}{Exemple guidé}
+	On considère
+	\[
+		\begin{array}{c@{\qquad}c@{\qquad}c}
+			\fonc{f}{\R}{[-1,1]} &
+			\fonc{g}{\R_+}{\R_+} &
+			\fonc{h}{\R}{\R_+} \\[2pt]
+			x\longmapsto \sin x &
+			x\longmapsto \sqrt{x} &
+			x\longmapsto x^2.
+		\end{array}
+	\]
+	Peut-on définir $f\circ g$, $g\circ f$, $g\circ h$ et $h\circ f$ ? Si oui, les écrire.
+\end{frame}
+
+\begin{frame}{Correction de l'exemple}
+	\begin{exemplebox}[Correction]
+		\begin{enumerate}
+			\item $g\circ f$ : $[-1,1]\not\subset \R_+$, donc $g\circ f$ \important{n'a pas de sens}
+			(on ne peut pas prendre $\sqrt{\sin x}$ pour tout $x$, p.ex. $x=\frac{3\pi}{2}$).
+			\item $f\circ g$ : $\R_+\subset\R$, donc $f\circ g$ a un sens :
+			$\fonc{f\circ g}{\R_+}{[-1,1]}$, $x\longmapsto \sin\sqrt{x}$.
+			\item $g\circ h$ : $\R_+\subset\R_+$, donc $g\circ h$ a un sens :
+			$\fonc{g\circ h}{\R}{\R_+}$, $x\longmapsto \sqrt{x^2}=\lvert x\rvert$.
+			\item $h\circ f$ : $[-1,1]\subset\R$, donc $h\circ f$ a un sens :
+			$\fonc{h\circ f}{\R}{\R_+}$, $x\longmapsto (\sin x)^2$.
+		\end{enumerate}
+	\end{exemplebox}
+\end{frame}
+
+\begin{frame}{Exercice d'application --- composition}
+	\begin{exercicebox}[Exercice 2.4]
+		\begin{enumerate}
+			\item Soit $f(x)=x^2+1$ et $g(x)=2x-3$, définies de $\R$ dans $\R$.
+			Calculer $(g\circ f)(x)$ et $(f\circ g)(x)$. A-t-on $f\circ g=g\circ f$ ?
+			\item Une machine produit $q=f(t)=20t$ unités en $t$ heures.
+			Chaque unité se vend $12$ DH, d'où $R=g(q)=12q$.
+			\begin{enumerate}
+				\item Justifier que $g\circ f$ a un sens et l'expliciter.
+				\item $f\circ g$ a-t-elle un sens \emph{économique} ?
+			\end{enumerate}
+			\item Avec $u(x)=\sqrt{x}$ ($D_u=\R_+$) et $v(x)=x-5$ ($D_v=\R$),
+			$u\circ v$ et $v\circ u$ existent-elles sur tout le domaine annoncé ?
+		\end{enumerate}
+	\end{exercicebox}
+\end{frame}
+
+\begin{frame}{Correction --- exercice 2.4}
+	\begin{definitionbox}[Correction]
+		\begin{enumerate}
+			\item $(g\circ f)(x)=2(x^2+1)-3=2x^2-1$ ;
+			$(f\circ g)(x)=(2x-3)^2+1=4x^2-12x+10$.
+			Donc $f\circ g\neq g\circ f$.
+			\item $g\circ f(t)=12\cdot 20t=240t$ : revenu (en DH) après $t$ heures.
+			$f\circ g$ composerait un \emph{revenu} avec une fonction qui attend un \emph{temps} :
+			sans intérêt économique ici.
+			\item $v\circ u$ : $\R_+\subset\R$, oui, $(v\circ u)(x)=\sqrt{x}-5$.
+			$u\circ v$ : l'arrivée de $v$ est $\R\not\subset\R_+$. On peut toutefois restreindre
+			$v$ à $[5,+\infty[$, alors $(u\circ v)(x)=\sqrt{x-5}$.
+		\end{enumerate}
+	\end{definitionbox}
+\end{frame}
+
+% ============================================================
+\subsection{Antécédent, image directe et image réciproque}
+% ============================================================
+
+\begin{frame}{Antécédent et image}
+	\begin{definitionbox}
+		Soient $\fonc{f}{E}{F}$ une fonction et $B$ un sous-ensemble de $F$.
+		\begin{itemize}
+			\item On appelle \key{antécédent} de $y\in F$ par $f$ tout $x\in E$ tel que $f(x)=y$.
+			On dit alors que $y$ est l'\key{image} de $x$ par $f$.
+			\item L'\key{image de $f$} est le sous-ensemble de $F$ noté $I(f)$ défini par
+			\[
+				I(f)=\bigl\{ y\in F : \exists x\in E,\ y=f(x)\bigr\}.
+			\]
+			\item L'\key{image réciproque} de $B$ par $f$ est le sous-ensemble de $E$ noté
+			$f^{-1}(B)$ défini par
+			\[
+				f^{-1}(B)=\bigl\{ x\in E : f(x)\in B\bigr\}.
+			\]
+		\end{itemize}
+	\end{definitionbox}
+\end{frame}
+
+\begin{frame}{Ne pas confondre $I(f)$ et $f(x)$}
+	\begin{attentionbox}
+		Il ne faut pas confondre l'image de $f$ notée $I(f)$ et l'image de $x$ par $f$
+		notée $f(x)$ : ce ne sont pas le même type d'objet.
+		\begin{itemize}
+			\item $I(f)$ est un \key{sous-ensemble} de l'espace d'arrivée $F$ ;
+			\item $f(x)$ est un \key{élément} de $F$.
+		\end{itemize}
+		$I(f)$ est l'ensemble des éléments de $F$ qui ont \important{au moins un} antécédent par $f$.
+	\end{attentionbox}
+	\vspace{0.2cm}
+	\begin{exemplebox}
+		Pour $f(x)=x^2$ de $\R$ dans $\R$ : $f(2)=4$ (un réel), alors que
+		$I(f)=[0,+\infty[$ (un intervalle). Les antécédents de $4$ sont $-2$ et $2$.
+	\end{exemplebox}
+\end{frame}
+
+\begin{frame}{Image réciproque : lecture graphique}
+	\begin{columns}[c]
+		\begin{column}{0.50\textwidth}
+			Soit $f(x)=x^2$ et $B=[1,4]$. Alors
+			\begin{align*}
+				f^{-1}(B)
+				&=\bigl\{x\in\R : 1\le x^2\le 4\bigr\}\\
+				&=[-2,-1]\cup[1,2].
+			\end{align*}
+			\vspace{0.15cm}
+			\begin{applicationbox}
+				$f^{-1}(B)$ = les $x$ dont l'image tombe dans $B$.
+				Ce n'est \important{pas} la fonction réciproque
+				(qui n'existe que si $f$ est bijective).
+			\end{applicationbox}
+		\end{column}
+		\begin{column}{0.48\textwidth}
+			\begin{tikzpicture}
+				\begin{axis}[gestion, width=6.4cm, height=5.0cm,
+					xmin=-2.6, xmax=2.6, ymin=-0.4, ymax=5.2]
+					\addplot[DarkBlue, domain=-2.3:2.3, samples=80] ({x}, {x^2});
+					\fill[Mustard, opacity=0.18] (axis cs:-2.6,1) rectangle (axis cs:2.6,4);
+					\addplot[only marks, mark=*, DarkRed] coordinates{(-2,4)(-1,1)(1,1)(2,4)};
+				\end{axis}
+			\end{tikzpicture}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{Exercice d'application --- images}
+	\begin{exercicebox}[Exercice 2.5]
+		Soit $f(x)=x^2-2x$ définie sur $E=\R$.
+		\begin{enumerate}
+			\item Calculer $f(0)$, $f(1)$, $f(3)$. Quels sont les antécédents de $0$ ?
+			\item Déterminer $I(f)$ (on pourra écrire $f(x)=(x-1)^2-1$).
+			\item Calculer $f^{-1}\bigl(\{0\}\bigr)$ et $f^{-1}\bigl([0,+\infty[\bigr)$.
+			\item \textbf{Gestion.} Le profit (en kDH) est $B(q)=8q-400$, $q$ en unités.
+			Interpréter $B^{-1}\bigl([0,+\infty[\bigr)$.
+		\end{enumerate}
+	\end{exercicebox}
+\end{frame}
+
+\begin{frame}{Correction --- exercice 2.5}
+	\begin{definitionbox}[Correction]
+		\begin{enumerate}
+			\item $f(0)=0$, $f(1)=-1$, $f(3)=3$. $f(x)=0\iff x(x-2)=0$, antécédents $0$ et $2$.
+			\item $f(x)=(x-1)^2-1\ge -1$, et toutes les valeurs $\ge -1$ sont atteintes :
+			$I(f)=[-1,+\infty[$.
+			\item $f^{-1}(\{0\})=\{0,2\}$.
+			$f(x)\ge 0\iff x(x-2)\ge 0\iff x\in]-\infty,0]\cup[2,+\infty[$.
+			\item $B(q)\ge 0\iff q\ge 50$ : $B^{-1}([0,+\infty[)=[50,+\infty[$.
+			C'est l'ensemble des productions pour lesquelles l'entreprise
+			est \key{au-dessus du seuil de rentabilité}.
+		\end{enumerate}
+	\end{definitionbox}
+\end{frame}
+
+% ============================================================
+\subsection{Bijectivité et fonction réciproque}
+% ============================================================
+
+\begin{frame}{Définition d'une bijection}
+	\begin{definitionbox}
+		Une fonction $\fonc{f}{E}{F}$ est dite \key{bijective} si tout point $y$ de
+		l'espace d'arrivée $F$ possède \important{exactement un} antécédent $x$ dans
+		l'espace de départ $E$ par la fonction $f$.
+	\end{definitionbox}
+	\vspace{0.2cm}
+	\begin{attentionbox}
+		Avec des quantificateurs :
+		\[
+			\forall y\in F,\ \exists !\, x\in E \quad\text{tel que}\quad y=f(x).
+		\]
+		Autrement dit : $f$ est à la fois \key{injective} (au plus un antécédent)
+		et \key{surjective} (au moins un antécédent).
+	\end{attentionbox}
+\end{frame}
+
+\begin{frame}{Test visuel (droite horizontale)}
+	\begin{columns}[c]
+		\begin{column}{0.50\textwidth}
+			$f$ est bijective de $E$ dans $F$ lorsque toute droite horizontale
+			$y=y_0$ avec $y_0\in F$ coupe le graphe
+			\begin{itemize}
+				\item \important{une} fois (existence = surjection) ;
+				\item et \important{une seule} fois (unicité = injection).
+			\end{itemize}
+			\vspace{0.15cm}
+			\begin{applicationbox}
+				Restreindre le départ et/ou l'arrivée permet souvent
+				de « rendre » une fonction bijective.
+			\end{applicationbox}
+		\end{column}
+		\begin{column}{0.48\textwidth}
+			\begin{tikzpicture}
+				\begin{axis}[gestion, width=6.3cm, height=5.0cm,
+					xmin=-2.3, xmax=2.3, ymin=-0.4, ymax=3.4]
+					\addplot[DarkBlue, domain=-1.8:1.8, samples=60] ({x}, {x^2});
+					\draw[DarkRed, densely dashed] (axis cs:-2.2,1.2) -- (axis cs:2.2,1.2);
+					\addplot[only marks, mark=*, DarkRed] coordinates{(-1.095,1.2)(1.095,1.2)};
+					\node[font=\scriptsize, DarkRed] at (axis cs:0,1.55) {deux antécédents};
+				\end{axis}
+			\end{tikzpicture}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{Exemples --- $x^2$ et $\cos$}
+	\begin{exemplebox}[Cinq situations]
+		\begin{enumerate}
+			\item $\fonc{f}{\R}{\R_+}$, $x\longmapsto x^2$ : \important{pas bijective},
+			car $1\in\R_+$ a deux antécédents $-1$ et $1$.
+			\item $\fonc{g}{\R_+}{\R}$, $x\longmapsto x^2$ : \important{pas bijective},
+			car $-1\in\R$ n'a pas d'antécédent ($x^2=-1$ impossible dans $\R$).
+			\item $\fonc{h}{[0,2]}{[0,4]}$, $x\longmapsto x^2$ : \key{bijective},
+			car pour tout $y\in[0,4]$ il existe un unique $x=\sqrt{y}\in[0,2]$.
+			\item $\fonc{k}{\R}{[-1,1]}$, $x\longmapsto \cos x$ : \important{pas bijective}
+			($0$ a au moins deux antécédents $\frac{\pi}{2}$ et $-\frac{\pi}{2}$).
+			\item $\fonc{\ell}{[0,\pi]}{\R}$, $x\longmapsto \cos x$ : \important{pas bijective},
+			car $2\in\R$ n'a pas d'antécédent (on a toujours $-1\le\cos x\le 1$).
+		\end{enumerate}
+	\end{exemplebox}
+\end{frame}
+
+\begin{frame}{Graphes des cinq exemples}
+	\begin{columns}[T]
+		\begin{column}{0.32\textwidth}
+			\centering{\scriptsize $f\colon\R\to\R_+$}\\
+			\begin{tikzpicture}
+				\begin{axis}[mini, xmin=-2.2, xmax=2.2, ymin=-0.3, ymax=2.4, width=4.1cm, height=3.3cm]
+					\addplot[DarkBlue, domain=-1.5:1.5, samples=40] ({x}, {x^2});
+				\end{axis}
+			\end{tikzpicture}\\
+			{\scriptsize\color{DarkRed}non injective}
+		\end{column}
+		\begin{column}{0.32\textwidth}
+			\centering{\scriptsize $g\colon\R_+\to\R$}\\
+			\begin{tikzpicture}
+				\begin{axis}[mini, xmin=-0.4, xmax=2.2, ymin=-1.6, ymax=2.4, width=4.1cm, height=3.3cm]
+					\addplot[DarkBlue, domain=0:1.5, samples=40] ({x}, {x^2});
+					\draw[DarkRed, densely dashed] (axis cs:-0.3,-1) -- (axis cs:2.1,-1);
+				\end{axis}
+			\end{tikzpicture}\\
+			{\scriptsize\color{DarkRed}non surjective}
+		\end{column}
+		\begin{column}{0.32\textwidth}
+			\centering{\scriptsize $h\colon[0,2]\to[0,4]$}\\
+			\begin{tikzpicture}
+				\begin{axis}[mini, xmin=-0.3, xmax=2.4, ymin=-0.3, ymax=4.4, width=4.1cm, height=3.3cm]
+					\addplot[DarkGreen, domain=0:2, samples=40] ({x}, {x^2});
+					\addplot[only marks, mark=*, DarkGreen] coordinates{(0,0)(2,4)};
+				\end{axis}
+			\end{tikzpicture}\\
+			{\scriptsize\color{DarkGreen}bijective}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{Un critère pratique}
+	\begin{definitionbox}[Théorème 2.1]
+		Si une fonction $\fonc{f}{E}{F}$ est \key{strictement croissante} et telle que
+		$F=I(f)$, alors elle est \key{bijective}.
+	\end{definitionbox}
+	\vspace{0.2cm}
+	\begin{attentionbox}
+		\begin{itemize}
+			\item Le théorème fonctionne aussi si $f$ est \key{strictement décroissante}.
+			\item Pour toute $\fonc{f}{E}{F}$, si $F=I(f)$ on dit que $f$ est
+			\key{à valeurs dans son image}.
+		\end{itemize}
+	\end{attentionbox}
+	\vspace{0.15cm}
+	\begin{exemplebox}
+		$\fonc{h}{[0,2]}{[0,4]}$, $x\longmapsto x^2$ est bijective car elle est
+		strictement croissante et $I(h)=h([0,2])=[0,4]$.
+	\end{exemplebox}
+\end{frame}
+
+\begin{frame}{Fonction réciproque}
+	\begin{definitionbox}
+		Si $\fonc{f}{E}{F}$ est bijective, il existe une fonction appelée
+		\key{fonction réciproque} de $f$, notée $f^{-1}$, définie par
+		\[
+			f^{-1} \colon F \longrightarrow E, \qquad
+			y \longmapsto \text{l'unique } x\in E \text{ tel que } y=f(x).
+		\]
+	\end{definitionbox}
+	\vspace{0.15cm}
+	\begin{attentionbox}
+		La condition « $f$ bijective » est \important{essentielle} pour que le $x$ tel que
+		$y=f(x)$ soit bien défini de manière unique.
+		Ne pas confondre $f^{-1}$ (la réciproque) et $f^{-1}(B)$ (l'image réciproque d'un ensemble),
+		ni avec $1/f$.
+	\end{attentionbox}
+\end{frame}
+
+\begin{frame}{Exemple --- réciproque de $x^2$ sur $[0,2]$}
+	La fonction $\fonc{h}{[0,2]}{[0,4]}$, $x\longmapsto x^2$ est bijective.
+	Pour tout $y\in[0,4]$, l'équation $y=x^2$ admet pour unique solution
+	$x=\sqrt{y}\in[0,2]$. Donc
+	\[
+		h^{-1} \colon [0,4]\longrightarrow [0,2], \qquad y\longmapsto \sqrt{y}.
+	\]
+	\vspace{0.1cm}
+	\begin{columns}[c]
+		\begin{column}{0.48\textwidth}
+			\begin{tikzpicture}
+				\begin{axis}[gestion, width=6.2cm, height=4.4cm,
+					xmin=-0.3, xmax=4.4, ymin=-0.3, ymax=4.4,
+					legend style={at={(0.98,0.22)}, anchor=south east}]
+					\addplot[DarkBlue, domain=0:2, samples=40] ({x}, {x^2});
+					\addlegendentry{$h$}
+					\addplot[Mustard, domain=0:4, samples=40] ({x}, {sqrt(x)});
+					\addlegendentry{$h^{-1}$}
+					\addplot[gray, dashed, domain=0:4] ({x}, {x});
+				\end{axis}
+			\end{tikzpicture}
+		\end{column}
+		\begin{column}{0.48\textwidth}
+			\begin{applicationbox}
+				Les graphes de $h$ et $h^{-1}$ sont \key{symétriques} par rapport
+				à la première bissectrice $y=x$.
+			\end{applicationbox}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{Exemple guidé --- $f(x)=x^2-4x+3$}
+	On considère
+	\[
+		\fonc{f}{]-\infty,2]}{I(f)}, \qquad x\longmapsto x^2-4x+3.
+	\]
+	Déterminer $I(f)$, montrer que $f$ est une bijection et calculer $f^{-1}$.
+	\vspace{0.2cm}
+	\begin{exemplebox}[Tableau de variations]
+		Pour tout $x\in]-\infty,2]$, $f'(x)=2x-4\le 0$.
+		\vspace{0.1cm}
+		\centering
+		\renewcommand{\arraystretch}{1.25}
+		\begin{tabular}{|c|ccc|}
+			\hline
+			$x$ & $-\infty$ && $2$ \\
+			\hline
+			$f'(x)$ && $-$ & $0$ \\
+			\hline
+			$f$ & $+\infty$ & $\searrow$ & $-1$ \\
+			\hline
+		\end{tabular}
+	\end{exemplebox}
+\end{frame}
+
+\begin{frame}{Suite de l'exemple --- calcul de $f^{-1}$}
+	D'après le tableau, $f$ est strictement décroissante et $I(f)=[-1,+\infty[$ :
+	elle est donc bijective de $]-\infty,2]$ dans $I(f)$.
+	Soit $y\in[-1,+\infty[$. On a
+	\[
+		y=f(x)\iff y=x^2-4x+3\iff x^2-4x+(3-y)=0.
+	\]
+	Le discriminant est $\Delta=16-4(3-y)=4+4y\ge 0$ car $y\ge -1$. Les racines sont
+	\[
+		x_1=2-\sqrt{1+y},\qquad x_2=2+\sqrt{1+y}.
+	\]
+	Comme on cherche $x\in]-\infty,2]$, $x_2$ ne convient pas (sauf si $y=-1$).
+	\vspace{0.1cm}
+	\begin{definitionbox}[Conclusion]
+		\[
+			\fonc{f^{-1}}{[-1,+\infty[}{]-\infty,2]}, \qquad
+			y\longmapsto 2-\sqrt{1+y}.
+		\]
+	\end{definitionbox}
+\end{frame}
+
+\begin{frame}{Composition avec la réciproque}
+	\begin{definitionbox}[Proposition 2.2]
+		Soient $\fonc{f}{E}{F}$ une fonction bijective et $\fonc{f^{-1}}{F}{E}$ sa réciproque.
+		Alors
+		\[
+			\forall x\in E,\quad f^{-1}\bigl(f(x)\bigr)=x
+			\qquad\text{et}\qquad
+			\forall y\in F,\quad f\bigl(f^{-1}(y)\bigr)=y.
+		\]
+	\end{definitionbox}
+	\vspace{0.2cm}
+	\begin{applicationbox}
+		\faLightbulb\ $f$ et $f^{-1}$ « s'annulent » l'une l'autre :
+		partir de $x$, appliquer $f$ puis $f^{-1}$, c'est revenir à $x$.
+	\end{applicationbox}
+\end{frame}
+
+\begin{frame}{Exercice d'application --- bijection}
+	\begin{exercicebox}[Exercice 2.6]
+		\begin{enumerate}
+			\item La fonction $\fonc{f}{\R}{\R}$, $x\longmapsto 2x+1$ est-elle bijective ?
+			Si oui, déterminer $f^{-1}$.
+			\item Rendre $x\longmapsto x^2$ bijective en restreignant départ et arrivée à des
+			intervalles de votre choix, puis donner la réciproque.
+			\item \textbf{Gestion.} Le prix (en DH) en fonction de la quantité demandée est
+			$P(q)=80-2q$ pour $q\in[0,40]$.
+			\begin{enumerate}
+				\item Montrer que $P$ est bijective de $[0,40]$ dans $[0,80]$.
+				\item Expliciter $P^{-1}$. Que représente $P^{-1}(20)$ ?
+			\end{enumerate}
+		\end{enumerate}
+	\end{exercicebox}
+\end{frame}
+
+\begin{frame}{Correction --- exercice 2.6}
+	\begin{definitionbox}[Correction]
+		\begin{enumerate}
+			\item Affine de pente $2\neq 0$ : bijective, $y=2x+1\iff x=\frac{y-1}{2}$,
+			donc $f^{-1}(y)=\dfrac{y-1}{2}$.
+			\item Par exemple $\fonc{h}{[0,+\infty[}{[0,+\infty[}$, $x\longmapsto x^2$,
+			réciproque $h^{-1}(y)=\sqrt{y}$.
+			\item $P'(q)=-2<0$ : strictement décroissante, $P(0)=80$, $P(40)=0$,
+			d'où $I(P)=[0,80]$. Théorème 2.1 : bijective.
+			$p=80-2q\iff q=\dfrac{80-p}{2}$, donc $P^{-1}(p)=\dfrac{80-p}{2}$.
+			$P^{-1}(20)=30$ : à $20$ DH, on demande $30$ unités.
+		\end{enumerate}
+	\end{definitionbox}
+\end{frame}
+
+% ============================================================
+\subsection{Continuité et dérivabilité d'une fonction}
+% ============================================================
+
+\begin{frame}{Continuité}
+	On note dans la suite $I$ et $J$ des intervalles de $\R$.
+	\begin{definitionbox}
+		Soient $\fonc{f}{I}{\R}$ et $a\in I$.
+		\begin{itemize}
+			\item On dit que $f$ est \key{continue au point $a$} si
+			$\displaystyle\lim_{x\to a} f(x)=f(a)$.
+			\item On dit que $f$ est \key{continue sur $I$} si $f$ est continue en tout point de $I$.
+		\end{itemize}
+	\end{definitionbox}
+	\vspace{0.15cm}
+	\begin{applicationbox}
+		Graphiquement : on peut tracer le graphe \important{sans lever le crayon} sur $I$.
+		Les polynômes, $\exp$, $\ln$ (sur $]0,+\infty[$), $\sin$, $\cos$ sont continues
+		sur leur domaine.
+	\end{applicationbox}
+\end{frame}
+
+\begin{frame}{Dérivabilité}
+	\begin{definitionbox}
+		Soient $\fonc{f}{I}{\R}$ et $a\in I$.
+		\begin{itemize}
+			\item $f$ est \key{dérivable en $a$} si
+			\[
+				x\longmapsto \frac{f(x)-f(a)}{x-a}
+			\]
+			admet une \important{limite finie} lorsque $x\to a$. Cette limite est notée $f'(a)$
+			et appelée \key{dérivée de $f$ en $a$}.
+			\item $f$ est dérivable sur $J\subset I$ si elle l'est en tout point de $J$.
+			\item Le \key{domaine de dérivabilité} est
+			$\widetilde I=\{x\in I : f\text{ est dérivable en }x\}$, et
+			$\fonc{f'}{\widetilde I}{\R}$, $x\longmapsto f'(x)$.
+		\end{itemize}
+	\end{definitionbox}
+\end{frame}
+
+\begin{frame}{Exemple --- $f(x)=x^2$}
+	La fonction $\fonc{f}{\R}{\R}$, $x\longmapsto x^2$ est dérivable sur $\R$.
+	En effet, pour tout $x_0\in\R$,
+	\begin{align*}
+		\frac{f(x)-f(x_0)}{x-x_0}
+		&= \frac{x^2-x_0^2}{x-x_0}
+		= \frac{(x-x_0)(x+x_0)}{x-x_0}
+		= x+x_0 \\
+		&\xrightarrow[x\to x_0]{} 2x_0 < +\infty.
+	\end{align*}
+	On a même montré que $f'(x_0)=2x_0$, autrement dit
+	\[
+		f'(x)=2x \qquad \forall x\in\R.
+	\]
+\end{frame}
+
+\begin{frame}{Dérivées successives}
+	\begin{definitionbox}
+		Soient $\fonc{f}{I}{\R}$ dérivable et $f'$ sa dérivée. Si $f'$ est aussi dérivable,
+		on note $f''=(f')'$ la \key{dérivée seconde} de $f$. Plus généralement,
+		\[
+			f^{(0)}=f,\quad f^{(1)}=f',\quad f^{(2)}=f'',\quad \ldots,\quad
+			f^{(n+1)}=\bigl(f^{(n)}\bigr)'.
+		\]
+		Si la dérivée $n$-ième $f^{(n)}$ existe, on dit que $f$ est \key{$n$ fois dérivable}.
+	\end{definitionbox}
+	\vspace{0.2cm}
+	\begin{exemplebox}[En gestion]
+		$C(q)$ coût total, $C'(q)$ = \key{coût marginal} (coût de la dernière unité),
+		$C''(q)$ indique si ce coût marginal augmente ou diminue.
+	\end{exemplebox}
+\end{frame}
+
+\begin{frame}{Règles de dérivation}
+	\begin{definitionbox}[Propriétés]
+		\small
+		Soient $f,g$ dérivables sur $I$. Pour tout $x\in I$ :
+		\begin{itemize}
+			\item $(f+g)'(x)=f'(x)+g'(x)$ ;
+			\item $(\lambda f)'(x)=\lambda f'(x)$, $\forall\lambda\in\R$ ;
+			\item $(f\cdot g)'(x)=f'(x)g(x)+g'(x)f(x)$ ;
+			\item $\displaystyle\left(\frac{1}{f}\right)'(x)=-\frac{f'(x)}{f(x)^2}$ si $f(x)\neq 0$ ;
+			\item $\displaystyle\left(\frac{f}{g}\right)'(x)=\frac{f'(x)g(x)-f(x)g'(x)}{g(x)^2}$ si $g(x)\neq 0$.
+		\end{itemize}
+	\end{definitionbox}
+\end{frame}
+
+\begin{frame}{Dérivation d'une composée}
+	\begin{definitionbox}[Proposition]
+		Soient $\fonc{f}{I}{\R}$ et $\fonc{g}{J}{\R}$ dérivables, avec $I(f)\subset J$.
+		Alors $g\circ f$ est dérivable sur $I$ et
+		\[
+			\forall x\in I, \qquad (g\circ f)'(x)=f'(x)\cdot g'\bigl(f(x)\bigr).
+		\]
+	\end{definitionbox}
+	\vspace{0.15cm}
+	\begin{exemplebox}
+		\begin{enumerate}
+			\item $f(x)=e^{x^2+3x+1}=f_1\circ f_2$ avec $f_1(x)=e^x$, $f_2(x)=x^2+3x+1$ :
+			$f'(x)=(2x+3)\,e^{x^2+3x+1}$.
+			\item $g(x)=\sin(2x+1)$ : $g'(x)=2\cos(2x+1)$.
+		\end{enumerate}
+	\end{exemplebox}
+\end{frame}
+
+\begin{frame}[shrink=8]{Dérivée de la fonction réciproque}
+	\begin{definitionbox}[Corollaire]
+		Soient $\fonc{f}{I}{J}$ dérivable et bijective, et $f^{-1}$ sa réciproque.
+		Si $f'$ ne s'annule pas sur $I$, alors $f^{-1}$ est dérivable et
+		\[
+			\forall y\in J, \qquad \bigl(f^{-1}\bigr)'(y)=\frac{1}{f'\bigl(f^{-1}(y)\bigr)}.
+		\]
+	\end{definitionbox}
+	\vspace{0.08cm}
+	\begin{exemplebox}
+		$f(x)=x^2$ sur $[0,2]$, $f^{-1}(y)=\sqrt{y}$. Pour $x\in]0,2[$, $f'(x)=2x\neq 0$.
+		Donc sur $]0,4[$,
+		\[
+			\bigl(f^{-1}\bigr)'(y)=\frac{1}{2f^{-1}(y)}=\frac{1}{2\sqrt{y}},
+		\]
+		ce qui retrouve la dérivée usuelle de la racine carrée.
+	\end{exemplebox}
+\end{frame}
+
+\begin{frame}{Tangente en un point}
+	\begin{columns}[c]
+		\begin{column}{0.50\textwidth}
+			\begin{definitionbox}[Tangente]
+				Soit $f$ dérivable en $a\in I$. Une équation de la \key{tangente}
+				à la courbe $\mathcal{C}_f$ au point $\bigl(a,f(a)\bigr)$ est
+				\[
+					y=f(a)+f'(a)\,(x-a).
+				\]
+			\end{definitionbox}
+			\vspace{0.15cm}
+			\begin{exemplebox}
+				Pour $f(x)=x^2$ en $a=1$ : $f(1)=1$, $f'(1)=2$, d'où
+				$y=1+2(x-1)=2x-1$.
+			\end{exemplebox}
+		\end{column}
+		\begin{column}{0.48\textwidth}
+			\begin{tikzpicture}
+				\begin{axis}[gestion, width=6.3cm, height=5.2cm,
+					xmin=-0.4, xmax=2.4, ymin=-1.2, ymax=4.2]
+					\addplot[DarkBlue, domain=0:2.1, samples=50] ({x}, {x^2});
+					\addplot[Mustard, domain=0:2.2, samples=20] ({x}, {2*x-1});
+					\addplot[only marks, mark=*, DarkRed] coordinates{(1,1)};
+					\node[font=\scriptsize, DarkRed, left] at (axis cs:1,1.35) {$(1,1)$};
+				\end{axis}
+			\end{tikzpicture}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{Exercice d'application --- dérivabilité}
+	\begin{exercicebox}[Exercice 2.7]
+		\begin{enumerate}
+			\item Dériver $f(x)=(3x^2-1)e^x$ et $g(x)=\dfrac{2x+1}{x-4}$ (préciser $D_g$).
+			\item Écrire l'équation de la tangente à $\mathcal{C}_f$ en $a=0$ pour $f(x)=e^{x^2}$.
+			\item \textbf{Gestion.} $C(q)=q^3-6q^2+20q+50$ est le coût total.
+			Calculer le coût marginal $C'(q)$, puis $C'(2)$ et $C'(5)$. Interpréter.
+		\end{enumerate}
+	\end{exercicebox}
+\end{frame}
+
+\begin{frame}{Correction --- exercice 2.7}
+	\begin{definitionbox}[Correction]
+		\begin{enumerate}
+			\item Produit : $f'(x)=(6x)e^x+(3x^2-1)e^x=(3x^2+6x-1)e^x$.\\
+			$D_g=\R\setminus\{4\}$,
+			$g'(x)=\dfrac{2(x-4)-(2x+1)}{(x-4)^2}=\dfrac{-9}{(x-4)^2}$.
+			\item $f'(x)=2xe^{x^2}$, $f(0)=1$, $f'(0)=0$ : tangente horizontale $y=1$.
+			\item $C'(q)=3q^2-12q+20$. $C'(2)=8$, $C'(5)=35$ :
+			produire la $3^{\text{e}}$ unité coûte environ $8$, la $6^{\text{e}}$ environ $35$.
+			Le coût marginal a augmenté.
+		\end{enumerate}
+	\end{definitionbox}
+\end{frame}
+
+% ============================================================
+\subsection{Étude des variations d'une fonction}
+% ============================================================
+
+\begin{frame}{Sens de variation et signe de $f'$}
+	\begin{definitionbox}[Proposition]
+		Soient $a,b\in\R$ et $\fonc{f}{[a,b]}{\R}$ continue sur $[a,b]$ et dérivable sur $]a,b[$. Alors :
+		\begin{enumerate}
+			\item $\forall x\in]a,b[$, $f'(x)\ge 0 \iff f$ est croissante ;
+			\item $\forall x\in]a,b[$, $f'(x)\le 0 \iff f$ est décroissante ;
+			\item $\forall x\in]a,b[$, $f'(x)=0 \iff f$ est constante ;
+			\item $\forall x\in]a,b[$, $f'(x)>0 \Rightarrow f$ est strictement croissante ;
+			\item $\forall x\in]a,b[$, $f'(x)<0 \Rightarrow f$ est strictement décroissante.
+		\end{enumerate}
+	\end{definitionbox}
+\end{frame}
+
+\begin{frame}{Une réciproque fausse}
+	\begin{attentionbox}
+		La réciproque des points 4. et 5. est \important{fausse}.
+		Par exemple, $x\longmapsto x^3$ est \key{strictement croissante} sur $\R$,
+		et pourtant sa dérivée $3x^2$ \important{s'annule} en $0$.
+	\end{attentionbox}
+	\vspace{0.15cm}
+	\begin{columns}[c]
+		\begin{column}{0.48\textwidth}
+			\begin{tikzpicture}
+				\begin{axis}[gestion, width=6.2cm, height=4.4cm,
+					xmin=-1.6, xmax=1.6, ymin=-2.2, ymax=2.2]
+					\addplot[DarkBlue, domain=-1.3:1.3, samples=60] ({x}, {x^3});
+					\addplot[only marks, mark=*, DarkRed] coordinates{(0,0)};
+				\end{axis}
+			\end{tikzpicture}
+		\end{column}
+		\begin{column}{0.48\textwidth}
+			\begin{applicationbox}
+				Méthode d'étude :
+				\begin{enumerate}
+					\item domaine $D_f$ ;
+					\item dérivée $f'$ (là où elle existe) ;
+					\item signe de $f'$ ;
+					\item tableau de variations ;
+					\item éventuels extremums.
+				\end{enumerate}
+			\end{applicationbox}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{Exercice d'application --- variations}
+	\begin{exercicebox}[Exercice 2.8]
+		\begin{enumerate}
+			\item Dresser le tableau de variations de $f(x)=x^3-3x$ sur $\R$.
+			Préciser les extremums locaux.
+			\item \textbf{Gestion.} Le profit (en kDH) d'une PME est
+			\[
+				B(q)=-q^2+12q-20, \qquad q\in[0,10]
+			\]
+			($q$ en centaines d'unités).
+			\begin{enumerate}
+				\item Calculer $B'(q)$ et dresser le tableau de variations de $B$ sur $[0,10]$.
+				\item Quelle production maximise le profit ? Quel est ce profit maximal ?
+				\item L'entreprise est-elle toujours rentable sur $[0,10]$ ?
+			\end{enumerate}
+		\end{enumerate}
+	\end{exercicebox}
+\end{frame}
+
+\begin{frame}{Correction --- exercice 2.8 (1/2)}
+	\begin{definitionbox}[Correction de $f$]
+		$f'(x)=3x^2-3=3(x-1)(x+1)$.
+		$f'(x)\ge 0$ sur $]-\infty,-1]\cup[1,+\infty[$.
+		\vspace{0.15cm}
+		\centering
+		\renewcommand{\arraystretch}{1.2}
+		\begin{tabular}{|c|ccccccc|}
+			\hline
+			$x$ & $-\infty$ && $-1$ && $1$ && $+\infty$ \\
+			\hline
+			$f'(x)$ && $+$ & $0$ & $-$ & $0$ & $+$ & \\
+			\hline
+			$f$ & $-\infty$ & $\nearrow$ & $2$ & $\searrow$ & $-2$ & $\nearrow$ & $+\infty$ \\
+			\hline
+		\end{tabular}
+		\vspace{0.15cm}
+		\par Maximum local $f(-1)=2$, minimum local $f(1)=-2$.
+	\end{definitionbox}
+\end{frame}
+
+\begin{frame}{Correction --- exercice 2.8 (2/2)}
+	\begin{definitionbox}[Correction --- profit]
+		$B'(q)=-2q+12$. $B'(q)\ge 0\iff q\le 6$.
+		\vspace{0.1cm}
+		\centering
+		\renewcommand{\arraystretch}{1.2}
+		\begin{tabular}{|c|ccccc|}
+			\hline
+			$q$ & $0$ && $6$ && $10$ \\
+			\hline
+			$B'(q)$ && $+$ & $0$ & $-$ & \\
+			\hline
+			$B$ & $-20$ & $\nearrow$ & $16$ & $\searrow$ & $0$ \\
+			\hline
+		\end{tabular}
+		\vspace{0.15cm}
+		\begin{itemize}
+			\item Profit maximal $B(6)=16$ kDH, pour $q=6$ (soit $600$ unités).
+			\item $B(0)=-20<0$ : perte à l'arrêt. $B(q)=0$ en $q=10$
+			(et aussi en $q=2$, hors du max).
+			\item $B$ s'annule en $q=2$ et $q=10$ : rentable sur $[2,10]$,
+			perte sur $[0,2[$.
+		\end{itemize}
+	\end{definitionbox}
+\end{frame}
+
+% ============================================================
+\section{Fonctions usuelles}
+% ============================================================
+
+\subsection{La valeur absolue}
+
+\begin{frame}[shrink=10]{Définition}
+	\begin{columns}[c]
+		\begin{column}{0.52\textwidth}
+			\begin{definitionbox}
+				La fonction \key{valeur absolue} notée $\lvert\,\cdot\,\rvert$ est définie par
+				\[
+					\begin{array}{ll}
+						\fonc{\lvert\,\cdot\,\rvert}{\R}{\R_+} , \\[4pt]
+						x\longmapsto
+						\begin{cases}
+							x & \text{si } x\ge 0, \\
+							-x & \text{si } x\le 0.
+						\end{cases}
+					\end{array}
+				\]
+			\end{definitionbox}
+			\vspace{0.15cm}
+			\begin{attentionbox}
+				Sur la droite numérique, $\lvert x-y\rvert$ est la \key{distance}
+				entre $x$ et $y$. En particulier, $\lvert x\rvert$ est la distance
+				de $x$ à $0$.
+			\end{attentionbox}
+		\end{column}
+		\begin{column}{0.46\textwidth}
+			\begin{tikzpicture}
+				\begin{axis}[gestion, width=5.8cm, height=4.0cm,
+					xmin=-2.6, xmax=2.6, ymin=-0.4, ymax=2.6]
+					\addplot[DarkBlue, domain=-2.3:0, samples=2] ({x}, {-x});
+					\addplot[DarkBlue, domain=0:2.3, samples=2] ({x}, {x});
+					\node[font=\small] at (axis cs:1.7,2.15) {$y=\lvert x\rvert$};
+				\end{axis}
+			\end{tikzpicture}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{Propriétés de la valeur absolue (1/2)}
+	\begin{definitionbox}[Proposition 3.1]
+		Pour tout $x,y\in\R$ :
+		\begin{enumerate}
+			\item $\lvert x\rvert\ge 0$ ; $\lvert -x\rvert=\lvert x\rvert$ ; et $\lvert x\rvert>0\iff x\neq 0$ ;
+			\item $\sqrt{x^2}=\lvert x\rvert$ ;
+			\item $\lvert xy\rvert=\lvert x\rvert\cdot\lvert y\rvert$ ;
+			\item $\forall r\in\R_+$, $\lvert x\rvert\le r \iff -r\le x\le r \iff x\in[-r,r]$.
+		\end{enumerate}
+	\end{definitionbox}
+\end{frame}
+
+\begin{frame}{Propriétés de la valeur absolue (2/2)}
+	\begin{definitionbox}[Proposition 3.1, suite]
+		\begin{enumerate}
+			\setcounter{enumi}{4}
+			\item $\forall b\in\R$,
+			$\lvert x\rvert\ge b \iff
+			\begin{cases}
+				x\ge b\text{ ou }x\le -b & \text{si }b\ge 0,\\
+				x\in\R & \text{si }b<0 ;
+			\end{cases}$
+			\item \key{Inégalité triangulaire} : $\lvert x+y\rvert\le\lvert x\rvert+\lvert y\rvert$ ;
+			\item \key{Seconde inégalité triangulaire} :
+			$\bigl\lvert \lvert x\rvert-\lvert y\rvert\bigr\rvert\le\lvert x-y\rvert$.
+		\end{enumerate}
+	\end{definitionbox}
+\end{frame}
+
+\begin{frame}{Preuve de l'inégalité triangulaire}
+	Soient $x,y$ deux réels quelconques. On a
+	\[
+		-\lvert x\rvert\le x\le \lvert x\rvert
+		\qquad\text{et}\qquad
+		-\lvert y\rvert\le y\le \lvert y\rvert.
+	\]
+	En additionnant ces deux inégalités,
+	\[
+		-\bigl(\lvert x\rvert+\lvert y\rvert\bigr)
+		\le x+y
+		\le \lvert x\rvert+\lvert y\rvert.
+	\]
+	D'après le point 4. de la proposition (avec $r=\lvert x\rvert+\lvert y\rvert$), on obtient
+	\[
+		\lvert x+y\rvert\le \lvert x\rvert+\lvert y\rvert.
+	\]
+	\vspace{0.1cm}
+	\begin{applicationbox}
+		Pour la seconde : $\lvert x\rvert=\lvert (x-y)+y\rvert\le\lvert x-y\rvert+\lvert y\rvert$,
+		d'où $\lvert x\rvert-\lvert y\rvert\le\lvert x-y\rvert$. En échangeant $x$ et $y$,
+		$\lvert y\rvert-\lvert x\rvert\le\lvert x-y\rvert$, et on conclut.
+	\end{applicationbox}
+\end{frame}
+
+\begin{frame}{Lecture des inequations}
+	\centering
+	\begin{tikzpicture}[x=1.15cm, font=\small]
+		\draw[-{Latex}] (-4.5,0) -- (4.5,0);
+		\foreach \x in {-3,-2,-1,0,1,2,3}
+			\draw (\x,0.08) -- (\x,-0.08) node[below] {$\x$};
+		\draw[DarkBlue, line width=3pt] (-2,0) -- (2,0);
+		\fill[DarkBlue] (-2,0) circle (2.5pt) (2,0) circle (2.5pt);
+		\node[DarkBlue, above] at (0,0.25) {$\lvert x\rvert\le 2 \iff x\in[-2,2]$};
+		\begin{scope}[yshift=-1.6cm]
+			\draw[-{Latex}] (-4.5,0) -- (4.5,0);
+			\foreach \x in {-3,-2,-1,0,1,2,3}
+				\draw (\x,0.08) -- (\x,-0.08) node[below] {$\x$};
+			\draw[DarkRed, line width=3pt] (-4.3,0) -- (-2,0);
+			\draw[DarkRed, line width=3pt] (2,0) -- (4.3,0);
+			\fill[DarkRed] (-2,0) circle (2.5pt) (2,0) circle (2.5pt);
+			\node[DarkRed, above] at (0,0.25) {$\lvert x\rvert\ge 2 \iff x\in]-\infty,-2]\cup[2,+\infty[$};
+		\end{scope}
+	\end{tikzpicture}
+\end{frame}
+
+\begin{frame}{Exercice d'application --- valeur absolue}
+	\begin{exercicebox}[Exercice 3.1]
+		\begin{enumerate}
+			\item Résoudre dans $\R$ les inéquations
+			$\lvert 2x-6\rvert<4$ et $\lvert x+1\rvert\ge 3$.
+			\item Simplifier $\sqrt{(x-3)^2}$ pour $x\in\R$.
+			\item \textbf{Gestion.} Le prix cible d'un article est $10$ DH.
+			Le service qualité accepte un écart d'au plus $1{,}5$ DH :
+			$\lvert p-10\rvert\le 1{,}5$. Quel intervalle de prix est acceptable ?
+			\item Vérifier numériquement l'inégalité triangulaire pour $x=3$, $y=-5$.
+		\end{enumerate}
+	\end{exercicebox}
+\end{frame}
+
+\begin{frame}{Correction --- exercice 3.1}
+	\begin{definitionbox}[Correction]
+		\begin{enumerate}
+			\item $\lvert 2x-6\rvert<4\iff -4<2x-6<4\iff 1<x<5$, donc $x\in]1,5[$.\\
+			$\lvert x+1\rvert\ge 3\iff x+1\le -3$ ou $x+1\ge 3\iff x\in]-\infty,-4]\cup[2,+\infty[$.
+			\item $\sqrt{(x-3)^2}=\lvert x-3\rvert$ (et non $x-3$).
+			\item $8{,}5\le p\le 11{,}5$ : prix acceptable dans $[8{,}5\,;\,11{,}5]$.
+			\item $\lvert 3+(-5)\rvert=2$ et $\lvert 3\rvert+\lvert -5\rvert=8$, et $2\le 8$.
+		\end{enumerate}
+	\end{definitionbox}
+\end{frame}
+
+% ============================================================
+% SYNTHÈSE
+% ============================================================
+\begin{frame}{Synthèse du chapitre 2}
+	\begin{center}
+		\renewcommand{\arraystretch}{1.25}
+		\small
+		\begin{tabular}{ll}
+			\toprule
+			\textbf{Outil} & \textbf{Question à se poser} \\
+			\midrule
+			Domaine $D_f$ & Pour quels $x$ la formule a-t-elle un sens ? \\
+			Monotonie & $x$ augmente : $f(x)$ monte ou descend ? \\
+			Parité / période & Symétrie ? Répétition ? \\
+			Composée $g\circ f$ & L'arrivée de $f$ est-elle dans le départ de $g$ ? \\
+			$I(f)$ et $f^{-1}(B)$ & Quelles valeurs sont atteintes ? Par quels $x$ ? \\
+			Bijection / $f^{-1}$ & Un unique antécédent pour chaque $y$ ? \\
+			$f'$ et variations & Signe de $f'$ $\to$ tableau de variations. \\
+			Tangente & $y=f(a)+f'(a)(x-a)$. \\
+			$\lvert\,\cdot\,\rvert$ & Distance sur la droite réelle. \\
+			\bottomrule
+		\end{tabular}
+	\end{center}
+\end{frame}
+
+\begin{frame}{Pour la séance suivante}
+	\begin{applicationbox}
+		\faPencilAlt\ \textbf{Travail personnel recommandé}
+		\begin{itemize}
+			\item Refaire sans notes les exercices 2.1, 2.6 et 2.8.
+			\item Savoir retrouver $f^{-1}$ sur l'exemple $f(x)=x^2-4x+3$, $x\le 2$.
+			\item Relire les règles de dérivation et la formule de la composée.
+		\end{itemize}
+	\end{applicationbox}
+	\vspace{0.35cm}
+	\begin{exemplebox}[Prochain chapitre]
+		Poursuite des \key{fonctions usuelles} : polynômes, exponentielle, logarithme,
+		et leurs applications (intérêts composés, croissance, élasticité).
+	\end{exemplebox}
+\end{frame}
+
+\end{document}
