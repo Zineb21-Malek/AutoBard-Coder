@@ -54,9 +54,33 @@
 \definecolor{DarkRed}{RGB}{145,45,45}
 \definecolor{LightRed}{RGB}{252,235,235}
 \definecolor{DarkGray}{RGB}{45,58,62}
+\setbeamerfont{section title}{size=\LARGE}
+\setbeamercolor{section title}{fg=DarkBlue}
 \setbeamerfont{subsection title}{size=\Large}
 \setbeamercolor{subsection title}{fg=teal}
 \definecolor{headerblue}{RGB}{102,178,216}
+
+% Page de section : NE PAS laisser \AtBeginSection{} (cela masque \section)
+\setbeamertemplate{section page}{
+	\centering
+	\vspace{2cm}
+	\begin{tcolorbox}[
+		colback=DarkBlue!8,
+		colframe=DarkBlue,
+		width=1\textwidth,
+		boxrule=1pt,
+		arc=3mm
+		]
+		\centering
+		\usebeamerfont{section title}
+		\color{DarkBlue}\thesection\quad\insertsectionhead
+	\end{tcolorbox}
+}
+\AtBeginSection[]{
+	\begin{frame}
+		\sectionpage
+	\end{frame}
+}
 
 % Subsection page style
 \setbeamertemplate{subsection page}{
